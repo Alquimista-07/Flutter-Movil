@@ -11,6 +11,16 @@ void main() {
   
   print( 'Suma usando función flecha: ${ addTwoNumbersFlecha( 50, 40 ) }');
   
+  //---------------------------------------
+  // Parámetros: Posicionales y por nombre
+  //---------------------------------------
+  print( addTwoNumbersOptional3( 20 ) );
+
+  // Como nos damos cuenta acá ya estamos llamando la función y pasando los valores de los argumentos por nombre 
+  // y esta forma de pasar parámetros se usa muchísimo en Flutter.
+  print( greetPerson( message: 'Hi', name: 'Fernando' ) );
+
+
 }
 
 // Función sencilla que regresa un String 
@@ -65,4 +75,30 @@ int addTwoNumbersOptional( int a, [ int? b ] ){
 // por defecto cero con el =
 int addTwoNumbersOptional2(int a, [int b = 0]) {
   return a + b;
+}
+
+//--------------------------------------------------
+// Parámetros: Posicionales y por nombre
+//--------------------------------------------------
+
+// En este caso tenemos una función con dos parámetros, que uno es obligatorio 
+// y el otro no, adicionalmente al definirlos de esta forma sean obligatorios o
+// no los estamos definiendo como parámetros posicionales, es decir que siempre el
+// primer parámetro se va a llamar a, el segundo b y así sucesivamente como lo hacemos
+// tradicionalmente en otros lenguajes de programación y así trabaja.
+int addTwoNumbersOptional3( int a, [ int b = 0 ] ){
+  return a + b;
+}
+
+// Pero Dart adicionalmente nos ofrece una forma especial de ponerle nombres a nuestros
+// parámetros para que cuando nosotros estemos llamando la función y mandemos esos argumntos
+// entonces yo poder especificar inclusive el orden o ponerlo en cualquier posición como es
+// o asegurarme que va a recibir el valor a el parámetro que yo estoy esperando.
+// Para hacer eso los encerramos en llaves {} lo cual los convierte en opcionales y por nombre
+// como tenemos en el siguiente ejemplo en el cual el name es opcional y lo especificamos con ?
+// y ojo sabemos que al ser opcional puede ser nulo adicionalmente también podemos obligar anteponiendo
+// required y eso hace que siempre tiene que ser enviado, adicionalmente también tenemos el 
+// parámetro message que le asignamos un valor por defecto en caso que sea nulo
+String greetPerson( { required String? name, String message = 'Hola, ' } ) {
+  return '$message $name';
 }
