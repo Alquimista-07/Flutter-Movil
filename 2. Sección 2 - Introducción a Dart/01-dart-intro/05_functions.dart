@@ -99,6 +99,6 @@ int addTwoNumbersOptional3( int a, [ int b = 0 ] ){
 // y ojo sabemos que al ser opcional puede ser nulo adicionalmente también podemos obligar anteponiendo
 // required y eso hace que siempre tiene que ser enviado, adicionalmente también tenemos el 
 // parámetro message que le asignamos un valor por defecto en caso que sea nulo
-String greetPerson( { required String? name, String message = 'Hola, ' } ) {
+String greetPerson( { required String name, String message = 'Hola, ' } ) {
   return '$message $name';
 }
