@@ -6,6 +6,8 @@ void main() {
   // Instancia
   final mySquare = Square( side : 10 );
   
+  final mySquare2 = Square( side : -10 );
+  
   // Ahora con la ayuda del setter vamos a mandar el nuevo valor del side
   // mySquare.side = -5; // Esto nos da error por la validación que tenemos en el setter
   mySquare.side = 5;
@@ -13,6 +15,8 @@ void main() {
   
   //print( 'Area: ${ mySquare.calculateArea() }' );
   print ( 'Area: ${ mySquare.area }' );
+  
+  print ( 'Area: ${ mySquare2.area }' );
   
 }
 
@@ -24,8 +28,22 @@ class Square {
   double _side; // side * side // OJO: Esta es una porpiedad privada
   
   // Constructor
+  //-------------------------------
+  // NOTA: ASERCIONES
+  //-------------------------------
+  // Las aserciones no es más que poner unas reglas de negocio, y se usan mucho en Flutter, ya que van a haber errores
+  // que son basados en aserciones y estas son necesarias porque Flutter necesita que los valores cumplan ciertas 
+  // condiciones y si esos no se cumplen vamos a ver errores provenientes de las aserciones.
+  //
+  // Estas aserciones las indicamos en el constructor antes o después de establecer o inicializar el valor de las propiedades
+  // y se recomienda hacerlo antes, es decir, que primero vayan las aserciones y luego las inicializaciones.
+  // Para crera una aserción usamos la palabra reservada assert con el primer argumento posiciónes que sería la validación y el 
+  // segundo argumento posiciónal que sería el mensaje de error
+  //
+  // Podemos revisar la guía de notas entregada por fernando en la sección 1 para concer un poco más.
   Square( { required double side } )
-    : _side = side;
+    : assert( side >= 0, 'Side must be >= 0' ),
+      _side = side;
   
   //-------------------------------------------------------------------------------------------------------------
   // Getters y Setters: Como sabemos de otros lenguajes de programación, estos nos sirven para obtener 
@@ -52,7 +70,7 @@ class Square {
     
     // También recordemos que al igual que en otros lenguajes de programación si solo tenemos una sola línea de 
     // código podemos omitir el cuerpo de la condición que es con {} y simplemente mandar el resultado
-    if( value < 0 ) throw 'Value mus be > 0';
+    if( value < 0 ) throw 'Value must be > 0';
     
     // Si todo sale bien, es decir, no se lanzo la excepción y continuo con la ejecución, ya que sabemos que el throw termina la ejeción
     // hasta ahí, entonces si todo sale bien asignamos el nuevo valor
