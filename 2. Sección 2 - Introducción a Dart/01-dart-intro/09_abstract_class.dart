@@ -9,10 +9,15 @@ void main() {
   
   // Por lo tanto ya con la clase heredada e implementada podemos proceder a crear la instancia
   final windPlant = WindPlant( initialEnergy: 100 );
+  final nuclearPlant = NuclearPlant( energyLeft: 1000 );
   
   print( windPlant );
   
   print( 'Wind: ${ chargePhone( windPlant ) }' );
+  
+  // Por lo tanto al heredar (implements o extends) de la clase abstracta la función puede recibir fácilmente
+  // otro tipo de planta y no va a dar problema ya que tiene todo lo que requiere.
+  print( 'Nuclear: ${ chargePhone( nuclearPlant ) }' );
   
 }
 
@@ -26,7 +31,7 @@ enum PlantType { nuclear, wind, water }
 abstract class EnergyPlant {
   
   double energyLeft;
-  PlantType type; // Nuclear, Wind, Water que serían los tipos espcíficos definidos con el enumerador
+  final PlantType type; // Nuclear, Wind, Water que serían los tipos espcíficos definidos con el enumerador
   
   // Constructor
   EnergyPlant({
@@ -41,7 +46,12 @@ abstract class EnergyPlant {
 }
 
 // Extends o implements
-// Extends -> Extender o heredar de otra clase
+// Extends -> Extender o heredar de otra clase por lo tanto heredamos toda la clase padre.
+// NOTA: Y aunque si nos damos cuenta al usar extends o implements son basicamente para lo mismo, técnicamente funcionan para objetivos específicos 
+//       idependientes ya que hay veces donde vamos a querer hacer una herencia (ambos el implements y extends sirven para la herencia básicamente)
+//       pero nosotros vamos a querer que una clase implemente (implements) específicamente solamente un método en lugar de extender (extends) todo 
+//       lo que la clase padre tiene y esa es la diferencia entre usar el extends y el implements. Con el implements es más específico y con el extends
+//       es más general
 class WindPlant extends EnergyPlant {
   
   // Adicionalmente nuestro molde o clase de la que estamos heredando nos pide que tenemos
@@ -78,4 +88,31 @@ double chargePhone( EnergyPlant plant ) {
   }
   
   return plant.energyLeft - 10;
+}
+
+// Implements o extends
+// Implements -> Implementa la clase, y en pocas palabras la implementación nos ayuda a nosotros a explícitamente colocar cada uno de sus override.
+// NOTA: Y aunque si nos damos cuenta al usar extends o implements son basicamente para lo mismo, técnicamente funcionan para objetivos específicos 
+//       idependientes ya que hay veces donde vamos a querer hacer una herencia (ambos el implements y extends sirven para la herencia básicamente)
+//       pero nosotros vamos a querer que una clase implemente (implements) específicamente solamente un método en lugar de extender (extends) todo 
+//       lo que la clase padre tiene y esa es la diferencia entre usar el extends y el implements. Con el implements es más específico y con el extends
+//       es más general
+class NuclearPlant implements EnergyPlant {
+  
+  // Por lo tanto al implementar la clase padre necesitamos definir cada uno de los
+  // elementos y métodos de la clase abstracta o clase padre
+  
+  @override
+  double energyLeft;
+  
+  @override
+  final PlantType type = PlantType.nuclear;
+  
+  NuclearPlant( { required this.energyLeft } );
+  
+  @override
+  void consumeEnergy( double amount ) {
+    energyLeft -= ( amount * 0.5);
+  } 
+  
 }
