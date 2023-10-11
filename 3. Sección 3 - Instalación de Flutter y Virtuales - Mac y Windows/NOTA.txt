@@ -1,0 +1,6 @@
+Esta sección básicamente trata sobre todas las configuraciones e instalaciones necesarias que tenemos que hacer para hacer que Flutter
+funcione de forma correcta en nuestro equipo. Adicionalmente también tenemos la configuración de Android Studio, dispositivos virtuales 
+y fisicos para poder realizar los ejercicios del curso. Por lo tanto si queremos en un futuro instalar y configurar Flutter volveriamos
+ver el contenido de esta sección, ya sea para Mac o Windows.
+
+Adicionalmente creamos un proyecto en flutter para probar el emulador y dispositivo 
