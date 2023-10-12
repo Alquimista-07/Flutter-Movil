@@ -1,0 +1,3 @@
+Dentro de esta carpeta presentation vamos a colocar todo lo que es visual o 
+los widgets propiamente de Flutter, es decir, acá voy a colocar mis widgets
+personalizados y todo lo referente a la interfaz gráfica o visual.

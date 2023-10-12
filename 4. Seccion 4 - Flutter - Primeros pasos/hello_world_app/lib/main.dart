@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hello_world_app/presentation/screens/counter/counter_screen.dart';
 
 void main() {
   // NOTA: Entonces según lo mencionado anteriormente respecto al widget inicial este se va a ejecutar con un comando que se llama runApp.
@@ -35,27 +36,28 @@ class MyApp extends StatelessWidget {
     //       Además dada la explicación de más arriba en el momento de instanciar la clase del porque colocamos el const entonces acá hacemos lo mismo y esto nos quita los
     //       warnings.
     return const MaterialApp(
-      // NOTA: Entonces en este widget voy a poner el home y el home va a ser un texto que dice Hola Mundo. Y notemos que nuestro MaterialApp tiene un home
-      //       que tiene otro widget Text que recibe el Hola Mundo. Y básicamente esta clase Text es la que vamos a utilizar para mostrar los textos en pantalla
-      //       pero hay que tener en cuenta que existen otras formas pero esta es la más común.
-      //       Adicionalmente el Text lo envolvemos en otro widget llamado Center, el Center se encarga de envolver su hijo en las dimensiones que tenga disponible el padre,
-      //       en este caso toda la pantalla
+        // NOTA: Entonces en este widget voy a poner el home y el home va a ser un texto que dice Hola Mundo. Y notemos que nuestro MaterialApp tiene un home
+        //       que tiene otro widget Text que recibe el Hola Mundo. Y básicamente esta clase Text es la que vamos a utilizar para mostrar los textos en pantalla
+        //       pero hay que tener en cuenta que existen otras formas pero esta es la más común.
+        //       Adicionalmente el Text lo envolvemos en otro widget llamado Center, el Center se encarga de envolver su hijo en las dimensiones que tenga disponible el padre,
+        //       en este caso toda la pantalla
 
-      // home: Center(child: Text('Hola Mundo!!!...')),
+        // home: Center(child: Text('Hola Mundo!!!...')),
 
-      // NOTA: Dentro del MaterialApp hay una propiedad llamada debugShowCheckedModeBanner, la cual nos permite quitar el cartel que dice DEBUG en la parte superior derecha
-      //       de la aplicación y que la verdad estorba, pero básicamente Flutter la coloca por defecto para indicar que la app esta en desarrollo pero pues nosotros ya sabemos
-      //       que esta en desarrollo entonces la deshabilitamos con esa propiedad banner. Adicionalmente para ayudarnos podemos dar Ctrl + barra espaciadora y escribir parte de
-      //       la palabra por ejemplo banner y nos va a mostrar las diferente opciones que concuerdan para seleccionar,
-      debugShowCheckedModeBanner: false,
+        // NOTA: Dentro del MaterialApp hay una propiedad llamada debugShowCheckedModeBanner, la cual nos permite quitar el cartel que dice DEBUG en la parte superior derecha
+        //       de la aplicación y que la verdad estorba, pero básicamente Flutter la coloca por defecto para indicar que la app esta en desarrollo pero pues nosotros ya sabemos
+        //       que esta en desarrollo entonces la deshabilitamos con esa propiedad banner. Adicionalmente para ayudarnos podemos dar Ctrl + barra espaciadora y escribir parte de
+        //       la palabra por ejemplo banner y nos va a mostrar las diferente opciones que concuerdan para seleccionar,
+        debugShowCheckedModeBanner: false,
 
-      // NOTA: Ahora para el siguiente ejercicio comentamos el hola mundo y lo cambiamos por un scaffold que es otro widget, este widget también lo tenemos explicado en la hoja de rutas
-      //       y acostumbremonos a revisarla ya que es de mucha ayuda.
-      //       El Scaffold da las bases de un diseño de material y nosotros podemos usarlo para definir pantallas, eso ayuda por ejemplo a establecer el fondo blanco o si estamos en una
-      //        app con tema Dark lo va a usar y esto es nuestra base inicial
-      home: Scaffold(
-        body: Center(child: Text('Hola Mundo!!!...')),
-      ),
-    );
+        // NOTA: Ahora para el siguiente ejercicio comentamos el hola mundo y lo cambiamos por un scaffold que es otro widget, este widget también lo tenemos explicado en la hoja de rutas
+        //       y acostumbremonos a revisarla ya que es de mucha ayuda.
+        //       El Scaffold da las bases de un diseño de material y nosotros podemos usarlo para definir pantallas, eso ayuda por ejemplo a establecer el fondo blanco o si estamos en una
+        //        app con tema Dark lo va a usar y esto es nuestra base inicial.
+        //
+        //NOTA:  Adicionalmente luego lo que hicimos fue trasladar el Scaffold que inicialmente teníamos acá en el home a un archivo nuevo e independiente llamado counter_screen dentro el directorio presentation/screens
+        //       esto debido a que como sabemos tenemos que tener una estructura definida para llevar un orden y adicionalnente esto hace que sea más mantenible ya que tenemos partes más pequeñas de código en diferentes
+        //       archivos. Y simplemente para usarlo creamos la instancia de la clase donde tenemos el Scaffold y no olvidemos la imoortación.
+        home: CounterScreen());
   }
 }

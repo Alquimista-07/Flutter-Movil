@@ -1,0 +1,5 @@
+Dentro de este directorio screens voy a colocar los widgets que cubren toda la pantalla
+y adicionalnente estos tiene sus Scaffold.
+Es decir, es decir cada una de las pantallas sobre las cuales van montados el resto de
+widgets, adicionalmente podemos crear más directorios dentro de esta y así tener el 
+filesystem que nosotros definamos.
