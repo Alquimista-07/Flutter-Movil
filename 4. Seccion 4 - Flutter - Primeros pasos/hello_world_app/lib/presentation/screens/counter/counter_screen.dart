@@ -10,6 +10,10 @@ class CounterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // Agregamos el appBar para poner el título en la aplicación
+      appBar: AppBar(
+        title: const Text('Counter Screen'),
+      ),
       // NOTA: Hay muchos widgets que solo tienen un hijo pero hay algunos widgets que también reciben
       //       múltpiles hijos y los cuales podemos revisar algunos en la hoja de atahos de Flutter.
       //       Entonces quitamos el widget Text y ahora vamos a usar otro widget que recibe múltpiles hijos.

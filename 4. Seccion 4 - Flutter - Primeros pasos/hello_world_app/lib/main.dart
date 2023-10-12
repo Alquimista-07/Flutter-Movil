@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
     //       cosas y otas cosas respecto a la documentación del widget.
     //       Además dada la explicación de más arriba en el momento de instanciar la clase del porque colocamos el const entonces acá hacemos lo mismo y esto nos quita los
     //       warnings.
-    return const MaterialApp(
+    return MaterialApp(
         // NOTA: Entonces en este widget voy a poner el home y el home va a ser un texto que dice Hola Mundo. Y notemos que nuestro MaterialApp tiene un home
         //       que tiene otro widget Text que recibe el Hola Mundo. Y básicamente esta clase Text es la que vamos a utilizar para mostrar los textos en pantalla
         //       pero hay que tener en cuenta que existen otras formas pero esta es la más común.
@@ -50,6 +50,21 @@ class MyApp extends StatelessWidget {
         //       la palabra por ejemplo banner y nos va a mostrar las diferente opciones que concuerdan para seleccionar,
         debugShowCheckedModeBanner: false,
 
+        // NOTA: Justo abajo del debugShowCheckedModeBanner vamos a colocar la propiedad theme o tema y hay varias formas para que nosotros podamos habilitar el modo Dark o crear
+        //       nuestros temas personalizados, en el theme si dejamos cursor encima este esta esperando algo de tipo ThemeData y esto de dejar el cursor para que nos de la autoayuda
+        //       es una clave que nos sirve para continuar configurando cada una de esas propiedades en las cuales al inicio no tenemos ni la menor idea. Ahora dentro del theme vamos
+        //       a decirle que use Marteial 3 que es la versión final en este momento de Material Design y tenemos que agregarla manualmente ya que aún este no se ha estandarizado en
+        //       los componentes en la versión actual de Flutter, pero esto ya lo estan implementando y posiblemente en un futuro no sea necesario colocarlo.
+        //       Adicionalmente cabe aclarar que la verdad esto del orden es indiferente donde lo coloquemos ya que son propiedades con nombre, pero siguiendo las buenas prácticas nos
+        //       indican que es mejor dejar el hijo o child como la última propiedad a definir
+        theme:
+            // NOTA: Este ThemeData no lo colocamos constante ya que al momento de crear la aplicación no sabemos en que dispositivo se va a usar y que tipo de tema va aa tener por lo tanto no
+            //       colocamos el key constructor.
+            //       Otra cosa super genial es que como soy tan malo para elegir paletas de colores para las aplicaciones y combinarlos tenemos una propiedade llamada colorSchemeSeed la cual va
+            //       a pedir un color y hay varias formas de definir colores en Flutter, podemos escribir Color y colcoar punto y nos da métodos por ejemplo de mandarlo de RGB, RGBO, etc, pero
+            //       también Flutter tiene una paleta de colores preestablecida y para usarla podemos escribir Colors y luego punto y nos va a mostrar todas las paletas.
+            ThemeData(useMaterial3: true, colorSchemeSeed: Colors.blue),
+
         // NOTA: Ahora para el siguiente ejercicio comentamos el hola mundo y lo cambiamos por un scaffold que es otro widget, este widget también lo tenemos explicado en la hoja de rutas
         //       y acostumbremonos a revisarla ya que es de mucha ayuda.
         //       El Scaffold da las bases de un diseño de material y nosotros podemos usarlo para definir pantallas, eso ayuda por ejemplo a establecer el fondo blanco o si estamos en una
@@ -58,6 +73,6 @@ class MyApp extends StatelessWidget {
         //NOTA:  Adicionalmente luego lo que hicimos fue trasladar el Scaffold que inicialmente teníamos acá en el home a un archivo nuevo e independiente llamado counter_screen dentro el directorio presentation/screens
         //       esto debido a que como sabemos tenemos que tener una estructura definida para llevar un orden y adicionalnente esto hace que sea más mantenible ya que tenemos partes más pequeñas de código en diferentes
         //       archivos. Y simplemente para usarlo creamos la instancia de la clase donde tenemos el Scaffold y no olvidemos la imoortación.
-        home: CounterScreen());
+        home: const CounterScreen());
   }
 }
