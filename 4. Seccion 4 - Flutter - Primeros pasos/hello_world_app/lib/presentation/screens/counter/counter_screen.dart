@@ -64,10 +64,23 @@ class _CounterScreenState extends State<CounterScreen> {
               style:
                   const TextStyle(fontSize: 160, fontWeight: FontWeight.w100),
             ),
-            const Text(
-              'Clicks',
-              style: TextStyle(fontSize: 25),
+            Text(
+              // (clickCounter == 1 ? 'Click' : 'Clicks'), // Una forma de solucionarlo usando un ternario
+              'Click${clickCounter == 1 ? '' : 's'}', // Otra forma de solucionarlo usando un ternario y si nos damos cuenta acá cambiamos una sola letra y sería una alternativa a la decisión que teniamos anterioremente
+              style: const TextStyle(fontSize: 25),
             )
+
+            // Otra forma de resolver el cambio de la pablabra click o clicks seria usando 2 if y evaluar cuando clickCounter sea uno y diferente de uno
+            // y decimos que usamos 2 if ya que acá no nos deja usar el else.
+            // Pero a la larga entre menos deciciones tengamos y menos le toque computar a nuestro dispositivo es mejor por lo tanto la mejor solución
+            // sería usando el ternario.
+            /*
+            if (clickCounter == 1)
+              const Text('Click', style: TextStyle(fontSize: 25)),
+
+            if (clickCounter != 1)
+              const Text('Clicks', style: TextStyle(fontSize: 25)),
+            */
           ],
         ),
       ),
