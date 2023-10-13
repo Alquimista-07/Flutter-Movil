@@ -76,17 +76,39 @@ class _CounterFunctionsScreenState extends State<CounterFunctionsScreen> {
             //       Ahora existe una forma de EXTREAER el widget este caso podemos pararnos sobre el FloatingAtionButton presionar Ctrl + . y ahí nos va a dar la opción de Extract Widget peerrro esto siempre
             //       no va a servir ya que el widget en este caso tiene una dependencia con el clickCounter, el setState y no nos lo va a dejar extraer. Entonces lo que tenemos que hacer es quitar ese código de
             //       la función OnPressed y luego si aplicar la extracción como se mencionó anteriormente. Y luego nos pide que asignemos el nuevo nombre del widget
-            CustomButton(icon: Icons.refresh_outlined),
+            CustomButton(
+              icon: Icons.refresh_outlined,
+              // NOTA: La propiedad shape nos permite redondear el botón y la mando por parámetro. Esto no estaba en el curso yo lo realice para aplicar lo aprendido
+              shape: const StadiumBorder(),
+              onPressed: () {
+                setState(() {
+                  clickCounter = 0;
+                });
+              },
+            ),
             // NOTA: Hay muchas maneras de agregar separaciones en Flutter entre widgets, pero Uno de los widgets más comunes es el SizedBox el cual es como crear un contenedor
             //       o una caja con contenido específico con las dimiensiones que qeramos o necesitemos. Y esto es maravilloso de Flutter ya que gracias al HotReload podemos ver
             //       los cambios en caliente y agilizar el desarrollo ya que no hay que compilar la aplicación para ver lo que estemos modificando.
             const SizedBox(height: 10),
-            CustomButton(icon: Icons.plus_one),
+            CustomButton(
+                icon: Icons.plus_one,
+                onPressed: () {
+                  clickCounter++;
+                  setState(() {});
+                }),
             // NOTA: Hay muchas maneras de agregar separaciones en Flutter entre widgets, pero Uno de los widgets más comunes es el SizedBox el cual es como crear un contenedor
             //       o una caja con contenido específico con las dimiensiones que qeramos o necesitemos. Y esto es maravilloso de Flutter ya que gracias al HotReload podemos ver
             //       los cambios en caliente y agilizar el desarrollo ya que no hay que compilar la aplicación para ver lo que estemos modificando.
             const SizedBox(height: 10),
-            CustomButton(icon: Icons.exposure_minus_1_outlined)
+            CustomButton(
+                icon: Icons.exposure_minus_1_outlined,
+                onPressed: () {
+                  setState(() {
+                    // NOTA: Validamos para que cuando el clickcounter sea cero haga un return y no haga nada, con el fin de evitar que se muestren números negativos.
+                    if (clickCounter == 0) return;
+                    clickCounter--;
+                  });
+                })
           ],
         ));
   }
@@ -99,18 +121,35 @@ class CustomButton extends StatelessWidget {
   // NOTA: Recordemos que el Icon recibe algo de tipo IconData por lo tanto ese es el tipo que tenemos que mandar.
   final IconData icon;
 
-// Constructor. NOTA: Inicializamos los campos en el constructor, adicionalmente también podemos dar Ctrl + . para genera de forma automática el código.
-  const CustomButton({
-    super.key,
-    required this.icon,
-  });
+  // NOTA: Ahora necesito recibir el onPressed pero y como hago para saber de que tipo es, bueno para ello podemos darnos cuenta que el floatingActionButton
+  //       ya lo tiene entonces podemos dar Ctrl + click sobre el widget para ir directamente a ver como realizaron su construcción el equipo de Flutter y
+  //       buscarlo allí, entonces al encontrarlo nos damos cuenta que es de tipo VoidCallback por lo tanto ese sería el que nos serviría para nuestro widget
+  //       personalizado. Adicionalmente el VoidCallback es una función que no regresa nada y la manejan como opcional entonces nosotros también podemos manejarla
+  //       de esa manera.
+  final VoidCallback? onPressed;
 
+  // NOTA: La propiedad para redondear el botón yo mismo la agregue ya que quiero que los botones se vean diferentes y esto no lo hacían en el video del curso.
+  final ShapeBorder? shape;
+
+// Constructor. NOTA: Inicializamos los campos en el constructor, adicionalmente también podemos dar Ctrl + . para genera de forma automática el código.
+//                    Otra cosa es que a pesar de que el onPressed lo tengo opcional es necesario inicializarlo en el constructor. Y lo mismo pasa con
+//                    la propiedad shape que yo mismo coloque y que no esta en el curso.
+  const CustomButton(
+      {super.key, required this.icon, this.onPressed, this.shape});
+
+// NOTA: Adicionalmente podemos jugar con las propiedades para ver que es lo que hacen e ir descubriendo y aprendiendo de esa forma. agregando o quitando propiedades
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
       // NOTA: La propiedad shape nos permite redondear el botón
-      shape: const StadiumBorder(),
-      onPressed: () {},
+      shape: shape,
+      // NOTA: La propiedad enableFeedback nos da una vibración o sonido cuando demos click en el botón
+      enableFeedback: true,
+      // NOTA: Elevación del botón
+      elevation: 8,
+      //backgroundColor: Colors.blue,
+      onPressed: onPressed,
+      splashColor: Colors.amberAccent,
       // NOTA: Ahora mandamos el icono que estamos recibiendo por parámetro por nombre, recordemos que también lo podríamos mandar de forma posiciones con un this.icon directamente en el
       //       constructor antes de abrir { pero esto queda a criterio de cada quién y en lo personal prefiero mandarlos por nombre pero hay que tener en cuenta que en algún momento tendremos
       //       que oblibar a que sea posicional al menos un argumento de la fucnión y como hemos visto en algunos de los widget que manejan los 2 tipos de parámetros.
