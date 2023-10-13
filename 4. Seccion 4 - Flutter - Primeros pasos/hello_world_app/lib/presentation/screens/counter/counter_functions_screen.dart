@@ -61,51 +61,60 @@ class _CounterFunctionsScreenState extends State<CounterFunctionsScreen> {
             ],
           ),
         ),
+        // NOTA: La propiedad mainAxisAlignment recordemos que es una propiedad de widget Column para cambiarle la ubicación en la pantalla, adicionalmente recordemos
+        //       que este widget es un widget que recibe multiples hijos.
+        //       Adicionalmente una nota importante es que si una propiedad nos sale en desuso o deprecated en la misma documentación que se nos da cuando dejamos el
+        //       cursor sobre la propiedad o widget ahí nos va a sugerir cual reemplazo la que esta deprecated y por lo tanto la que deberíamos usar.
         floatingActionButton: Column(
-          // NOTA: La propiedad mainAxisAlignment recordemos que es una propiedad de widget Column para cambiarle la ubicación en la pantalla, adicionalmente recordemos
-          //       que este widget es un widget que recibe multiples hijos.
-          //       Adicionalmente una nota importante es que si una propiedad nos sale en desuso o deprecated en la misma documentación que se nos da cuando dejamos el
-          //       cursor sobre la propiedad o widget ahí nos va a sugerir cual reemplazo la que esta deprecated y por lo tanto la que deberíamos usar.
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            FloatingActionButton(
-              // La propiedad shape nos permite redondear el botón
-              shape: const StadiumBorder(),
-              onPressed: () {
-                setState(() {
-                  clickCounter = 0;
-                });
-              },
-              child: const Icon(Icons.refresh_outlined),
-            ),
+            // NOTA: Anteriormente teníamos 3 widget FloatingActionButton que casi eran lo mismo y los estabamos repitiendo y al repetirlos no estamos siguiente el concepto DRY (Don't Repeat Yourself)
+            //       o no te repitas a ti mismo ya que estamos repitiendo código, entonces cuando empezamos a ver esto fácilmente podemos crear un widget personalizado que va a ser el cascaron y al cual
+            //       le vamos a pasar propiedades y funcionalidades a través de parámetro y simplemente cada vez que lo necesitemos llamamos ese widget personalizado y le pasamos sus correspondientes
+            //       valores y de esta forma acotamos o disminuimos las líneas de código haciendolo más legible.
+            //
+            //       Ahora existe una forma de EXTREAER el widget este caso podemos pararnos sobre el FloatingAtionButton presionar Ctrl + . y ahí nos va a dar la opción de Extract Widget peerrro esto siempre
+            //       no va a servir ya que el widget en este caso tiene una dependencia con el clickCounter, el setState y no nos lo va a dejar extraer. Entonces lo que tenemos que hacer es quitar ese código de
+            //       la función OnPressed y luego si aplicar la extracción como se mencionó anteriormente. Y luego nos pide que asignemos el nuevo nombre del widget
+            CustomButton(icon: Icons.refresh_outlined),
             // NOTA: Hay muchas maneras de agregar separaciones en Flutter entre widgets, pero Uno de los widgets más comunes es el SizedBox el cual es como crear un contenedor
             //       o una caja con contenido específico con las dimiensiones que qeramos o necesitemos. Y esto es maravilloso de Flutter ya que gracias al HotReload podemos ver
             //       los cambios en caliente y agilizar el desarrollo ya que no hay que compilar la aplicación para ver lo que estemos modificando.
             const SizedBox(height: 10),
-            FloatingActionButton(
-              // La propiedad shape nos permite redondear el botón
-              shape: const StadiumBorder(),
-              onPressed: () {
-                clickCounter++;
-                setState(() {});
-              },
-              child: const Icon(Icons.plus_one),
-            ),
+            CustomButton(icon: Icons.plus_one),
             // NOTA: Hay muchas maneras de agregar separaciones en Flutter entre widgets, pero Uno de los widgets más comunes es el SizedBox el cual es como crear un contenedor
             //       o una caja con contenido específico con las dimiensiones que qeramos o necesitemos. Y esto es maravilloso de Flutter ya que gracias al HotReload podemos ver
             //       los cambios en caliente y agilizar el desarrollo ya que no hay que compilar la aplicación para ver lo que estemos modificando.
             const SizedBox(height: 10),
-            FloatingActionButton(
-              // La propiedad shape nos permite redondear el botón
-              shape: const StadiumBorder(),
-              onPressed: () {
-                setState(() {
-                  clickCounter--;
-                });
-              },
-              child: const Icon(Icons.exposure_minus_1_outlined),
-            )
+            CustomButton(icon: Icons.exposure_minus_1_outlined)
           ],
         ));
+  }
+}
+
+// NOTA: Nuevo widget personalizado y que extrajimos con Ctrl + . OJO hay que tener en cuenta las notas realizadas respecto a la extracción del widget.
+//       Ahora si nos damos cuenta este es un StatelessWidget por lo tanto no necesito manejar el estado ya que simplemente necesito recibir el OnPressed
+//       y el ícono
+class CustomButton extends StatelessWidget {
+  // NOTA: Recordemos que el Icon recibe algo de tipo IconData por lo tanto ese es el tipo que tenemos que mandar.
+  final IconData icon;
+
+// Constructor. NOTA: Inicializamos los campos en el constructor, adicionalmente también podemos dar Ctrl + . para genera de forma automática el código.
+  const CustomButton({
+    super.key,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      // NOTA: La propiedad shape nos permite redondear el botón
+      shape: const StadiumBorder(),
+      onPressed: () {},
+      // NOTA: Ahora mandamos el icono que estamos recibiendo por parámetro por nombre, recordemos que también lo podríamos mandar de forma posiciones con un this.icon directamente en el
+      //       constructor antes de abrir { pero esto queda a criterio de cada quién y en lo personal prefiero mandarlos por nombre pero hay que tener en cuenta que en algún momento tendremos
+      //       que oblibar a que sea posicional al menos un argumento de la fucnión y como hemos visto en algunos de los widget que manejan los 2 tipos de parámetros.
+      child: Icon(icon),
+    );
   }
 }
