@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hello_world_app/presentation/screens/counter/counter_screen.dart';
+import 'package:hello_world_app/presentation/screens/counter/counter_functions_screen.dart';
+//import 'package:hello_world_app/presentation/screens/counter/counter_screen.dart';
 
 void main() {
   // NOTA: Entonces según lo mencionado anteriormente respecto al widget inicial este se va a ejecutar con un comando que se llama runApp.
@@ -73,6 +74,9 @@ class MyApp extends StatelessWidget {
         //NOTA:  Adicionalmente luego lo que hicimos fue trasladar el Scaffold que inicialmente teníamos acá en el home a un archivo nuevo e independiente llamado counter_screen dentro el directorio presentation/screens
         //       esto debido a que como sabemos tenemos que tener una estructura definida para llevar un orden y adicionalnente esto hace que sea más mantenible ya que tenemos partes más pequeñas de código en diferentes
         //       archivos. Y simplemente para usarlo creamos la instancia de la clase donde tenemos el Scaffold y no olvidemos la imoortación.
-        home: const CounterScreen());
+        //home: const CounterScreen());
+        // NOTA: Comentamos el widget anterior CounterScreen y que contiene nuestra documentación y notas relacionadas a la construcción con el fin de mantenerlas y ahora instanciamos un nuevo widget cuya base es el código
+        //       del widget anterior CounterScreen solo que con algunas mejoras y elementos adicionales.
+        home: const CounterFunctionsScreen());
   }
 }
