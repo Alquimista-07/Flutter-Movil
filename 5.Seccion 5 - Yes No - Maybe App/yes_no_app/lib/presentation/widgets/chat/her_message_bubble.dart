@@ -61,6 +61,22 @@ class _ImageBubble extends StatelessWidget {
         height: 150,
         fit: BoxFit
             .fill, // Para que los bordes se acoten correctamente hacemos este BoxFit ya que si no se colcoa se vana ver las imágenes cuadradas
+        // NOTA: Tenemos esta otra propiedad llamada loadingBuilder la cual nos permite mostrar algo mientras se carga la imágen ya que si nos damos cuenta hay un lapso de tiempo en que no aparece nada mientras
+        //       se trae la imágen de internet. Adicionalmente recordemos que cuando vemos la palabra builder es algo que se va a construir en tiempo de ejecución.
+        //        Y algual que el itemBuilder que usamos en el chat_screen este también puede usar una función que podemos especificar de dos formas, una función flecha que regresa implícitamente un widget o una
+        //        función con cuerpo. Acá tenemos nuestro BuildContext, el child que básicamente es la imágen, y el loadingProgress
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null)
+            return child; // El progreso se completo y la imágen ya se cargo entonces regresamos la imágen
+
+          // Aún no se ha cargado regresamos un widget con algo
+          return Container(
+            width: size.width * 0.7,
+            height: 150,
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            child: const Text('Mi amor está enviando un mensaje'),
+          );
+        },
       ),
     );
   }
