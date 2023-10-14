@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yes_no_app/presentation/widgets/chat/her_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/chat/my_message_bubble.dart';
+import 'package:yes_no_app/presentation/widgets/shared/message_field_box.dart';
 
 // NOTA: Algo que acostumbro hacer es que cuando el nombre de la clase o widget tiene la palabra Screen
 //       eso quiere decir que retorna un Scaffold
@@ -70,7 +71,8 @@ class _ChatView extends StatelessWidget {
                         : const MyMessageBubble();
               },
             )),
-            Text('Mundo!!!...')
+            // Caja de texto para escribir mensajes
+            const MessageFieldBox()
           ],
         ),
       ),
