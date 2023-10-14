@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yes_no_app/presentation/widgets/chat/my_message_bubble.dart';
 
 // NOTA: Algo que acostumbro hacer es que cuando el nombre de la clase o widget tiene la palabra Screen
 //       eso quiere decir que retorna un Scaffold
@@ -60,7 +61,8 @@ class _ChatView extends StatelessWidget {
               // NOTA: SI no especificamos la cantidad de elementos a mostrar el itemBuilder va a mostrar infinitos elementos en pantalla
               itemCount: 100,
               itemBuilder: (context, index) {
-                return Text('Indice: $index');
+                // Usamos nuestro widget personalizado que muestra las burbujas de chat de mis mensajes o mensajes que yo envío
+                return const MyMessageBubble();
               },
             )),
             Text('Mundo!!!...')
