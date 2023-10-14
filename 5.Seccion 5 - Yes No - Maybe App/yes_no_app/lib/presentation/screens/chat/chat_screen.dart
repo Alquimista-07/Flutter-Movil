@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:yes_no_app/presentation/widgets/chat/her_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/chat/my_message_bubble.dart';
 
 // NOTA: Algo que acostumbro hacer es que cuando el nombre de la clase o widget tiene la palabra Screen
@@ -62,7 +63,11 @@ class _ChatView extends StatelessWidget {
               itemCount: 100,
               itemBuilder: (context, index) {
                 // Usamos nuestro widget personalizado que muestra las burbujas de chat de mis mensajes o mensajes que yo envío
-                return const MyMessageBubble();
+                return
+                    // Ahora para alternar las burbujas del chat vamos a ser un poco ingeniosos y obtener la división sintética para saber cuando son pares e impares con el fin de poder alternarlos dependiendo si es uno u otro
+                    (index % 2 == 0)
+                        ? const HerMessageBubble()
+                        : const MyMessageBubble();
               },
             )),
             Text('Mundo!!!...')
