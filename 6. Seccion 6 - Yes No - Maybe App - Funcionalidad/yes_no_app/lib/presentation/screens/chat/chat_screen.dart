@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yes_no_app/domain/entities/message.dart';
+import 'package:yes_no_app/presentation/providers/chat_provider.dart';
 import 'package:yes_no_app/presentation/widgets/chat/her_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/chat/my_message_bubble.dart';
 import 'package:yes_no_app/presentation/widgets/shared/message_field_box.dart';
@@ -42,6 +45,13 @@ class ChatScreen extends StatelessWidget {
 class _ChatView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // NOTA: Hacemos la referencia al provider, adicionalmente el widget lo mantenemos como StatelessWiget ya que este no va a mantener el estado como hicimos con el
+    //       ejercicio de la anterior aplicación, ya que ahora tenemos un gestor propiamente implementado y que se va a encargar de dicha tarea en particular.
+    //       Entonces ya con esto va a estar pendiente de los cambios que sucedan en esa instancia de la clase.
+    //       Y notemos que esto es muy parecido a lo que realizamos en la clase MyMessageBubble cuando obteníamos el tema con el Theme.of() solo que acá estamos obteniendo
+    //       es el provider
+    final chatProvider = context.watch<ChatProvider>();
+
     // NOTA: El widget safeArea empuja los widget contenidos dentro a una área segura para que no interfiera con los controles del sistema y que estan ubicaso en la parte inferior,
     //       es decir, donde estan ubicados los botones de home, atrás y cerrar aplicaciones en Android, y lo mismo en iOS según corresponda
     return SafeArea(
@@ -61,14 +71,26 @@ class _ChatView extends StatelessWidget {
                 //       el build context que es el árbol de widgets y el indice que el list builder este utilizando en ese momento.
                 child: ListView.builder(
               // NOTA: SI no especificamos la cantidad de elementos a mostrar el itemBuilder va a mostrar infinitos elementos en pantalla
-              itemCount: 100,
+              // itemCount: 100,
+              itemCount: chatProvider.messages.length,
               itemBuilder: (context, index) {
                 // Usamos nuestro widget personalizado que muestra las burbujas de chat de mis mensajes o mensajes que yo envío
+                /*
                 return
                     // Ahora para alternar las burbujas del chat vamos a ser un poco ingeniosos y obtener la división sintética para saber cuando son pares e impares con el fin de poder alternarlos dependiendo si es uno u otro
                     (index % 2 == 0)
                         ? const HerMessageBubble()
                         : const MyMessageBubble();
+                */
+
+                // NOTA: Regresamos una instancia de mi message que es mi entidad
+                final message = ChatProvider().messages[index];
+
+                // NOTA: Y ahora este message sabe si el mensaje es de ella o mío y mostralos y usamos el ternario
+                //       similar a como lo teníamos anteriormeente.
+                return (message.fromWho == FromWho.hers)
+                    ? HerMessageBubble()
+                    : MyMessageBubble();
               },
             )),
             // Caja de texto para escribir mensajes
