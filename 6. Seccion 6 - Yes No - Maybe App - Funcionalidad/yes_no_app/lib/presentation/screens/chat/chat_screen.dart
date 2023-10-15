@@ -90,7 +90,8 @@ class _ChatView extends StatelessWidget {
                 //       similar a como lo teníamos anteriormeente.
                 return (message.fromWho == FromWho.hers)
                     ? HerMessageBubble()
-                    : MyMessageBubble();
+                    // NOTA: Mandamos el message obtenido con el Provider hacia el widget hijo
+                    : MyMessageBubble(message: message);
               },
             )),
             // Caja de texto para escribir mensajes
