@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:yes_no_app/domain/entities/message.dart';
 
 class HerMessageBubble extends StatelessWidget {
+  // NOTA: Creamos la propiedad para el mensaje
+  final Message message;
   // Constructor
-  const HerMessageBubble({super.key});
+  const HerMessageBubble({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -20,19 +23,22 @@ class HerMessageBubble extends StatelessWidget {
               color: colors.secondary,
               // NOTA: Hacemos redondos el boxDecoration.
               borderRadius: BorderRadius.circular(20)),
-          child: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Text(
-              'Hola Mundo!!!...',
-              style: TextStyle(color: Colors.white),
+              // NOTA: Cambiamos el texto harcodeado y obtenemos el texto directamente del entity message y que proviene desde el Provider creado en el widget padre llamado chat_screen
+              message.text,
+              style: const TextStyle(color: Colors.white),
             ),
           ),
         ),
         // NOTA: Agregamos una separación entre cada BoxDecoration y el cual es un widget que usamos anteriormente y se había explicado su funcionamiento
         const SizedBox(height: 5),
 
-        // Usamos el widget que creamos para mostrar la imágen
-        _ImageBubble(),
+        // Usamos el widget que creamos para mostrar la imágen.
+        // NOTA: El símbolo ! significa not null asertion y con el cual le indicamos que a pesar de que la propiedad es opcional siempre la vamos a recibir
+        //       y esto lo sabemos porque siempre el api nos responde con la imagen.
+        _ImageBubble(message.imageUrl!),
         const SizedBox(height: 10)
       ],
     );
@@ -41,6 +47,12 @@ class HerMessageBubble extends StatelessWidget {
 
 // Widget para mostrar la imágen
 class _ImageBubble extends StatelessWidget {
+  // NOTA: Creamos la propiedad para la imágen
+  final String imageUrl;
+
+  // Constructor poscional. OJO recordemos que para que sea por nombre tiene que llevar {} y sin el required en las propiedade
+  const _ImageBubble(this.imageUrl);
+
   @override
   Widget build(BuildContext context) {
     // NOTA: Como quiero que la imágen ocupe un cirto porcentaje de la pantalla, lo que puedo hacer e obtener las dimensiones del dispositivo
@@ -54,7 +66,8 @@ class _ImageBubble extends StatelessWidget {
     return ClipRRect(
       borderRadius: BorderRadius.circular(20),
       child: Image.network(
-        'https://yesno.wtf/assets/yes/1-af11222d8d4af90bdab8fc447c8cfebf.gif',
+        // NOTA: Colocamos la imágen que nos trae desde la api
+        imageUrl,
         width: size.width * 0.7, // 70% del tamaño
         // NOTA: EL objetivo de dejar un height específico es porque no quiero que las imágenes siempre se desproporcionen
         //       y evitar brincos inesperados en el diseño

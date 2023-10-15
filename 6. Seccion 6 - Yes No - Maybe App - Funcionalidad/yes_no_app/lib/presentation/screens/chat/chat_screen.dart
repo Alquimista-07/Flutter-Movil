@@ -93,7 +93,7 @@ class _ChatView extends StatelessWidget {
                 // NOTA: Y ahora este message sabe si el mensaje es de ella o mío y mostralos y usamos el ternario
                 //       similar a como lo teníamos anteriormeente.
                 return (message.fromWho == FromWho.hers)
-                    ? HerMessageBubble()
+                    ? HerMessageBubble(message: message)
                     // NOTA: Mandamos el message obtenido con el Provider hacia el widget hijo
                     : MyMessageBubble(message: message);
               },
