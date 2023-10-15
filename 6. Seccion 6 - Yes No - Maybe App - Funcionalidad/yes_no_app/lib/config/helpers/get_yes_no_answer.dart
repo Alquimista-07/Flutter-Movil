@@ -3,6 +3,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:yes_no_app/domain/entities/message.dart';
+import 'package:yes_no_app/infrastucture/models/yes_no_model.dart';
 
 class GetYesNoAnswer {
   // NOTA: Hay varias formas de hacer la petición HTTP, se puede hacer con Dart directamente pero hay mucho código involucrado para
@@ -20,6 +21,12 @@ class GetYesNoAnswer {
   Future<Message> getAnswer() async {
     final response = await _dio.get('https://yesno.wtf/api');
 
-    throw UnimplementedError();
+    // NOTA: Ya con el mapper o modelo podemos usar la notación de punto
+    final yesNoModel = YesNoModel.fromJsonMap(response.data);
+
+    return Message(
+        text: yesNoModel.answer,
+        fromWho: FromWho.hers,
+        imageUrl: yesNoModel.image);
   }
 }

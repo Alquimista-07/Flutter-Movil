@@ -103,5 +103,13 @@ class ChatProvider extends ChangeNotifier {
   //  NOTA: Método para obtener las respuestas de ella.
   Future<void> herReply() async {
     final herMessage = await getYesNoAnswer.getAnswer();
+
+    // NOTA: Añadimos el mensaje de ella a la lista
+    messages.add(herMessage);
+    // NOTA: Notificamos
+    notifyListeners();
+
+    // NOTA: Movemos el scroll
+    moveScrollBottom();
   }
 }
