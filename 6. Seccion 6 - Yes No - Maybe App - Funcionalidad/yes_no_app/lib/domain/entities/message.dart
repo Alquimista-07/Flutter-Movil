@@ -3,7 +3,7 @@
 //       aplicación y acá en esta sección nos vamos a centrar en la lógica y funcionalidad.
 
 // Enumeración para saber quien envía el mensaje, y recordemos que las enumerciones no cierran con ;
-enum FromWho { mine, hers }
+enum FromWho { me, hers }
 
 // NOTA: Esta clase es para definir como va a lucir nuestros mensajes, luego si el día de mañana queremos agregar la hora, fecha en que se
 //       mando, y también si fue leido o no lo podemos agregar aquí.
