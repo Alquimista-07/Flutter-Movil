@@ -34,7 +34,7 @@ class MyMessageBubble extends StatelessWidget {
           ),
         ),
         // NOTA: Agregamos una separación entre cada BoxDecoration y el cual es un widget que usamos anteriormente y se había explicado su funcionamiento
-        const SizedBox(height: 10)
+        const SizedBox(height: 5)
       ],
     );
   }

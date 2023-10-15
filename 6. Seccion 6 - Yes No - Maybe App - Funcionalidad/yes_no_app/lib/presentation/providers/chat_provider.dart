@@ -35,6 +35,9 @@ import 'package:flutter/widgets.dart';
 import 'package:yes_no_app/domain/entities/message.dart';
 
 class ChatProvider extends ChangeNotifier {
+  // NOTA: Para la notificación al ScrollController creamos la siguiente propiedad que me va a permitir tener el control de un único scroll
+  final ScrollController chatScrollController = ScrollController();
+
   // NOTA: Provider sigue muchas cosas que ya vienen propiamente en fluter y si tiene su par de dependencias
   //       pero es algo muy útil de que nosotros ya no ocupemos hacer ningún tipo de instalación adicional,
   //       aunque si vamos a tener que instalar el gestor Provider como tal pero podemos trabajar siguiendo
@@ -51,6 +54,9 @@ class ChatProvider extends ChangeNotifier {
   //NOTA: Vamos a regregar un Future vacío el cual es un método que va a recibir el mensaje y se va a ejecutar
   //      cuando se envía un mensaje
   Future<void> sendMessage(String text) async {
+    // NOTA: Evitamos mandar mensajes vacíos
+    if (text.isEmpty) return;
+
     // NOTA: Creamos una nueva instancia. Ahora siempre le voy a colocar que el mensaje es mio y esto es
     //       porque yo voy a escribirlo a través de la caja de texto ya que los mensajes de ella va a ser
     //       algo automático basado en que si al final del mensaje se coloca un signo de interrgación (?)
@@ -65,5 +71,22 @@ class ChatProvider extends ChangeNotifier {
     //       Entonces como estamos usando el gestor de estados Provider acá no usamos el setState sino uno llamado
     //       notifyListeners() que es literalmente lo mismo.
     notifyListeners();
+
+    // NOTA: Luego de que notifico los listeners, mando a llamar el moveScrollBottom para hacer el scroll que queremos
+    moveScrollBottom();
+  }
+
+  // NOTA: Para hacer el Scroll creamos una función vacía de tipo Future y que le chance a flutter de que tenga el elemento para coordinar el scroll.
+  Future<void> moveScrollBottom() async {
+    // NOTA: Esperamos una 100 milesimas de segundo antes de ejecutar lo siguiente
+    await Future.delayed(const Duration(milliseconds: 100));
+
+    // NOTA: Usamos nuestro chatScrollController el cual tiene varios como el animateTo() que lo hace con animación o el jumpTo() que lo hace sin animación.
+    //       Entonces vamos a usr el animateTo que pide un offset que sería la posiciónm la duración de la animación y el curve que es básicamente el tipo de
+    //       animación como por ejemplo que llegue al final y rebote, o que cuando vaya llegando al final se empiece a poner lento, entre otras
+    chatScrollController.animateTo(
+        chatScrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut);
   }
 }

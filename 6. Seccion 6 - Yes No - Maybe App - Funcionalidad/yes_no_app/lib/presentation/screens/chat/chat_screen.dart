@@ -70,6 +70,10 @@ class _ChatView extends StatelessWidget {
                 //       El itemBuilder recibe una función y si damos Ctrl + espacio nos da la opción de crear 2 estilos de función una flech que regresa inmediatamente un widget y otra con cuerpo, y esta función recibe
                 //       el build context que es el árbol de widgets y el indice que el list builder este utilizando en ese momento.
                 child: ListView.builder(
+              // NOTA: Al igual que la caja de texto en el Formulario donde colocamos el mensaje el ListView también tiene una propiead controller y a través de la cual podemos controlar para que el scroll
+              //       se vaya al final cada vez que enviamos un mensaje. Pero este ScrollController tiene que ser notificado cuando enviemos el mensaje por lo tanto lo obtenemos desde el Provider y de esa
+              //       forma ya quedan enlazados
+              controller: chatProvider.chatScrollController,
               // NOTA: SI no especificamos la cantidad de elementos a mostrar el itemBuilder va a mostrar infinitos elementos en pantalla
               // itemCount: 100,
               itemCount: chatProvider.messages.length,
