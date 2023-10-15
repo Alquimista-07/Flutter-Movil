@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
 class MessageFieldBox extends StatelessWidget {
-  const MessageFieldBox({super.key});
+  // NOTA: Ahora lo que yo quiero hacer es crearme una propiedad para que tenga un funcionamiento similar
+  //       al onFieldSubmitted, es decir, poder emitir el valor que la caja de texto envia al submitir o
+  //       o tocar el botón de enviar. Entonces si damos Ctrl + Click sobre el onFieldSubmitted vemos que es
+  //       una propiedad de tipo ValueChanged que es la firma para callbacks que regresan un valor, recordemos
+  //       de cuando teníamos el voidCallback que no regresaba nadas, entonces este es lo opuesto
+  final ValueChanged<String> onValue;
+
+  const MessageFieldBox({super.key, required this.onValue});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +41,8 @@ class MessageFieldBox extends StatelessWidget {
           onPressed: () {
             // NOTA: Obtenemos el valor de la caja de texto al presionar el IconButton
             final textValue = textComtroller.value.text;
-            print('button: $textValue');
+            // NOTA: Mandamos a llamar el onValue con el valor del textValue para enviar el mensage para que el Provider lo inserte a la lista
+            onValue(textValue);
             // NOTA: Limpiamos la caja de texto
             textComtroller.clear();
           },
@@ -54,6 +62,9 @@ class MessageFieldBox extends StatelessWidget {
       // NOTA: Hay varias formas de mandar lo que se escribe en el input una es usando el onFieldSubmitted, otra el onChanged
       onFieldSubmitted: (value) {
         //print('Submit value $value');
+
+        // NOTA: Mandamos a llamar el onValue con el valor del textValue para enviar el mensage para que el Provider lo inserte a la lista
+        onValue(value);
         // NOTA: Limpiamos el valor del input cuando se envía
         textComtroller.clear();
         // NOTA: Luego de que se limpia siempre mantengo el foco y no se cierre el tecado

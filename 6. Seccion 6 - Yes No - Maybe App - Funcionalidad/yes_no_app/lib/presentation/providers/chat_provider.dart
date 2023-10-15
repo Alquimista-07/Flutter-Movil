@@ -51,6 +51,19 @@ class ChatProvider extends ChangeNotifier {
   //NOTA: Vamos a regregar un Future vacío el cual es un método que va a recibir el mensaje y se va a ejecutar
   //      cuando se envía un mensaje
   Future<void> sendMessage(String text) async {
-    // TODO: Implementar método
+    // NOTA: Creamos una nueva instancia. Ahora siempre le voy a colocar que el mensaje es mio y esto es
+    //       porque yo voy a escribirlo a través de la caja de texto ya que los mensajes de ella va a ser
+    //       algo automático basado en que si al final del mensaje se coloca un signo de interrgación (?)
+    //       ella me va a responder si o no con una imágen obtenida del API https://yesno.wtf/
+    final newMessage = Message(text: text, fromWho: FromWho.me);
+
+    // NOTA; Insertamos el nuevo mensaje a la lista
+    messages.add(newMessage);
+
+    // NOTA: Ahora nos acordamos que cuando trabajamos con el Statefull Widget para el manejo del estado nosotros
+    //       mandabamos llamar el método setState para actualizar el estado y que se renderizara la pantalla.
+    //       Entonces como estamos usando el gestor de estados Provider acá no usamos el setState sino uno llamado
+    //       notifyListeners() que es literalmente lo mismo.
+    notifyListeners();
   }
 }

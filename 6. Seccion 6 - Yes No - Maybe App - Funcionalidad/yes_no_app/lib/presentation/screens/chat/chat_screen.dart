@@ -84,7 +84,7 @@ class _ChatView extends StatelessWidget {
                 */
 
                 // NOTA: Regresamos una instancia de mi message que es mi entidad
-                final message = ChatProvider().messages[index];
+                final message = chatProvider.messages[index];
 
                 // NOTA: Y ahora este message sabe si el mensaje es de ella o mío y mostralos y usamos el ternario
                 //       similar a como lo teníamos anteriormeente.
@@ -95,7 +95,15 @@ class _ChatView extends StatelessWidget {
               },
             )),
             // Caja de texto para escribir mensajes
-            const MessageFieldBox()
+            // NOTA: Mandamos el mensaje a través del onValue llamando el método que tenemos en el provider y que se encarga de insertarlo a la Lista
+            MessageFieldBox(
+              // NOTA: Una forma de mandar el valor es a través de la siguiente línea de código
+              /*
+              onValue: (value) => ChatProvider().sendMessage(value),
+              */
+              // NOTA: Pero recordemos que si tenemos un solo argumento y este es el mismo que se envía en la misma posición podemos hacer lo siguiente;
+              onValue: chatProvider.sendMessage,
+            )
           ],
         ),
       ),
