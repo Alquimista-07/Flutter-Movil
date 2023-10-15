@@ -24,9 +24,13 @@ class GetYesNoAnswer {
     // NOTA: Ya con el mapper o modelo podemos usar la notación de punto
     final yesNoModel = YesNoModel.fromJsonMap(response.data);
 
-    return Message(
-        text: yesNoModel.answer,
-        fromWho: FromWho.hers,
-        imageUrl: yesNoModel.image);
+    // NOTA: Esto lo quite ya que el mapper lo tengo en el model
+    //return Message(
+    //    text: yesNoModel.answer,
+    //    fromWho: FromWho.hers,
+    //    imageUrl: yesNoModel.image);
+
+    // NOTA: Usamos nuestro nuevo mapper
+    return yesNoModel.toMessageEntity();
   }
 }
