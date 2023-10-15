@@ -32,11 +32,15 @@
 //       pueda ser que necesitemos muchos providers y el MultiProvider es genial para eso. Entonces al MultiProvider le pasamos una propiedad providers, que tiene la lista de los providers.
 
 import 'package:flutter/widgets.dart';
+import 'package:yes_no_app/config/helpers/get_yes_no_answer.dart';
 import 'package:yes_no_app/domain/entities/message.dart';
 
 class ChatProvider extends ChangeNotifier {
   // NOTA: Para la notificación al ScrollController creamos la siguiente propiedad que me va a permitir tener el control de un único scroll
   final ScrollController chatScrollController = ScrollController();
+
+  // NOTA: Instancia de nuestra clase que realiza la petición http de tipo GET a YesNo.wtf
+  final GetYesNoAnswer getYesNoAnswer = GetYesNoAnswer();
 
   // NOTA: Provider sigue muchas cosas que ya vienen propiamente en fluter y si tiene su par de dependencias
   //       pero es algo muy útil de que nosotros ya no ocupemos hacer ningún tipo de instalación adicional,
@@ -66,6 +70,12 @@ class ChatProvider extends ChangeNotifier {
     // NOTA; Insertamos el nuevo mensaje a la lista
     messages.add(newMessage);
 
+    // NOTA: Vamos a lanzar el método que obtiene los mensajes de ella cuando se mande como una pregunta, es decir, cuando
+    //       el mensaje enviado venga con el símbolo de interrogación (?)
+    if (text.endsWith('?')) {
+      herReply();
+    }
+
     // NOTA: Ahora nos acordamos que cuando trabajamos con el Statefull Widget para el manejo del estado nosotros
     //       mandabamos llamar el método setState para actualizar el estado y que se renderizara la pantalla.
     //       Entonces como estamos usando el gestor de estados Provider acá no usamos el setState sino uno llamado
@@ -88,5 +98,10 @@ class ChatProvider extends ChangeNotifier {
         chatScrollController.position.maxScrollExtent,
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOut);
+  }
+
+  //  NOTA: Método para obtener las respuestas de ella.
+  Future<void> herReply() async {
+    final herMessage = await getYesNoAnswer.getAnswer();
   }
 }
