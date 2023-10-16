@@ -59,8 +59,16 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  # NOTA: Acá descomentamos esto y agregamos nuestros recursos estáticos.
+  #       OJOOOOO algo muy importante en este archivo es el tema de la identación, la cual se debe respetar ya que si esta mal identado
+  #       puede hacer algo totalmente diferente similar a lo que sucede cuando se programa en Python.
+  #       Y al agregarlo de esta forma le estoy diciendo a mi aplicación de Flutter que tiene recursos estáticos en la carpeta assets/videos/
+  #       y al finalizar con / le estoy diciendo que todo lo que este dentro de ese directorio lo incluya, es decir todo el folder, adicionalmente
+  #       si hay subdirectorios los tenemos que especificar.
+  #       EL autor o la web de donde fueron tomados los videos verticales y que corresponden a los assets locales que vamos a usar para la aplicación
+  #       es: https://www.pexels.com/search/videos/vertical/
+  assets:
+    - assets/videos/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

@@ -25,3 +25,11 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# Ignoramos los archivos de video verticales en formato .mp4 y que son recursos estáticos que agregamos a la
+# aplicación esto lo hacemos con el fin de que no sean subidos al repositorio de GitHub.
+# En un futuro para la aplicación funcione cuando bajemos el código fuente podemos crear unos videos verticales
+# de ejemplo nosotros mismos y agregarlos en el directorio de assets/videos o podemos descargar unos videos desde 
+# la url https://www.pexels.com/search/videos/vertical/ o también podemos descargarlos directamente desde el material 
+# adjunto del curso y colocarlos
+*.mp4
