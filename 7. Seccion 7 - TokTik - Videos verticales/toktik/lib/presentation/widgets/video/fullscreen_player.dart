@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toktik/presentation/widgets/video/video_background.dart';
 import 'package:video_player/video_player.dart';
 
 // NOTA: Para realizar este widget fue basado en la documentación y tutorial oficial de Flutter tomado de:
@@ -88,6 +89,9 @@ class _FullScreenPlayerState extends State<FullScreenPlayer> {
                 VideoPlayer(controller),
 
                 // Gradiente: Contrastar para que el texto blanco se vea bien en videos con fondo claro.
+                VideoBackground(
+                  stops: const [0.8, 1.0],
+                ),
 
                 // Texto
                 Positioned(
