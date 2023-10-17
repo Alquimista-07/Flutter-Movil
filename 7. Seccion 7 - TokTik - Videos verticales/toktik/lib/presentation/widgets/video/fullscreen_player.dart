@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 // NOTA: Para realizar este widget fue basado en la documentación y tutorial oficial de Flutter tomado de:
 //       https://docs.flutter.dev/cookbook/plugins/play-video y hay que tener esto presente ya que si el día
@@ -7,7 +8,7 @@ import 'package:flutter/material.dart';
 //       uno de esos permisos para Android en este caso y que va en el AndroidManifest.xml en el directorio
 //       /android/app/src/main/
 
-class FullScreenPlayer extends StatelessWidget {
+class FullScreenPlayer extends StatefulWidget {
   // NOTA: Como queremos que el widget sea reutilizable y de uso general y que no solo recibamos el video de videoPost
   //       para implementarlo sino que también podamos recibir una url por si lo queremos usar el día de mañana para otra
   //       cosa y no tener que implementar todo con videoPost incluidos, entonces vamos a definir ciertas propiedades
@@ -21,7 +22,51 @@ class FullScreenPlayer extends StatelessWidget {
   });
 
   @override
+  State<FullScreenPlayer> createState() => _FullScreenPlayerState();
+}
+
+class _FullScreenPlayerState extends State<FullScreenPlayer> {
+  late VideoPlayerController controller;
+
+  @override
+  void initState() {
+    // NOTA: El super.initiState va al inicio
+    super.initState();
+    // NOTA: Para hacer refetencia a las propiedades dentro dl state podemos usar la palabra widget y luego con la notiación de punto
+    //       ya nos damos cuenta que tenenos acceso a las propiedades.
+    controller = VideoPlayerController.asset(widget.videoUrl)
+      // NOTA: Usando el operador de cascada llamamos otro método que lo que hace es quitar el volumen del video
+      ..setVolume(0)
+      // NOTA: Nuevamente usamos el operador de cascada para usar el método que hace el loop del video y se siga reproduciendo tal cual como lo hace TikTok o KWai;
+      ..setLooping(true)
+      // NOTA: Otra vez con el operador de casdada definimos para que inmediatamente se le de play al video
+      ..play();
+  }
+
+  // NOTA: Al ser un Statefull widget este si tiene Ciclo de vida a diferencia del Stateless Widget que se crea y luego nuevamente se crea y así sucesivamente,
+  //       entonces el Statfull al tener ciclo de vida necesitamos que limpiarlo y si se destruye ya que el PageView va a estar construyendolo y destruyendolo
+  //       vamos a tener que limpiar y para esto usamos el método dispose con el fin de que el video ya no se siga reproduciendo a pesar de que no lo estemos viendo
+  @override
+  void dispose() {
+    // Acá hacemos la limpieza con el fin de que el video no se siga reproduciendo a pesar de que ya no lo estemos viendo u otro tipo de fuga de memoria.
+    controller.dispose();
+
+    // NOTA: El super.dispose va al final
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return FutureBuilder(
+      future: controller.initialize(),
+      builder: (context, snapshot) {
+        return const Center(
+            // NOTA: Colocamos el indicador de progreso, con su respectivo tamaño de línea y le ponemos un color
+            child: CircularProgressIndicator(
+          strokeWidth: 2,
+          color: Colors.deepPurple,
+        ));
+      },
+    );
   }
 }
