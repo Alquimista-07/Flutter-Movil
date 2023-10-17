@@ -30,4 +30,6 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+    <!--NOTA: Permiso para reproducir videos de internet-->
+    <uses-permission android:name="android.permission.INTERNET"/>
 </manifest>
