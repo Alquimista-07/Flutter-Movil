@@ -70,23 +70,34 @@ class _FullScreenPlayerState extends State<FullScreenPlayer> {
           ));
         }
 
-        // Cuando ya este listo reproducimos el video
-        return AspectRatio(
-          aspectRatio: controller.value.aspectRatio,
-          child: Stack(
-            children: [
-              VideoPlayer(controller),
+        // NOTA: Cuando ya este listo reproducimos el video.
+        //       Adicionalmente envolvemos el AspectRatio en un GestureDetector para detectar los gestos de la pantalla y de esta forma poder pausar y reporducir
+        //       el video al tocar la pantalla
+        return GestureDetector(
+          onTap: () {
+            if (controller.value.isPlaying) {
+              controller.pause();
+              return;
+            }
+            controller.play();
+          },
+          child: AspectRatio(
+            aspectRatio: controller.value.aspectRatio,
+            child: Stack(
+              children: [
+                VideoPlayer(controller),
 
-              // Gradiente: Contrastar para que el texto blanco se vea bien en videos con fondo claro.
+                // Gradiente: Contrastar para que el texto blanco se vea bien en videos con fondo claro.
 
-              // Texto
-              Positioned(
-                  bottom: 50,
-                  left: 20,
-                  child: _VideoCaption(
-                    caption: widget.caption,
-                  ))
-            ],
+                // Texto
+                Positioned(
+                    bottom: 50,
+                    left: 20,
+                    child: _VideoCaption(
+                      caption: widget.caption,
+                    ))
+              ],
+            ),
           ),
         );
       },
