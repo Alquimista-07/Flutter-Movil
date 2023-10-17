@@ -60,13 +60,61 @@ class _FullScreenPlayerState extends State<FullScreenPlayer> {
     return FutureBuilder(
       future: controller.initialize(),
       builder: (context, snapshot) {
-        return const Center(
-            // NOTA: Colocamos el indicador de progreso, con su respectivo tamaño de línea y le ponemos un color
-            child: CircularProgressIndicator(
-          strokeWidth: 2,
-          color: Colors.deepPurple,
-        ));
+        // NOTA: Validamos con el future el paso de inicialización del video y mostrar el indicador del progreso cuando aún no este listo
+        if (snapshot.connectionState != ConnectionState.done) {
+          return const Center(
+              // NOTA: Colocamos el indicador de progreso, con su respectivo tamaño de línea y le ponemos un color
+              child: CircularProgressIndicator(
+            strokeWidth: 2,
+            color: Colors.deepPurple,
+          ));
+        }
+
+        // Cuando ya este listo reproducimos el video
+        return AspectRatio(
+          aspectRatio: controller.value.aspectRatio,
+          child: Stack(
+            children: [
+              VideoPlayer(controller),
+
+              // Gradiente: Contrastar para que el texto blanco se vea bien en videos con fondo claro.
+
+              // Texto
+              Positioned(
+                  bottom: 50,
+                  left: 20,
+                  child: _VideoCaption(
+                    caption: widget.caption,
+                  ))
+            ],
+          ),
+        );
       },
     );
+  }
+}
+
+class _VideoCaption extends StatelessWidget {
+  final String caption;
+
+  const _VideoCaption({
+    required this.caption,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    // Referencia al tamaño de la pantalla
+    final size = MediaQuery.of(context).size;
+
+    // Tomamos el estilo del tema global
+    final titleStyle = Theme.of(context).textTheme.titleLarge;
+
+    return SizedBox(
+        width: size.width * 0.6, // 60%
+        child: Text(
+          caption,
+          maxLines: 2,
+          style: titleStyle,
+        ));
   }
 }

@@ -23,8 +23,8 @@ class DiscoverProvider extends ChangeNotifier {
     //       y de donde cargar esos videos. Por lo tanto a este provider no le debería de importar de donde voy a cargar esos videos, al provider simplemente le debería de importar OK necesito llamar esta función para cargar los videos
     //       del lugar u origen de datos que yo especifique.
 
-    // NOTA: Vamos a simular una comunicación http asíncrona
-    await Future.delayed(const Duration(seconds: 2));
+    // NOTA: Vamos a simular una comunicación http asíncrona. Adicionalmente luego la comentamos ya que el video player ya implementa el loader con la validación de la carga.
+    // await Future.delayed(const Duration(seconds: 2));
 
     // NOTA: El método map del List es similar al que usamos en JavaScript y sirve para barrer cada uno de los elementos dentro del listado y lo que
     //       sea que regrese es lo que voy a retornar que va a ser un iterable por lo tanto no es literalmente un listado después y recordemos lo que
