@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:toktik/config/theme/app_theme.dart';
+import 'package:toktik/infrastucture/datasources/local_video_datasource_impl.dart';
+import 'package:toktik/infrastucture/repositories/video_posts_repository_impl.dart';
 import 'package:toktik/presentation/providers/discover_provider.dart';
 import 'package:toktik/presentation/screens/discover/discover_screen.dart';
 
@@ -11,6 +13,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // NOTA: Ahora acá ocupamos crear la instancia del repositorio y del datasource
+    final videoPostRepository = VideoPostsRepositoryImpl(
+      videosDatasource: LocalVideoDatsource(),
+    );
+
     // NOTA: Envolvemos en el Multiprovider y le pasamos el o los providers. Esto se explico en la aplicación anterior (YesNoApp)
     return MultiProvider(
       providers: [
@@ -27,7 +34,8 @@ class MyApp extends StatelessWidget {
           //       simplemte definimos el objeto y hacemos punto punto y el métoto nuevemente punto punto y el otro método.
           //       El ejemplo e ilustración de esto se encuentra en la hoja de atajos de Dart entregada por Fernando en la
           //       sección 1
-          create: (_) => DiscoverProvider()..loadNextPage(),
+          create: (_) => DiscoverProvider(videosRepository: videoPostRepository)
+            ..loadNextPage(),
         )
       ],
       child: MaterialApp(

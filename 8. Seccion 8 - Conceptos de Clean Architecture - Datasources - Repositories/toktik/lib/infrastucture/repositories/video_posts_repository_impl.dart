@@ -7,14 +7,14 @@ import 'package:toktik/domain/datasources/video_posts_datasource.dart';
 import 'package:toktik/domain/entities/video_post.dart';
 import 'package:toktik/domain/repositories/video_posts_repository.dart';
 
-class VideoPostsRepository implements VideoPostRepository {
+class VideoPostsRepositoryImpl implements VideoPostRepository {
   // NOTA: Acá viene lo interesante, entonces este VideoPostsRepository necesita el VideoPostDatasource, y no es la implementación
   //       necesita una fuente de origen de datos, y notemos que estamos usando la clase abstacta no la implementación. Y al hacerlo
   //       de esta manera quiere decir que cualquier datasource es permitido, locales, web, JSON, etc.
   final VideoPostDatsource videosDatasource;
 
   // Constructor
-  VideoPostsRepository({
+  VideoPostsRepositoryImpl({
     required this.videosDatasource,
   });
 

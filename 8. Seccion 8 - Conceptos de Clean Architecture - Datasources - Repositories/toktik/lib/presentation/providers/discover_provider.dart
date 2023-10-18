@@ -2,16 +2,22 @@
 
 import 'package:flutter/material.dart';
 import 'package:toktik/domain/entities/video_post.dart';
-import 'package:toktik/infrastucture/models/local_video_model.dart';
-import 'package:toktik/shared/data/local_video_posts.dart';
+import 'package:toktik/domain/repositories/video_posts_repository.dart';
 
 class DiscoverProvider extends ChangeNotifier {
-  // TODO: Repository, Datasource
+  // NOTA: Acá no quiero tener la implementación de mis videos loscales y vamos a terminar removiendo la implementación que teníamos acá
+  //       y para removerlo hacemos lo siguiente:
+  final VideoPostRepository videosRepository;
 
   // NOTA: Creamos una bandera booleana para suponer que cuando cargo la aplicación no voy a tener ningún video
   bool initialLoading = true;
 
   List<VideoPost> videos = [];
+
+  // Constructor
+  DiscoverProvider({
+    required this.videosRepository,
+  });
 
   // NOTA: Aunque solo tengamos una página igual quiero usar esta función para cargar los videos.
   Future<void> loadNextPage() async {
@@ -23,16 +29,7 @@ class DiscoverProvider extends ChangeNotifier {
     //       y de donde cargar esos videos. Por lo tanto a este provider no le debería de importar de donde voy a cargar esos videos, al provider simplemente le debería de importar OK necesito llamar esta función para cargar los videos
     //       del lugar u origen de datos que yo especifique.
 
-    // NOTA: Vamos a simular una comunicación http asíncrona. Adicionalmente luego la comentamos ya que el video player ya implementa el loader con la validación de la carga.
-    // await Future.delayed(const Duration(seconds: 2));
-
-    // NOTA: El método map del List es similar al que usamos en JavaScript y sirve para barrer cada uno de los elementos dentro del listado y lo que
-    //       sea que regrese es lo que voy a retornar que va a ser un iterable por lo tanto no es literalmente un listado después y recordemos lo que
-    //       vimos en la introducción de dart en la sección 2.
-    //       Entonces cargamos los videos a una lista
-    final List<VideoPost> newVideos = videoPosts
-        .map((video) => LocalVideoModel.fromJsonMap(video).videoPostEntity())
-        .toList();
+    final newVideos = await videosRepository.getTrendingVideosByPage(1);
 
     // NOTA: Agregamos los videos a la lista
     videos.addAll(newVideos);
