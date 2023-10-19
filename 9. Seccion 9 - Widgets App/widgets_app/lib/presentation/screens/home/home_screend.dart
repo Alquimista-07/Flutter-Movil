@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:widgets_app/config/menu/menu_items.dart';
-import 'package:widgets_app/presentation/screens/buttons/buttons_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -79,7 +79,16 @@ class _CustomListTitle extends StatelessWidget {
         // NOTA: Acá podemos definir las rutas como se haría en web pero esto tiene una limitante, y por lo tanto
         //       aunque podemos hacerlo así existen mejores formas de hacer esto como el go_router, que lo veremos más
         //       adelante, pero de momento esto es para fines ilustrativos.
+        // NOTA: Comentamos la siguiente líena debido a que como lo mencionamos anteriormete vamos a usar go_router que es recomendado usarlo
+        //       para el enrutamiento
+        /*
         Navigator.pushNamed(context, menuItem.link);
+        */
+
+        // NOTA: Esta es la tercera forma de navegarn entre pantallas usando go_router la cual es más sencilla de usar además de que es la
+        //       recomendada. Otra cosa es que esta es la forma sin usar nombre, más adelante vamos a usar la navegación por nombre que es
+        //       otra forma de navegar que nos da el mismo go_router
+        context.push(menuItem.link);
       },
     );
   }
