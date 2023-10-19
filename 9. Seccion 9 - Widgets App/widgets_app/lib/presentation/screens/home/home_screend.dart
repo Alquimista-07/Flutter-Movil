@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:widgets_app/config/menu/menu_items.dart';
+import 'package:widgets_app/presentation/screens/buttons/buttons_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -55,7 +56,30 @@ class _CustomListTitle extends StatelessWidget {
       ),
       // NOTA: Evento de la flecha
       onTap: () {
-        // TODOD: Navegar a otra pantalla
+        // NOTA: La documentación oficial de Flutter para la navegación es: https://docs.flutter.dev/ui/navigation
+        //       Nuevamente acá vemos que tenemos el context(nuestro arbol de componentes), tenemos el .push para
+        //       hacer un push de una nueva página y entendamos el push como que voy a crear un stack de tarjetas.
+        //       tengo una tarjeta push coloco sobre esta otra y luego otras y así sucesivamente y luego también
+        //       se puede ir haciendo pop, pop, pop e ir quitando pantallas.
+        //       Una nota adicional es que también en lugar del push tenemos el método replace para hacer que la
+        //       anterior ruta se destruya, es decir, que no voy a poder regresar a la pantalla anterior, pero ese
+        //       tema lo trataremos más adelante.
+        // NOTA: Esta es una primera forma sencilla de hacer navegación y funciona pero luego como se menciona más
+        //       adelante en el comentario de la segunda forma de navegar vamos a cambiar y usar go_router
+        /*
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const ButtonsScreen(),
+          ),
+        );
+        */
+
+        // NOTA: Esta es una segunda forma de navegar entre pantallas, por la cual a través del MaterialApp que tenemos en el main.dart
+        //       podemos definir los routes
+        // NOTA: Acá podemos definir las rutas como se haría en web pero esto tiene una limitante, y por lo tanto
+        //       aunque podemos hacerlo así existen mejores formas de hacer esto como el go_router, que lo veremos más
+        //       adelante, pero de momento esto es para fines ilustrativos.
+        Navigator.pushNamed(context, menuItem.link);
       },
     );
   }
