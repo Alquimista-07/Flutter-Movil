@@ -21,7 +21,10 @@ class AppTheme {
             'Selected color must be less or equal than ${colorList.length - 1}');
 
   ThemeData getTheme() => ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: colorList[selectedColor],
-      );
+      useMaterial3: true,
+      colorSchemeSeed: colorList[selectedColor],
+      // NOTA: Configuración global para todos los appBar
+      appBarTheme: const AppBarTheme(
+          // NOTA: Mantenemos el titulo del appBar siempre alineado a la izquierda sin importar si es en IOS o Android
+          centerTitle: false));
 }
