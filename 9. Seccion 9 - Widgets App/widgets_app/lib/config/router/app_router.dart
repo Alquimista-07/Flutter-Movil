@@ -14,14 +14,20 @@ final appRouter = GoRouter(
   initialLocation: '/',
   routes: [
     GoRoute(
+      // NOTA: Esta propieada name, es para cuando queremos hacer enrutamiento por nombre que en este caso lo colocamos
+      //       pero en si no lo usamos, sino que simplemente lo estamos haciendo para fines ilustrativos y tener en cuenta.
+      //       que existe esta cuarta forma de hacer dicho enrutamiento
+      name: HomeScreen.name,
       path: '/',
       builder: (context, state) => const HomeScreen(),
     ),
     GoRoute(
+      name: ButtonsScreen.name,
       path: '/buttons',
       builder: (context, state) => const ButtonsScreen(),
     ),
     GoRoute(
+      name: CardsScreen.name,
       path: '/cards',
       builder: (context, state) => const CardsScreen(),
     )

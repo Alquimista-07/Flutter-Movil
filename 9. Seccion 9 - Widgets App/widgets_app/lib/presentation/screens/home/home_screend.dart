@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:widgets_app/config/menu/menu_items.dart';
+import 'package:widgets_app/presentation/screens/cards/cards_screen.dart';
 
 class HomeScreen extends StatelessWidget {
+  // NOTA: Agreamos una propiedad estática constante para asignar el nombre que luego vamos a usar en el go_router
+  //       adicionalmente recordemos que usamos el static para evitar crear instancias de la clase para solo tener
+  //       acceso a la propiedad
+  static const String name = 'home_screen';
+
   const HomeScreen({super.key});
 
   @override
@@ -89,6 +95,14 @@ class _CustomListTitle extends StatelessWidget {
         //       recomendada. Otra cosa es que esta es la forma sin usar nombre, más adelante vamos a usar la navegación por nombre que es
         //       otra forma de navegar que nos da el mismo go_router
         context.push(menuItem.link);
+
+        // NOTA: Ahora como estamos usando el go_router con rutas por nombre usaríamos el método .pushName para pasar el nombre
+        //       y OJO tenemos que tener en cuenta que en nuestro menu_items.dart debería tener una propiedad adicional con el
+        //       name pero en este caso no vamos a hacerlo por nombre sino usando el link. Pero hay que tener en cuenta que esta
+        //       es una cuarta forma de hacer el enrutamiento
+        /*
+        context.pushNamed(CardsScreen.name);
+        */
       },
     );
   }
