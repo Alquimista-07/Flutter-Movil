@@ -104,10 +104,48 @@ class _ButtonsView extends StatelessWidget {
                   iconColor: const MaterialStatePropertyAll(
                     Colors.white,
                   )),
-            )
+            ),
 
-            // TODO: Custom button
+            const CustomButton()
           ],
+        ),
+      ),
+    );
+  }
+}
+
+// NOTA: Creamos nustrso propio botón personalizado desde cero, al cual le podemos asignar colores, gradientes, bordes redondeados, acciones
+//       asignar un color cuando la función que ejecuta la acción sea null, y otras cosas más que se nos ocurra.
+class CustomButton extends StatelessWidget {
+  const CustomButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+
+    // NOTA: EL widget ClipRRect permite redondear los bordes del botón.
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(20),
+      // NOTA: El widget Material es algo especial en el cual nosotros vamos a poder definir incluso el splash screen, que aplique el
+      //       aspecto de Material Design, entre otras cosas. Adicionalmente este es el punto inicial par anuestro botón.
+      child: Material(
+        color: colors.primary,
+        // NOTA: EL InkWell es similar al GestureDetector que usamos en la app de los videos toktik, pero este va a reaccionar con el método
+        //       al Splash Screen
+        child: InkWell(
+          onTap: () {},
+          child: const Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 10,
+            ),
+            child: Text(
+              'Hola Mundo',
+              style: TextStyle(
+                color: Colors.white,
+              ),
+            ),
+          ),
         ),
       ),
     );
