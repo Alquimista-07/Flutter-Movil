@@ -16,6 +16,7 @@ class MainApp extends StatelessWidget {
     //       rutas usando go_router.
     //       Ahora para pasar nuetra configuraciónde router agregamos el método .router al MaterialApp
     return MaterialApp.router(
+      title: 'Flutter Widgets',
       // NOTA: Pasamos el router config
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
