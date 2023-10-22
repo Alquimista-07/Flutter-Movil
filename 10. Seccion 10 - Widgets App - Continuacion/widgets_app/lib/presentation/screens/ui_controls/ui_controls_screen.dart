@@ -31,6 +31,10 @@ class _UiControlsViewState extends State<_UiControlsView> {
 
   Transportation selectedTransportation = Transportation.car;
 
+  bool wantsBreakfast = false;
+  bool wantsLunch = false;
+  bool wantsDinner = false;
+
   @override
   Widget build(BuildContext context) {
     return ListView(
@@ -51,48 +55,79 @@ class _UiControlsViewState extends State<_UiControlsView> {
           }),
         ),
 
-        RadioListTile(
-          title: const Text('By Car'),
-          subtitle: const Text('Viajar por carro'),
-          value: Transportation.car,
-          // NOTA: La propiedad groupValue es la que nosotros usamos o vamos a usar para marcar o obtener el valor de cual es la opción seleccionada
-          groupValue: selectedTransportation,
-          // NOTA: En el onChanged nosotros vamos a actualizar el estado
+        // NOTA: El ExpansionTile es otro widget que nos permite hacer listas desplegables las cuales podemos hacer que esten desplegadas o contraidas por defecto.
+        //       Una cosa que tenemos que tener en cuenta es que cuando lo usamos su comportamiento por defecto es estar contraida.
+        ExpansionTile(
+          title: const Text('Vehículo de transporte'),
+          subtitle: Text('$selectedTransportation'),
+          children: [
+            RadioListTile(
+              title: const Text('By Car'),
+              subtitle: const Text('Viajar por carro'),
+              value: Transportation.car,
+              // NOTA: La propiedad groupValue es la que nosotros usamos o vamos a usar para marcar o obtener el valor de cual es la opción seleccionada
+              groupValue: selectedTransportation,
+              // NOTA: En el onChanged nosotros vamos a actualizar el estado
+              onChanged: (value) => setState(() {
+                selectedTransportation = Transportation.car;
+              }),
+            ),
+            RadioListTile(
+              title: const Text('By Boat'),
+              subtitle: const Text('Viajar por barco'),
+              value: Transportation.boat,
+              // NOTA: La propiedad groupValue es la que nosotros usamos o vamos a usar para marcar o obtener el valor de cual es la opción seleccionada
+              groupValue: selectedTransportation,
+              // NOTA: En el onChanged nosotros vamos a actualizar el estado
+              onChanged: (value) => setState(() {
+                selectedTransportation = Transportation.boat;
+              }),
+            ),
+            RadioListTile(
+              title: const Text('By Plane'),
+              subtitle: const Text('Viajar por avión'),
+              value: Transportation.plane,
+              // NOTA: La propiedad groupValue es la que nosotros usamos o vamos a usar para marcar o obtener el valor de cual es la opción seleccionada
+              groupValue: selectedTransportation,
+              // NOTA: En el onChanged nosotros vamos a actualizar el estado
+              onChanged: (value) => setState(() {
+                selectedTransportation = Transportation.plane;
+              }),
+            ),
+            RadioListTile(
+              title: const Text('By Submarine'),
+              subtitle: const Text('Viajar por Submarino'),
+              value: Transportation.submarine,
+              // NOTA: La propiedad groupValue es la que nosotros usamos o vamos a usar para marcar o obtener el valor de cual es la opción seleccionada
+              groupValue: selectedTransportation,
+              // NOTA: En el onChanged nosotros vamos a actualizar el estado
+              onChanged: (value) => setState(() {
+                selectedTransportation = Transportation.submarine;
+              }),
+            ),
+          ],
+        ),
+
+        // TODO: Por aquí inician los checkbox
+        CheckboxListTile(
+          title: const Text('¿Desayuno?'),
+          value: wantsBreakfast,
           onChanged: (value) => setState(() {
-            selectedTransportation = Transportation.car;
+            wantsBreakfast = !wantsBreakfast;
           }),
         ),
-        RadioListTile(
-          title: const Text('By Boat'),
-          subtitle: const Text('Viajar por barco'),
-          value: Transportation.boat,
-          // NOTA: La propiedad groupValue es la que nosotros usamos o vamos a usar para marcar o obtener el valor de cual es la opción seleccionada
-          groupValue: selectedTransportation,
-          // NOTA: En el onChanged nosotros vamos a actualizar el estado
+        CheckboxListTile(
+          title: const Text('Almuerzo?'),
+          value: wantsLunch,
           onChanged: (value) => setState(() {
-            selectedTransportation = Transportation.boat;
+            wantsLunch = !wantsLunch;
           }),
         ),
-        RadioListTile(
-          title: const Text('By Plane'),
-          subtitle: const Text('Viajar por avión'),
-          value: Transportation.plane,
-          // NOTA: La propiedad groupValue es la que nosotros usamos o vamos a usar para marcar o obtener el valor de cual es la opción seleccionada
-          groupValue: selectedTransportation,
-          // NOTA: En el onChanged nosotros vamos a actualizar el estado
+        CheckboxListTile(
+          title: const Text('¿Cena?'),
+          value: wantsDinner,
           onChanged: (value) => setState(() {
-            selectedTransportation = Transportation.plane;
-          }),
-        ),
-        RadioListTile(
-          title: const Text('By Submarine'),
-          subtitle: const Text('Viajar por Submarino'),
-          value: Transportation.submarine,
-          // NOTA: La propiedad groupValue es la que nosotros usamos o vamos a usar para marcar o obtener el valor de cual es la opción seleccionada
-          groupValue: selectedTransportation,
-          // NOTA: En el onChanged nosotros vamos a actualizar el estado
-          onChanged: (value) => setState(() {
-            selectedTransportation = Transportation.submarine;
+            wantsDinner = !wantsDinner;
           }),
         ),
       ],
