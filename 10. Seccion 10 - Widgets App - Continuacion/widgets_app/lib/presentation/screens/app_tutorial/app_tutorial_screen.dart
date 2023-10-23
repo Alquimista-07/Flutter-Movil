@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -34,10 +35,51 @@ final slides = <SlideInfo>[
   ),
 ];
 
-class AppTutorialScreen extends StatelessWidget {
+class AppTutorialScreen extends StatefulWidget {
   static const name = 'tutorial_screen';
 
   const AppTutorialScreen({super.key});
+
+  @override
+  State<AppTutorialScreen> createState() => _AppTutorialScreenState();
+}
+
+class _AppTutorialScreenState extends State<AppTutorialScreen> {
+  // NOTA: Creamos la propiedad para el controlador
+  final PageController pageViewController = PageController();
+  // NOTA: Creamos una bandera booleana para saber cuando llegamos al final del slide
+  bool endReached = false;
+
+  @override
+  void initState() {
+    // NOTA: Recordemos que en el initState se llama o dejamos primero el super.initState
+    super.initState();
+
+    // NOTA: Ahora colocamos un listener
+    pageViewController.addListener(() {
+      // print('${pageViewController.page}');
+      // NOTA: Determinamos cuando lleguemos a la última pantalla
+      final page = pageViewController.page ?? 0;
+
+      // NOTA: OJO recordemos que con el print veiamos que como tal el page contiene valores double
+      //       y por lo tanto acá dejamos el -1.5 para mostrar el botón antes de que se llegue al 2
+      //       que sería el final del slide.
+      if (!endReached && page >= (slides.length - 1.5)) {
+        // NOTA: Ojo hay que tener cuidado cuando llamemos el setState ya que se puede ejecutar muchas veces ya que como vimos con el print del page
+        //       se renderiza muchas veces y por eso lo llamamos es dentro de esta condición para que se ejecute solo cuando se cumpla.
+        setState(() {
+          endReached = true;
+        });
+      }
+    });
+  }
+
+  // NOTA: OJO otra cosa muy importante y casi que obligatoria es que cada vez que usemos un listener o un controller debemos mandar a llamar el dispose
+  //       que hace parte del ciclo de vida de los statefulwidgets con el fin de limpiar los listeners y controladores y no tener fugas de memoria.
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +92,7 @@ class AppTutorialScreen extends StatelessWidget {
       body: Stack(
         children: [
           PageView(
+              controller: pageViewController,
               physics: const BouncingScrollPhysics(),
               // NOTA: El children del PageView tiene que ser una colección de widgets entonces en este caso podemos uar nuestra lista
               //       de slides y recorrerla. Ahora hay que tener en cuenta que esto es un iterable y lo que espera es una lista de
@@ -69,7 +112,26 @@ class AppTutorialScreen extends StatelessWidget {
               child: const Text('Salir'),
               onPressed: () => context.pop(),
             ),
-          )
+          ),
+          // NOTA: Usamos la bandera para mostrar de forma condicional el botón cuando lleguemos al final del slide
+          endReached
+              ? Positioned(
+                  bottom: 30,
+                  right: 30,
+                  // NOTA: Adicionalmente usando el paquete animtad_do le agregamos una animación al FilledButton
+                  child: FadeInRight(
+                    // NOTA: Indicamos que solo se mueva 15 unidades
+                    from: 15,
+                    // NOTA: Indicamos que no entre inmediatamente sino que tenga un pequeño retraso
+                    delay: const Duration(seconds: 1),
+                    child: FilledButton(
+                      child: const Text('Comenzar'),
+                      onPressed: () => context.pop(),
+                    ),
+                  ),
+                )
+              // NOTA: Acá como no ocupamos mostrar nada podemos usar un widget SizedBox el cual se recomienda usar para no mostrar ningún widget
+              : const SizedBox(),
         ],
       ),
     );
