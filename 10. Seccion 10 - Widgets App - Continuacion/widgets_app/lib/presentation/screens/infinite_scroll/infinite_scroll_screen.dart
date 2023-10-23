@@ -66,7 +66,8 @@ class _InfiniteScrollScreenState extends State<InfiniteScrollScreen> {
 
     setState(() {});
 
-    // TODO: Mover Scroll
+    // NOTA: Mandamos a llamar el método que mueve el scroll para que la persona sepa que hay nuevo contenido.
+    moveScrollToBottom();
   }
 
   // Método para hacer el refresh
@@ -94,6 +95,20 @@ class _InfiniteScrollScreenState extends State<InfiniteScrollScreen> {
 
     // NOTA: Barremos los elementos e insertamos 5 impagenes más
     imagesIds.addAll([1, 2, 3, 4, 5].map((e) => lastId + e));
+  }
+
+  // Método para bajar el scroll, pero básicamente este método también lo podriamos modificar para hacer lo contrario
+  void moveScrollToBottom() {
+    // NOTA: Validamos para ejecutar si solo esta cerca del final de scroll  similar a como realizamos para cargar nuevas páginas (loadNextPage())
+    if (scrollController.position.pixels + 100 <=
+        scrollController.position.maxScrollExtent) return;
+
+    scrollController.animateTo(
+      // NOTA: Posicion actual + 120 para el offset que es la posición a la cual quiero mover la posición del scroll
+      scrollController.position.pixels + 120,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.fastOutSlowIn,
+    );
   }
 
   @override
