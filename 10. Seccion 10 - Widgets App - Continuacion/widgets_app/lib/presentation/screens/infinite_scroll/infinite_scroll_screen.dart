@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -61,10 +62,11 @@ class _InfiniteScrollScreenState extends State<InfiniteScrollScreen> {
     isLoading = false;
 
     // NOTA: Llamamos el cambio de estado para que redibuje
-    // TODO: Revisar si esta montado el componente / widget
     if (!isMounted) return;
 
     setState(() {});
+
+    // TODO: Mover Scroll
   }
 
   void addFiveImages() {
@@ -81,7 +83,17 @@ class _InfiniteScrollScreenState extends State<InfiniteScrollScreen> {
       backgroundColor: Colors.black,
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.pop(),
-        child: const Icon(Icons.arrow_back_ios_new_outlined),
+        // NOTA: Animamos el icono del botón de forma condicional dependiendo si esta cargando o no
+        child: isLoading
+            ? SpinPerfect(
+                infinite: true,
+                child: const Icon(Icons.refresh_rounded),
+              )
+            : FadeIn(
+                child: const Icon(
+                  Icons.arrow_back_ios_new_outlined,
+                ),
+              ),
       ),
       // NOTA: El ListView lo envolvemos en un nuevo widget que es el MediaQuery el cual tiene un método que nos permite remover los padding o bordes
       body: MediaQuery.removePadding(
