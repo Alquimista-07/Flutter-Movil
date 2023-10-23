@@ -19,6 +19,9 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-# Agregamos el directorio que contiene nuestros recursos estáticos
-assets:
-  - assets/images/
+  # Agregamos el directorio que contiene nuestros recursos estáticos.
+  # Y OJO hay que tener mucho pero mucho cuidado con la tabulación,
+  # ya que si no esta correctamente tabulado nos va a dar error porque
+  # no encuentra los assets.
+  assets:
+    - assets/images/
