@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:widgets_app/config/menu/menu_items.dart';
+import 'package:widgets_app/presentation/widgets/side_menu.dart';
 
 class HomeScreen extends StatelessWidget {
   // NOTA: Agreamos una propiedad estática constante para asignar el nombre que luego vamos a usar en el go_router
@@ -17,6 +18,9 @@ class HomeScreen extends StatelessWidget {
         title: const Text('Flutter + Material 3'),
       ),
       body: _HomeView(),
+      // NOTA: Agregamos el menu hamburguesa, y para el cual tenemos la propiedad drawer que se ubica en el lado izquierdo y el enddrawer que se
+      //       ubica al lado contrario
+      drawer: const SideMenu(),
     );
   }
 }
