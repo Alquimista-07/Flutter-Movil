@@ -69,6 +69,25 @@ class _InfiniteScrollScreenState extends State<InfiniteScrollScreen> {
     // TODO: Mover Scroll
   }
 
+  // Método para hacer el refresh
+  Future<void> onRefresh() async {
+    isLoading = true;
+    setState(() {});
+
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (!isMounted) return;
+
+    // Ahora lo que quiero hacer es borrar y dejar 5 imágenes. Entonces tomamos el ultimoid
+    isLoading = false;
+    final lastId = imagesIds.last;
+    imagesIds.clear();
+    imagesIds.add(lastId + 1);
+    addFiveImages();
+
+    setState(() {});
+  }
+
   void addFiveImages() {
     // NOTA: Obtenemos el último id
     final lastId = imagesIds.last;
@@ -100,22 +119,32 @@ class _InfiniteScrollScreenState extends State<InfiniteScrollScreen> {
         context: context,
         removeTop: true, // NOTA: Removemos el padding la parte superior
         removeBottom: true, // NOTA: Removemos el padding de la parte inferior
-        child: ListView.builder(
-          controller: scrollController,
-          itemCount: imagesIds.length,
-          itemBuilder: (context, index) {
-            // NOTA: Usamos un nuevo widget que es el FadeInImage el cual es muy útil ya que nos permite cargar la imágen y mientras
-            //       carga la imágen mostrar el placeholder image, el cual dicho placeholder tiene que ser una imágen que ya nosotros
-            //       tenefor de forma rápida que por ejemplo puede estar en memoria cargada previamente o que sea un asset
-            return FadeInImage(
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: 300,
-              placeholder: const AssetImage('assets/images/jar-loading.gif'),
-              image: NetworkImage(
-                  'https://picsum.photos/id/${imagesIds[index]}/500/300'),
-            );
-          },
+        // NOTA: Ahora para hacer el pull to refresh vamos a usar un nuevo widget que nos permite hacer esta acción y el cual es el RefreshIndicator
+        //       el cual necesita un método o propiedad que es el onRefresh, el cual básicamente es lo que voy a llamar cuando se realiza la acción
+        child: RefreshIndicator(
+          onRefresh: onRefresh,
+          // NOTA: Separamos el indicador del pull to refresh de la parte superior
+          edgeOffset: 10,
+          // NOTA: Adelgazamos la linea del loading del pull to refresh
+          strokeWidth: 2,
+          // NOTA: Usamos el listView con su método builder y recordemos que siempre que veamos builder es algo que se va a construir en timepo de ejecución.
+          child: ListView.builder(
+            controller: scrollController,
+            itemCount: imagesIds.length,
+            itemBuilder: (context, index) {
+              // NOTA: Usamos un nuevo widget que es el FadeInImage el cual es muy útil ya que nos permite cargar la imágen y mientras
+              //       carga la imágen mostrar el placeholder image, el cual dicho placeholder tiene que ser una imágen que ya nosotros
+              //       tenefor de forma rápida que por ejemplo puede estar en memoria cargada previamente o que sea un asset
+              return FadeInImage(
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: 300,
+                placeholder: const AssetImage('assets/images/jar-loading.gif'),
+                image: NetworkImage(
+                    'https://picsum.photos/id/${imagesIds[index]}/500/300'),
+              );
+            },
+          ),
         ),
       ),
     );
