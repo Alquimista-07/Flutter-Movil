@@ -26,7 +26,7 @@ class ThemeChangerScreen extends ConsumerWidget {
                 : Icons.light_mode_outlined),
             onPressed: () {
               // NOTA: De mismo modo ahora como tenemos nuestro ThemeNotifierProvider hacemos el cambio acá
-              //ref.read(isDarkmodeProvider.notifier).update((state) => !state);
+              // ref.read(isDarkmodeProvider.notifier).update((state) => !state);
               ref.read(themeNotifierProvider.notifier).toggleDarkMode();
             },
           )
@@ -49,7 +49,10 @@ class _ThemeChangerView extends ConsumerWidget {
     final List<Color> colors = ref.watch(colorListProvider);
 
     // TAREA: Escuchamos el provider para otener el valor seleccioando en el color
-    final int selectedColor = ref.watch(selectedColorProvider);
+    //final int selectedColor = ref.watch(selectedColorProvider);
+    // NOTA: Ahora como tenemos el ThemeNotifierProvider vamos a cambiar este seletedColor, adicionalmente el anterior colorListProvider
+    //       como es inmutable lo vamos a dejar quieto.
+    final int selectedColor = ref.watch(themeNotifierProvider).selectedColor;
 
     return ListView.builder(
       itemCount: colors.length,
@@ -64,11 +67,13 @@ class _ThemeChangerView extends ConsumerWidget {
           // NOTA: Indice seleccioando para basado en la opción que color quiero
           value: index,
           // NOTA: El groupValue es el valor seleccionado y Flutter sabe cual es el valor que nosotros tenemos
-          // NOTA: De momento dejamos el group en cero
           groupValue: selectedColor,
           onChanged: (value) {
             // TAREA; Actualizamos el estado para que cambie el bullet.
-            ref.read(selectedColorProvider.notifier).state = index;
+            //ref.read(selectedColorProvider.notifier).state = index;
+
+            // NOTA: Ahora cambiamos por nuestro ThemeNotifierProvider y por ese comentamos lo que teniamos anteriormente
+            ref.read(themeNotifierProvider.notifier).changeColorIndex(index);
           },
         );
       },

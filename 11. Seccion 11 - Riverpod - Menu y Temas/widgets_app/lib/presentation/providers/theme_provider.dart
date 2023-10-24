@@ -3,7 +3,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:widgets_app/config/theme/app_theme.dart';
 
-final isDarkmodeProvider = StateProvider<bool>((ref) => false);
+// NOTA: Esto ya lo manejamos con el ThemeNotifierProvider por lo tanto lo comento
+//       y adicionalmente ajusto el counter_screen para que funcione el Dark Mode
+//final isDarkmodeProvider = StateProvider<bool>((ref) => false);
 
 // Creamos un nuevo provider de Riverpod inmutable que va a contener el listado de colores
 // Y el Provider() es el que lo hace inmutable, es decir, que no se puede cambiar, pero en
@@ -11,7 +13,8 @@ final isDarkmodeProvider = StateProvider<bool>((ref) => false);
 final colorListProvider = Provider((ref) => colorList);
 
 // Un simple int
-final selectedColorProvider = StateProvider((ref) => 0);
+// NOTA: Esto ya lo manejamos con el ThemeNotifierProvider por lo tanto lo comento
+//final selectedColorProvider = StateProvider((ref) => 0);
 
 // Un objeto de tipo AppTheme (Custom)
 // NOTA: Ahora tenemos que pasarle el como primver valor la clase que se va a encargar de controlar nuestro estado (ThemeNotifier)
@@ -33,5 +36,10 @@ class ThemeNotifier extends StateNotifier<AppTheme> {
   // NOTA: Ahora este va a ser el nuevo método que vamos a usar para cambiar el icono de claro u obscuro
   void toggleDarkMode() {
     state = state.copyWith(isDarkmode: !state.isDarkMode);
+  }
+
+  // NOTA: Ahora este va a ser el nuevo método que vamos a uasar para cambiar los colores del tema.
+  void changeColorIndex(int colorIndex) {
+    state = state.copyWith(selectedColor: colorIndex);
   }
 }
