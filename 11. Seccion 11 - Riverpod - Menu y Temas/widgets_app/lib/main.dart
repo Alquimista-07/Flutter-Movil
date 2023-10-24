@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:widgets_app/config/router/app_router.dart';
 import 'package:widgets_app/config/theme/app_theme.dart';
 
 void main() {
-  runApp(const MainApp());
+  //  NOTA: Para usar el gestor de estado Riverpod provider necesitamos acá en el puro inicio de la aplicación usar el widget ProviderScope, el cual es un
+  //        tipo widget especial el cual va a mantener una referencia a todos los providers que usemos
+  runApp(
+    const ProviderScope(
+      child: MainApp(),
+    ),
+  );
 }
 
 class MainApp extends StatelessWidget {
