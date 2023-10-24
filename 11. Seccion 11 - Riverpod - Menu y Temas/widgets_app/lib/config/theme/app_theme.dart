@@ -30,4 +30,16 @@ class AppTheme {
       appBarTheme: const AppBarTheme(
           // NOTA: Mantenemos el titulo del appBar siempre alineado a la izquierda sin importar si es en IOS o Android
           centerTitle: false));
+
+  // NOTA: Ahora voy a crearme un método que va a regresar una instancia del AppTheme
+  //       Y este nos sirve para copiar la clase y expandir sus funcionalidades si así
+  //       lo deseamos. Entonces por lo tanto vamos a pasar las propiedades que necesitamos
+  //       solo que van a ser opcionales
+  AppTheme copyWith({
+    int? selectedColor,
+    bool? isDarkmode,
+  }) =>
+      AppTheme(
+          selectedColor: selectedColor ?? this.selectedColor,
+          isDarkMode: isDarkmode ?? isDarkMode);
 }

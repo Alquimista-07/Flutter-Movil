@@ -20,6 +20,8 @@ final selectedColorProvider = StateProvider((ref) => 0);
 //       el storage, y cualquier tipo de información que queramos mandar cuando se cree la primera instancia de ThemeNotifier
 final themeNotifierProvider =
     StateNotifierProvider<ThemeNotifier, AppTheme>((ref) => ThemeNotifier());
+// NOTA: Si ocuparamos podríamos pasar el ref como argumento para tener la referencia a todo el estado global de la aplicación y usarlo
+//       en el ThemeNotifier
 
 // Controller o Notifier
 // Este StateNotifier se va a encargar de mantener un estado en particular en este caso mantener una instancia de mi AppTheme
@@ -27,4 +29,9 @@ class ThemeNotifier extends StateNotifier<AppTheme> {
   // NOTA: Esto es básicamente decirle necesito que crees la instancia de mi AppTheme con sus valores por defecto.
   //       STATE = Estado = new AppTheme();
   ThemeNotifier() : super(AppTheme());
+
+  // NOTA: Ahora este va a ser el nuevo método que vamos a usar para cambiar el icono de claro u obscuro
+  void toggleDarkMode() {
+    state = state.copyWith(isDarkmode: !state.isDarkMode);
+  }
 }
