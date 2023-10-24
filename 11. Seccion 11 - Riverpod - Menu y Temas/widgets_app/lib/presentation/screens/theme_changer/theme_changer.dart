@@ -20,11 +20,13 @@ class ThemeChangerScreen extends ConsumerWidget {
             icon: Icon(isDarkMode
                 ? Icons.dark_mode_outlined
                 : Icons.light_mode_outlined),
-            onPressed: () {},
+            onPressed: () {
+              ref.read(isDarkmodeProvider.notifier).update((state) => !state);
+            },
           )
         ],
       ),
-      body: _ThemeChangerView(),
+      body: const _ThemeChangerView(),
     );
   }
 }
@@ -40,6 +42,9 @@ class _ThemeChangerView extends ConsumerWidget {
     //       va a cambiar y cuando no y también puede que al día de mañana si quramos hacer esto dinámico entonces no es necesario venir a hacer cambios.
     final List<Color> colors = ref.watch(colorListProvider);
 
+    // TAREA: Escuchamos el provider para otener el valor seleccioando en el color
+    final int selectedColor = ref.watch(selectedColorProvider);
+
     return ListView.builder(
       itemCount: colors.length,
       itemBuilder: (context, index) {
@@ -54,9 +59,10 @@ class _ThemeChangerView extends ConsumerWidget {
           value: index,
           // NOTA: El groupValue es el valor seleccionado y Flutter sabe cual es el valor que nosotros tenemos
           // NOTA: De momento dejamos el group en cero
-          groupValue: 5,
+          groupValue: selectedColor,
           onChanged: (value) {
-            // TODO: Notificar el cambio
+            // TAREA; Actualizamos el estado para que cambie el bullet.
+            ref.read(selectedColorProvider.notifier).state = index;
           },
         );
       },
