@@ -20,8 +20,14 @@ class MainApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TAREA: Implementar y escuchar los providers de Riverpod para actualizar el color del tema y cambiar entre el modo claro y obscuro
+    /*
     final bool isDarkMode = ref.watch(isDarkmodeProvider);
     final int selectedColor = ref.watch(selectedColorProvider);
+    */
+
+    // NOTA: Ahora como tenemos nuestro ThemeNotifier comentamos las anteriores línea de código y ahora vamos es a estar
+    //       escuchando el themeNotifierProvider
+    final AppTheme appTheme = ref.watch(themeNotifierProvider);
 
     // NOTA: Como se había mencionado anteriormente la forma más sencilla y reomendada para el enrutamiento es usar go_router por lo tanto
     //       comentamos el código que habíamos creando anteriormente con la propiedad routes y ahora vamos a usar nuestra configuración de
@@ -32,8 +38,14 @@ class MainApp extends ConsumerWidget {
       // NOTA: Pasamos el router config
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,
+      /*
       theme: AppTheme(selectedColor: selectedColor, isDarkMode: isDarkMode)
           .getTheme(),
+      */
+
+      // NOTA: Ahora en este punto como ya estamnos escuando el themeNotifierProvider comentamos el theme y lo cambiamos por lo siguiente:
+      theme: appTheme.getTheme(),
+
       // NOTA: El home también lo removimos debido a que la referencia la estamos manejando en nuestra configuración de rutas
       //       con go_router
       /*

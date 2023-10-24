@@ -12,3 +12,19 @@ final colorListProvider = Provider((ref) => colorList);
 
 // Un simple int
 final selectedColorProvider = StateProvider((ref) => 0);
+
+// Un objeto de tipo AppTheme (Custom)
+// NOTA: Ahora tenemos que pasarle el como primver valor la clase que se va a encargar de controlar nuestro estado (ThemeNotifier)
+//       y como segundo valor es el estado interno (AppTheme) y retornarmos la primera intancia de ThemeNotifier que es el que
+//       inicializa el tema y perfectamente podemos mandar si queremos la semilla de colores, cual es el que estaba seleccionado en
+//       el storage, y cualquier tipo de información que queramos mandar cuando se cree la primera instancia de ThemeNotifier
+final themeNotifierProvider =
+    StateNotifierProvider<ThemeNotifier, AppTheme>((ref) => ThemeNotifier());
+
+// Controller o Notifier
+// Este StateNotifier se va a encargar de mantener un estado en particular en este caso mantener una instancia de mi AppTheme
+class ThemeNotifier extends StateNotifier<AppTheme> {
+  // NOTA: Esto es básicamente decirle necesito que crees la instancia de mi AppTheme con sus valores por defecto.
+  //       STATE = Estado = new AppTheme();
+  ThemeNotifier() : super(AppTheme());
+}
