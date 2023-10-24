@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:widgets_app/config/menu/menu_items.dart';
 
 class SideMenu extends StatefulWidget {
-  const SideMenu({super.key});
+  // NOTA: Para cerrar el menu luego de navegar ocupamos pedir la referencia al Scaffold de home mediante el key
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
+  const SideMenu({super.key, required this.scaffoldKey});
 
   @override
   State<SideMenu> createState() => _SideMenuState();
@@ -34,6 +38,19 @@ class _SideMenuState extends State<SideMenu> {
         setState(() {
           navDrawerIndex = value;
         });
+
+        // NOTA: Para navegar cuando toquemos las opciones del menu necesitamos hacerlo a través del enlace, entonces para navegar
+        //       vamos a hacer lo siguiente:
+
+        // NOTA: Obtenemos el indice para saber la opción seleccionada
+        final menuItem = appMenuItems[value];
+
+        // NOTA: Navegamos gracias a go_router
+        context.push(menuItem.link);
+
+        // NOTA: Cerramos el menu luego de navegar. Entonces para hacer esto ocupamos la referencia del Scaffold que esta abriendo el Drawer del menu
+        //       que en este caso lo tenemos en el home_screend.dart, y para tener la referencia ocupamos el key
+        widget.scaffoldKey.currentState?.closeDrawer();
       },
       children: [
         Padding(
