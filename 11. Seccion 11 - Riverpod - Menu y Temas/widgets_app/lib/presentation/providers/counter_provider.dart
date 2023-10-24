@@ -16,4 +16,4 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 //       pieza de información de estado de nuestra aplicación, por ejemplo, cual es el tema seleccionado, el
 //       valor de una variable numérica, el estado de una clase que queremos mantener y esto lo hace bien poderoso.
 //       Este Stateprovider recibe un valor inicial que en este caso es 5
-final counterProvider = StateProvider((ref) => 5);
+final counterProvider = StateProvider<int>((ref) => 5);
