@@ -19,7 +19,9 @@ class CounterScreen extends ConsumerWidget {
     final int clickCounter = ref.watch(counterProvider);
 
     // TAREA: Escuchamos el provider definido para cambiar el modo
-    final bool isDarkMode = ref.watch(isDarkmodeProvider);
+    // NOTA: Cambiamos esto por nuestro ThemeNotifierProvider
+    //final bool isDarkMode = ref.watch(isDarkmodeProvider);
+    final bool isDarkMode = ref.watch(themeNotifierProvider).isDarkMode;
 
     return Scaffold(
       appBar: AppBar(
@@ -35,7 +37,10 @@ class CounterScreen extends ConsumerWidget {
               // NOTA: Acá use la otra forma de usar el read explicada anteriormente para actualizar el counter al presionar el botón de incrementar
               //       y que dejamos comentada, esto lo realice para fines ilustrativos y tener las 2 formas.
               //       Otra cosa es que deje que se llamara state pero facilmente le podemos colocar cualquier otro nombre
-              ref.read(isDarkmodeProvider.notifier).update((state) => !state);
+
+              // NOTA: Cambiamos esto por el ThemeNotifierProvider
+              // ref.read(isDarkmodeProvider.notifier).update((state) => !state);
+              ref.read(themeNotifierProvider.notifier).toggleDarkMode();
             },
           )
         ],
