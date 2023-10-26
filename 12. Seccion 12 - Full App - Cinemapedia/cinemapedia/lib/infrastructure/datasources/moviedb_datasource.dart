@@ -8,6 +8,8 @@
 import 'package:cinemapedia/config/constants/environment.dart';
 import 'package:cinemapedia/domain/datasources/movies_datasource.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/infrastructure/mappers/movie_mapper.dart';
+import 'package:cinemapedia/infrastructure/models/moviedb/moviedb_response.dart';
 import 'package:dio/dio.dart';
 
 class MoviedbDatasource extends MoviesDatasource {
@@ -31,7 +33,26 @@ class MoviedbDatasource extends MoviesDatasource {
   Future<List<Movie>> getNowPlaying({num page = 1}) async {
     final response = await dio.get('/movie/now_playing');
 
-    final List<Movie> movies = [];
+    final movieDBResponse = MovieDbResponse.fromJson(response.data);
+
+    // NOTA: Ahora se que el movieDBResponse trae los resultado que es una lista de MovieMovieDB
+    //       pero una cosa es que el tipo es incompatible ya que uno es de tipo MovieMovieDB y el
+    //       le estamos diciendo que es una lita de Movie por lo tanto vamos a pasarlo por un map
+    //       y el objetivo de ese map es crear la instancia de Movie y como sabemos que esa tarea
+    //       la va a cumplir el mapper entonces usamos ese mapper
+    final List<Movie> movies = movieDBResponse.results
+        // NOTA: Ahora como ajustamos en el movie_mapper para que en caso de que la película no tenga un poster y
+        //       nos de es un string no-poster en vez de una url válida con una imágen por defecto, como si lo
+        //       hicimos con el backdropPath eso va a causar que la apllicación reviente cuando tratemos de renderizar
+        //       la imágen en Flutter. Y esto lo hicimos para tener 2 posibles opciones o ejemplos de lo que podríamos
+        //       hacer.
+        //       Entonces para controlar ese error que se nos podría presentar podemos usar un método adicional llamado
+        //       where el cual es como un filtro ya que si la condición es true lo deja pasar y de esta forma controlamos
+        //       para que cuando la película no venga con su poster no la deje pasar y así nos evitamos que tener que
+        //       implementar validaciones del lado de Flutter para renderizar películas sin poster.
+        .where((moviedb) => moviedb.posterPath != 'no-poster')
+        .map((moviedb) => MovieMapper.movieDBToEntity(moviedb))
+        .toList();
 
     return movies;
   }
