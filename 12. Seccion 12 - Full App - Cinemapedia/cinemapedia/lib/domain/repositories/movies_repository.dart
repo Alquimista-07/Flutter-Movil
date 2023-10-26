@@ -5,7 +5,7 @@
 //       forma sencilla sin afectar la aplicación y el código, es decir, el cambio debe de ser transparente.
 import 'package:cinemapedia/domain/entities/movie.dart';
 
-abstract class MovieRepository {
+abstract class MoviesRepository {
   // Peliculas actualmente en cartelera
   Future<Movie> getNowPlaying({int page = 1});
 }
