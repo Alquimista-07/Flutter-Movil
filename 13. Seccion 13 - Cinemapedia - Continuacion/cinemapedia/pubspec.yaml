@@ -1,0 +1,31 @@
+name: cinemapedia
+description: A new Flutter project.
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ">=3.1.3 <4.0.0"
+
+dependencies:
+  dio: ^5.3.3
+  flutter:
+    sdk: flutter
+  flutter_dotenv: ^5.1.0
+  flutter_riverpod: ^2.4.4
+  go_router: ^12.0.0
+
+dev_dependencies:
+  flutter_lints: ^2.0.0
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+# NOTA: Para agregar las variables de entorno es necesario instalar un paquete ya que Flutter no maneja esto por
+#       defecto. Por lo tanto en este caso usamos el paquete flutter_dotenv encontrado en la siguiente url: 
+#       https://pub.dev/packages/flutter_dotenv
+#       Posteriormente hacemos su debida configuración agregando los assets.
+# OJO:  Esto debe estar dentro de Flutter y correctamente identado ya que recordemos que este tema es crucial
+  assets:
+    - .env
