@@ -5,6 +5,7 @@ import 'package:cinemapedia/config/theme/app_theme.dart';
 
 // NOTA: Importamos el paquete de dotenv que nos ayuda a manejar las variables de entorno, que instalamos y configuramos en nuestro pubspec.yaml
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // NOTA: A continuación para usar dotenv debemos convertir el manin en un Future que no retorna nada
 Future<void> main() async {
@@ -12,7 +13,11 @@ Future<void> main() async {
   //       Y luego ya para usarla es sencillo ya que donde necesitemos usarla solo agregamos dotenv.env['VAR_NAME'];
   await dotenv.load(fileName: '.env');
 
-  runApp(const MainApp());
+  // NOTA: Ahora recordemos que para usar riverpod debemos hacer una configuración acá en el runApp y agrega el ProviderScope que es el que va a
+  //       contener la referencia a todos los providers de riverpod
+  runApp(
+    const ProviderScope(child: MainApp()),
+  );
 }
 
 class MainApp extends StatelessWidget {
