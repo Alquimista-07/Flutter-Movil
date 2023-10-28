@@ -51,7 +51,7 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     // OJO: Acá si ya como no me encuentro dentro de un método usamos el recomendado que es el watch
     //      y también porque necesito estar pendiente del estado que va a proporcionar el stateNofier
     //      y con esto ya tenemos un listado de películas en nowPlayingMovies.
-    //final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
+    final nowPlayingMovies = ref.watch(nowPlayingMoviesProvider);
 
     // NOTA: Usamos el provider que creamos para cargar solo 6 de las 20 slides de peliculas que nos da la API.
     final slideShowMovies = ref.watch(moviesSliderProvider);
@@ -59,7 +59,15 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     return Column(
       children: [
         const CustomAppbar(),
+        // NOTA: Mostramos el SlideShow
         MoviesSlideshow(movies: slideShowMovies),
+
+        // NOTA: Mostramos el infinite ListView horizontal
+        MovieHorizontalListView(
+          movies: nowPlayingMovies,
+          title: 'En Cines',
+          subTitle: 'Viernes 28',
+        )
       ],
     );
   }
