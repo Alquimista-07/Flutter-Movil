@@ -11,9 +11,11 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      body: Center(
-        child: _HomeView(),
-      ),
+      body: _HomeView(),
+      // NOTA: Acá vamos a agregar el bottom navigation bar, y sobre el cual podemos ver un ejemplo en el
+      //       siguiente enlace: https://www.youtube.com/watch?v=HB5WMcxAmQQ&ab_channel=FernandoHerrera
+      //       si queremos saber más de él.
+      bottomNavigationBar: CustomBottomNavigation(),
     );
   }
 }
