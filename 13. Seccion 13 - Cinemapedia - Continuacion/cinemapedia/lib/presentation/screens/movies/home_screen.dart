@@ -56,22 +56,77 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     // NOTA: Usamos el provider que creamos para cargar solo 6 de las 20 slides de peliculas que nos da la API.
     final slideShowMovies = ref.watch(moviesSliderProvider);
 
-    return Column(
-      children: [
-        const CustomAppbar(),
-        // NOTA: Mostramos el SlideShow
-        MoviesSlideshow(movies: slideShowMovies),
+    // NOTA: Como al ir agregando hijos va a llegar a un punto donde se va a desbordar de la pantalla, y darnos un warning o error
+    //       debido a esto y no permite hacer Scroll, entonces para corregir esto del desbordamiento y que permita hacer scroll,
+    //       podríamos usar un widget que anteriormente usamos que es el SingleChildScrollView. Peeeero en este caso como queremos
+    //       usar un sliver por lo tanto vamos a usar un nuevo widget llamado CustomScrollView ya que los slivers lo necesitan para
+    //       trabajar.
+    // NOTA: Los slivers sonara algo complicado pero básicamente son por decirlo así comportamientos de los scrollview, son widgets especiales para el
+    //       comportamiento con el scroll, por ejemplo que una barra de navegación o búsqueda se oculte cuando estamos bajando pero tan pronto empezamos
+    //       a subir esta automáticamente se muestra y no tienemos que ir hasta el tope de la pantalla para poderla ver.
+    return CustomScrollView(
+      // NOTA: El CustomScrollView en lugar de tener un child tiene son los slivers que son widgets que tienen esa configuración y característica de ser
+      //       un sliver y que trabaja directamente con el scrollview
+      slivers: [
+        // NOTA: Por lo tanto el CustomAppbar() ya no va a formar parte del Column y ListView como tieníamos anteriormente sino que ahora se va a convertir en un
+        //       widget que hace parte del CustomScrollView llamado SliverAppbar() que va a recibir ese CustomAppbar().
+        const SliverAppBar(
+          floating: true,
+          flexibleSpace: FlexibleSpaceBar(
+            title: CustomAppbar(),
+          ),
+        ),
 
-        // NOTA: Mostramos el infinite ListView horizontal
-        MovieHorizontalListView(
-          movies: nowPlayingMovies,
-          title: 'En Cines',
-          subTitle: 'Viernes 28',
-          loadNextPage: () {
-            //print('Llamado del padre');
-            ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
-          },
-        )
+        // NOTA: Ahora acá vamos a hacer un pequeño tuco para mostrar lo que teníamos anteriormente usando un SliverList, el cual recibe una propiedad llamada
+        //       delegate que no es más que la función que va a servir para crear los slivers o widget dentro del ListView
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              return Column(
+                children: [
+                  // NOTA: Mostramos el SlideShow
+                  MoviesSlideshow(movies: slideShowMovies),
+
+                  // NOTA: Mostramos el infinite ListView horizontal
+                  MovieHorizontalListView(
+                    movies: nowPlayingMovies,
+                    title: 'En Cines',
+                    subTitle: 'Viernes 28',
+                    loadNextPage: () {
+                      //print('Llamado del padre');
+                      ref
+                          .read(nowPlayingMoviesProvider.notifier)
+                          .loadNextPage();
+                    },
+                  ),
+
+                  MovieHorizontalListView(
+                    movies: nowPlayingMovies,
+                    title: 'Próximamente',
+                    subTitle: 'En este mes',
+                    loadNextPage: () {},
+                  ),
+
+                  MovieHorizontalListView(
+                    movies: nowPlayingMovies,
+                    title: 'Populares',
+                    loadNextPage: () {},
+                  ),
+
+                  MovieHorizontalListView(
+                    movies: nowPlayingMovies,
+                    title: 'Mejor Calificadas',
+                    subTitle: 'Desde siempre',
+                    loadNextPage: () {},
+                  ),
+
+                  const SizedBox(height: 10),
+                ],
+              );
+            },
+            childCount: 1,
+          ),
+        ),
       ],
     );
   }
