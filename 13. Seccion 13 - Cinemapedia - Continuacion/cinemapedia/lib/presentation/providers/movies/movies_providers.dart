@@ -39,6 +39,10 @@ class MoviesNotifier extends StateNotifier<List<Movie>> {
   int currentPage = 0;
   MovieCallback fetchMoreMovies;
 
+  // NOTA: Creamos una bandera para proteger y evitar el llamado de la API cuando ya las estoy solicitando peliculas y
+  //       así evitar múltiples peticiones
+  bool isLoading = false;
+
   // NOTA: Ahora el constructor lo creamos de la siguiente manera y le decimos que su estado inicial es un arreglo vacío
   //       ya que al inicio no voy a tener ninguna movie,  a menos de que ya tengamos grabado esto en una base de datos
   //       en el dispositivo físic y lo creamos de esa manera pero al inicio no tenemos nada. Es más lo ideal sería tener
@@ -50,6 +54,9 @@ class MoviesNotifier extends StateNotifier<List<Movie>> {
 
   // NOTA: EL objetivo de este es hacerle alguna modificación al estate (Recordemos que el state es un litado de movie)
   Future<void> loadNextPage() async {
+    if (isLoading) return;
+
+    isLoading = true;
     currentPage++;
 
     final List<Movie> movies = await fetchMoreMovies(page: currentPage);
@@ -58,5 +65,8 @@ class MoviesNotifier extends StateNotifier<List<Movie>> {
     //       operador spred y también voy a hacer el spred de las movies que vengan en la petición. Y con esto riverpod se va a encargar
     //       de notificarlo
     state = [...state, ...movies];
+    await Future.delayed(const Duration(milliseconds: 300));
+
+    isLoading = false;
   }
 }
