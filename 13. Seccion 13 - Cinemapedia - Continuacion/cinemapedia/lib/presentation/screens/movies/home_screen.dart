@@ -54,6 +54,14 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    // NOTA: Mostramos nuestro Full Screen Loader divertido y personalizado.
+    //       Ahora hay que tener en cuenta que este loader lo vamos a mostrar der forma condicional ya que necesitamos
+    //       estar pendiente de los cuatro providers y validar cuando los cuatro tengan data o algún valor vamos a ocultar
+    //       el loader. Y para esto vamos a ocupar hacerlo nuevamente con Riverpod para obtener un valor booleano que me
+    //       indique cuando esta listo el provider o providers y cuando no.
+    final initialLoading = ref.watch(initialLoadingProvider);
+    if (initialLoading) return const FullScreenLoader();
+
     // NOTA: Ya como en el modo debugging cuando colocamos el break point el moviedb_datasource
     //       en el return movie del método getNowPlaying nos dimos cuenta de que la data ya se
     //       esta trayendo entonces ahora vamos a renderizarla.
@@ -73,10 +81,6 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
     //* Tarea: Referencia al provider que obtiene las películas mejor calificadas
     final topRatedMovies = ref.watch(topRatedMoviesProvider);
-
-    // NOTA: Mostramos nuestro Full Screen Loader divertido y personalizado.
-    // TODO: Cuando ya haya cargado ocultamos el loader
-    return const FullScreenLoader();
 
     // NOTA: Como al ir agregando hijos va a llegar a un punto donde se va a desbordar de la pantalla, y darnos un warning o error
     //       debido a esto y no permite hacer Scroll, entonces para corregir esto del desbordamiento y que permita hacer scroll,
