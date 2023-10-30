@@ -38,6 +38,22 @@ final popularMoviesProvider =
   return MoviesNotifier(fetchMoreMovies: fetchMoreMovies);
 });
 
+//* Tarea: Provider para obtener las películas de la sección próximamanete
+final upcomingMoviesProvider =
+    StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  final fetchMoreMovies = ref.watch(movieRepositoryProvider).getUpcoming;
+
+  return MoviesNotifier(fetchMoreMovies: fetchMoreMovies);
+});
+
+//* Tarea: Provider para obtener las películas mejor calificadas
+final topRatedMoviesProvider =
+    StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  final fetchMoreMovies = ref.watch(movieRepositoryProvider).getTopRated;
+
+  return MoviesNotifier(fetchMoreMovies: fetchMoreMovies);
+});
+
 // NOTA: Acá especificamos el tipo de función que espera, y el objetivo de esto es implemente definir el caso de uso
 //       para que el MoviesNotifier para cargar las siguientes pelpiculas simplemente va a recibir esta función.
 typedef MovieCallback = Future<List<Movie>> Function({int page});

@@ -14,4 +14,10 @@ abstract class MoviesDatasource {
 
   // Peliculas populares
   Future<List<Movie>> getPopular({int page = 1});
+
+  //* Tarea: Proximamente
+  Future<List<Movie>> getUpcoming({int page = 1});
+
+  //* Tarea: Mejor calificadas
+  Future<List<Movie>> getTopRated({int page = 1});
 }

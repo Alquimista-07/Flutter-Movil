@@ -44,6 +44,12 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
     //NOTA: Hacemos referencia nuestro provider para obtener las pelpiculas populares
     ref.read(popularMoviesProvider.notifier).loadNextPage();
+
+    //* Tarea: Referencia al provider que obtiene las películas que van a estar próximamente
+    ref.read(upcomingMoviesProvider.notifier).loadNextPage();
+
+    //* Tarea: Referencia al provider que obtiene las películas mejor calificadas
+    ref.read(topRatedMoviesProvider.notifier).loadNextPage();
   }
 
   @override
@@ -61,6 +67,12 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
     // NOTA: Hacemos referencia nuestro provider para obtener las pelpiculas populares
     final popularMovies = ref.watch(popularMoviesProvider);
+
+    //* Tarea: Referencia al provider que obtiene las películas que van a estar próximamente
+    final upcomingMovies = ref.watch(upcomingMoviesProvider);
+
+    //* Tarea: Referencia al provider que obtiene las películas mejor calificadas
+    final topRatedMovies = ref.watch(topRatedMoviesProvider);
 
     // NOTA: Como al ir agregando hijos va a llegar a un punto donde se va a desbordar de la pantalla, y darnos un warning o error
     //       debido a esto y no permite hacer Scroll, entonces para corregir esto del desbordamiento y que permita hacer scroll,
@@ -107,10 +119,12 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                   ),
 
                   MovieHorizontalListView(
-                    movies: nowPlayingMovies,
+                    movies: upcomingMovies,
                     title: 'Próximamente',
                     subTitle: 'En este mes',
-                    loadNextPage: () {},
+                    loadNextPage: () {
+                      ref.read(upcomingMoviesProvider.notifier).loadNextPage();
+                    },
                   ),
 
                   MovieHorizontalListView(
@@ -122,10 +136,12 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                   ),
 
                   MovieHorizontalListView(
-                    movies: nowPlayingMovies,
+                    movies: topRatedMovies,
                     title: 'Mejor Calificadas',
                     subTitle: 'Desde siempre',
-                    loadNextPage: () {},
+                    loadNextPage: () {
+                      ref.read(topRatedMoviesProvider.notifier).loadNextPage();
+                    },
                   ),
 
                   const SizedBox(height: 10),
