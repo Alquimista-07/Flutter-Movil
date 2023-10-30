@@ -74,6 +74,10 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     //* Tarea: Referencia al provider que obtiene las películas mejor calificadas
     final topRatedMovies = ref.watch(topRatedMoviesProvider);
 
+    // NOTA: Mostramos nuestro Full Screen Loader divertido y personalizado.
+    // TODO: Cuando ya haya cargado ocultamos el loader
+    return const FullScreenLoader();
+
     // NOTA: Como al ir agregando hijos va a llegar a un punto donde se va a desbordar de la pantalla, y darnos un warning o error
     //       debido a esto y no permite hacer Scroll, entonces para corregir esto del desbordamiento y que permita hacer scroll,
     //       podríamos usar un widget que anteriormente usamos que es el SingleChildScrollView. Peeeero en este caso como queremos
