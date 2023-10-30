@@ -41,6 +41,9 @@ class _HomeViewState extends ConsumerState<_HomeView> {
     // OJO: Acá usamos el read porque me encuentro dentro de un método y no usamos el watch
     //      Y obtenemos el método loadNextPage
     ref.read(nowPlayingMoviesProvider.notifier).loadNextPage();
+
+    //NOTA: Hacemos referencia nuestro provider para obtener las pelpiculas populares
+    ref.read(popularMoviesProvider.notifier).loadNextPage();
   }
 
   @override
@@ -55,6 +58,9 @@ class _HomeViewState extends ConsumerState<_HomeView> {
 
     // NOTA: Usamos el provider que creamos para cargar solo 6 de las 20 slides de peliculas que nos da la API.
     final slideShowMovies = ref.watch(moviesSliderProvider);
+
+    // NOTA: Hacemos referencia nuestro provider para obtener las pelpiculas populares
+    final popularMovies = ref.watch(popularMoviesProvider);
 
     // NOTA: Como al ir agregando hijos va a llegar a un punto donde se va a desbordar de la pantalla, y darnos un warning o error
     //       debido a esto y no permite hacer Scroll, entonces para corregir esto del desbordamiento y que permita hacer scroll,
@@ -108,9 +114,11 @@ class _HomeViewState extends ConsumerState<_HomeView> {
                   ),
 
                   MovieHorizontalListView(
-                    movies: nowPlayingMovies,
+                    movies: popularMovies,
                     title: 'Populares',
-                    loadNextPage: () {},
+                    loadNextPage: () {
+                      ref.read(popularMoviesProvider.notifier).loadNextPage();
+                    },
                   ),
 
                   MovieHorizontalListView(

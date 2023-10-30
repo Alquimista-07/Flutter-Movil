@@ -28,6 +28,23 @@ class MoviedbDatasource extends MoviesDatasource {
     'language': 'es-MX',
   }));
 
+  // NOTA: Notemos que tenemos una parte de, código que se empieza a repetir para los demás métodos por lo tanto vamos a crear un
+  //       método para evitar eso.
+  // OJO:  Para fines ilustrativos el código del método que tenemos para obtener las películas que están actualmente en cines
+  //       (getNowPlaying) no lo voy a cambiar por este nuevo método, y lo voy a mantener como referencia pero hay que tener claro
+  //       que se podría hacer. Adicionalmente este método si lo voy a usar para los demás método de obtener populares, próximamente,
+  //       etc.
+  List<Movie> _jsonToMovies(Map<String, dynamic> json) {
+    final movieDBResponse = MovieDbResponse.fromJson(json);
+
+    final List<Movie> movies = movieDBResponse.results
+        .where((moviedb) => moviedb.posterPath != 'no-poster')
+        .map((moviedb) => MovieMapper.movieDBToEntity(moviedb))
+        .toList();
+
+    return movies;
+  }
+
   // NOTA: Implementación para obtener las películas que están en cines
   @override
   Future<List<Movie>> getNowPlaying({num page = 1}) async {
@@ -57,5 +74,14 @@ class MoviedbDatasource extends MoviesDatasource {
         .toList();
 
     return movies;
+  }
+
+  // NOTA: Obtener películas populares
+  @override
+  Future<List<Movie>> getPopular({int page = 1}) async {
+    final response =
+        await dio.get('/movie/popular', queryParameters: {'page': page});
+
+    return _jsonToMovies(response.data);
   }
 }

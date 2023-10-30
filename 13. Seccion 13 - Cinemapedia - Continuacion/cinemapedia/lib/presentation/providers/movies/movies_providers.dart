@@ -27,6 +27,17 @@ final nowPlayingMoviesProvider =
   );
 });
 
+// NOTA: Provider para bbtener películas populares
+//       Algo importante es que esto que acabamos de hacer de agregar un nuevo provider no lo podríamos hacer con el gestor de estado
+//       Provider porque básicamente tenemos dos instancias de la misma clase y eso no e puede hacer directamente en el gestor de estado
+//       Provider punto, pero eso no es problema para el gestor de estado Revierpod y por eso lo podemos hacer de esta manera.
+final popularMoviesProvider =
+    StateNotifierProvider<MoviesNotifier, List<Movie>>((ref) {
+  final fetchMoreMovies = ref.watch(movieRepositoryProvider).getPopular;
+
+  return MoviesNotifier(fetchMoreMovies: fetchMoreMovies);
+});
+
 // NOTA: Acá especificamos el tipo de función que espera, y el objetivo de esto es implemente definir el caso de uso
 //       para que el MoviesNotifier para cargar las siguientes pelpiculas simplemente va a recibir esta función.
 typedef MovieCallback = Future<List<Movie>> Function({int page});
