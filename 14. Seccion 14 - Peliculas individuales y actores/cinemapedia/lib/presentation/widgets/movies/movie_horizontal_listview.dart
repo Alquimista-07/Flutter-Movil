@@ -5,6 +5,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class MovieHorizontalListView extends StatefulWidget {
   final List<Movie> movies;
@@ -155,7 +156,14 @@ class _Slide extends StatelessWidget {
                     );
                   }
 
-                  return FadeIn(child: child);
+                  // NOTA: Hay varios lugares donde podriamos detectar para hacer la navegación a otra ruta, en este caso vamos a usar
+                  //       la imágen para colocarle un detector y haga la navegación
+                  return GestureDetector(
+                    // NOTA: Recordemos que el push de go_router no destruye la anterior ruta por lo tanto podemos regresar a la pantalla anterior.
+                    //       Si quisieramos destruir la ruta anterior usariamos el go
+                    onTap: () => context.push('/movie/${movie.id}'),
+                    child: FadeIn(child: child),
+                  );
                 },
               ),
             ),
