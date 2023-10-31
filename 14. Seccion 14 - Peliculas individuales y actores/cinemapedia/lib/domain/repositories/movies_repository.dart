@@ -17,4 +17,7 @@ abstract class MoviesRepository {
 
   //* Tarea: Mejor calificadas
   Future<List<Movie>> getTopRated({int page = 1});
+
+  // Obtener película por id
+  Future<Movie> getMovieById(String id);
 }
