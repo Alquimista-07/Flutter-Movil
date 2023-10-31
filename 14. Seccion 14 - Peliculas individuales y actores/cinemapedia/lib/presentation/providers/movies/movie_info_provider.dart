@@ -8,10 +8,11 @@ import 'package:cinemapedia/presentation/providers/movies/movies_repository_prov
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // NOTA: Creamos el provider
-final movieInfoProvider =
-    StateNotifierProvider<MovieMapNotifier, dynamic>((ref) {
+final movieInfoProvider = StateNotifierProvider((ref) {
   final movieRepository = ref.watch(movieRepositoryProvider);
 
+  // NOTA: Acá solo pasamos la referencia a la función ya que si quisieramos llamar la función colocaríamos los getMovieById()
+  //       y le pasaríamos el id
   return MovieMapNotifier(getMovie: movieRepository.getMovieById);
 });
 
