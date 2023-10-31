@@ -179,7 +179,8 @@ class Genre {
 
 class ProductionCompany {
   final int id;
-  final String logoPath;
+  // NOTA: Como todas las películas no tienen logoPath entonces lo hacemos opcional y por lo tanto puede ser nulo
+  final String? logoPath;
   final String name;
   final String originCountry;
 
