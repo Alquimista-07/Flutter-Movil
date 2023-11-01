@@ -56,6 +56,15 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
         physics: const ClampingScrollPhysics(),
         slivers: [
           _CustomSliverAppBar(movie: movie),
+
+          // NOTA: Detalles de la película
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => _MovieDetails(movie: movie),
+              // NOTA: Para evitar que cree un montón de elementos asignamos el childCount con 1 solo elemento
+              childCount: 1,
+            ),
+          ),
         ],
       ),
     );
@@ -136,6 +145,85 @@ class _CustomSliverAppBar extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _MovieDetails extends StatelessWidget {
+  final Movie movie;
+
+  const _MovieDetails({required this.movie});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final textStyle = Theme.of(context).textTheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //* Imágen
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.network(
+                  movie.posterPath,
+                  width: size.width * 0.3,
+                ),
+              ),
+              const SizedBox(width: 10),
+
+              //* Descripción película
+              SizedBox(
+                // 70% menos los pixeles que asignamos al padding y el anterior sizedbox (que serían 40 aprox.)
+                width: (size.width - 40) * 0.7,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      movie.title,
+                      style: textStyle.titleLarge,
+                    ),
+                    Text(movie.overview),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        //* Generos de la película
+        Padding(
+          padding: const EdgeInsets.all(8),
+          // NOTA: El widget wrap lo que hace es como si tuvieramos una grilla e ir acomodando los elementos automáticamente debajo cuando no
+          //       hay espacio disponible en la pantalla
+          child: Wrap(
+            children: [
+              ...movie.genreIds.map(
+                (gender) => Container(
+                  margin: const EdgeInsets.only(right: 10),
+                  // El widget Chip es esas cajitas donde vamos a motrar los géneros de la película y las hacemos que tengan bordes redondeados
+                  child: Chip(
+                    label: Text(gender),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // TODO: Mostrar actores ListView
+
+        // NOTA: Espacio adicional para que la persona pueda seguir haciendo scroll y vea toda la descripción de la película
+        const SizedBox(height: 100),
+      ],
     );
   }
 }
