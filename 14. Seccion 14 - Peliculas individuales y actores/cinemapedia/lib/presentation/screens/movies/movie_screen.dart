@@ -91,11 +91,12 @@ class _CustomSliverAppBar extends StatelessWidget {
       // NOTA: El flexibleSpace es el epacio flexible del nuestro custom AppBar
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-        title: Text(
-          movie.title,
-          style: const TextStyle(fontSize: 20),
-          textAlign: TextAlign.start,
-        ),
+        // NOTA: Comentamos el titulo ya que no cuadra como se ve, más sin embargo lo dejamos como referencia
+        // title: Text(
+        //   movie.title,
+        //   style: const TextStyle(fontSize: 20),
+        //   textAlign: TextAlign.start,
+        // ),
         // NOTA: Congiguración del background que en este caso es una imágen con un stack que como sabemos
         //       este stack nos permite colocar unos widgets encima de otros y la posición depende del orden
         //       por lo tanto entre más abajo este agregado más al frente va a aestar ese widget
@@ -223,11 +224,87 @@ class _MovieDetails extends StatelessWidget {
           ),
         ),
 
-        // TODO: Mostrar actores ListView
+        //* Mostrar los actores
+        _ActorsByMovie(movieId: movie.id.toString()),
 
         // NOTA: Espacio adicional para que la persona pueda seguir haciendo scroll y vea toda la descripción de la película
-        const SizedBox(height: 100),
+        const SizedBox(height: 50),
       ],
+    );
+  }
+}
+
+// NOTA: OJO usamos el ConsumerStatefulWidget solo cuando necesitamos usar el initState para inicializar algo tan pronto sea construido
+//       de resto usamos el ConsumerWidget que es básicamente el StatefulWidget solo que el consumer es de Rverpod, adicionalmente el
+//       ConsumerStatefulWidget también es el mismo StatefulWidget solo que de riverpod y con la diferencia de que el ConsumerStatefulWidget
+//       tiene ese método initState que mencionamos.
+
+//* Actores
+class _ActorsByMovie extends ConsumerWidget {
+  final String movieId;
+
+  const _ActorsByMovie({required this.movieId});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // NOTA: Escuchamos el provider de actores y ahí ya tengo mi mapa de actores, pero este puede ser nulo entonces hay que validar
+    final actorsByMovie = ref.watch(actorsByMovieProvider);
+
+    if (actorsByMovie[movieId] == null) {
+      // Si se cumple entonces estoy cargando los actores y mostramos un indicador de progreso
+      return const CircularProgressIndicator(strokeWidth: 2);
+    }
+
+    // NOTA: Acá con el movieId yo ya tengo los actores y ya se que los tengo entonces indicmaos un !
+    //       porque ya la evaluación la realizamos antes.
+    final actors = actorsByMovie[movieId]!;
+
+    return SizedBox(
+      height: 300,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: actors.length,
+        itemBuilder: (context, index) {
+          final actor = actors[index];
+
+          return Container(
+            padding: const EdgeInsets.all(8.0),
+            width: 135,
+            child: Column(
+              // NOTA: Alineamos los el contenido del Column a la izquierda
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Actor Photo
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(
+                    actor.profilePath,
+                    height: 180,
+                    width: 135,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+
+                // Nombre Actor
+                const SizedBox(height: 5),
+
+                Text(
+                  actor.name,
+                  maxLines: 2,
+                ),
+
+                Text(
+                  actor.character ?? '',
+                  maxLines: 2,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  // La propiedad Overflow va a hacer es que si el texto es muy largo va a colocar ...
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
