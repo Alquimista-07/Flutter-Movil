@@ -1,5 +1,6 @@
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/providers/movies/movie_info_provider.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -30,6 +31,9 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
     //       Adicionalmente como estamos dentro del state para hacer referencia a una propiedad
     //       usamos la palabra widget
     ref.read(movieInfoProvider.notifier).loadMovie(widget.movieId);
+
+    // NOTA: Provider de los actores
+    ref.read(actorsByMovieProvider.notifier).loadActors(widget.movieId);
   }
 
   @override
