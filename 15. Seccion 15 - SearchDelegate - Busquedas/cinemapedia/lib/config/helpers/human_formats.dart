@@ -1,0 +1,16 @@
+// NOTA: Vamos a usar un paquete que usamos en la aplicación toktik y que sirve para hacer los números
+//       legibles, esto con el fin colocarlo para mostrar las calificaciones de las películas.
+//       La documentación la encontramos en: https://pub.dev/packages/intl
+import 'package:intl/intl.dart';
+
+class HumanFormats {
+  static String number(double number) {
+    final formattedNumber = NumberFormat.compactCurrency(
+      decimalDigits: 0,
+      symbol: '',
+      locale: 'en',
+    ).format(number);
+
+    return formattedNumber;
+  }
+}
