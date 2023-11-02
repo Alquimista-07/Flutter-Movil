@@ -1,3 +1,4 @@
+import 'package:cinemapedia/presentation/delegates/search_movie_delegate.dart';
 import 'package:flutter/material.dart';
 
 class CustomAppbar extends StatelessWidget {
@@ -29,7 +30,17 @@ class CustomAppbar extends StatelessWidget {
               //       toma el ancho posible para gregar un espacio como lo haríamos con Flexbox
               //       un Flex Layout si estuvieramos trabajando en web.
               const Spacer(),
-              IconButton(onPressed: () {}, icon: const Icon(Icons.search))
+              IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {
+                  // NOTA: Acá vamos a mandar a llamar una función que ya viene en Flutter que se llama showSearch el cual tiene el contexto de la app que ya sabemos
+                  //       que tiene el árbol de widgets, y adicionalmente pide un delegate el cual recibe un SearchDelegate de tipo dynamic, por lo tanto, regresa
+                  //       algo de cualquier tipo e idealmente lo que voy a querer hacer es regresar el id de la película, o la película entera, según lo que yo necesite.
+                  //       Por lo tanto ese SearchDelegate es el que se va a encargar de trabajar la búsqueda.
+                  //       Entonces lo que vamos a hacer es crearnos una clase que extienda de ese SearchDelegate
+                  showSearch(context: context, delegate: SearchMovieDelegate());
+                },
+              )
             ],
           ),
         ),
