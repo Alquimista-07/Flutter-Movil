@@ -1,7 +1,9 @@
+import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:cinemapedia/presentation/delegates/search_movie_delegate.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomAppbar extends ConsumerWidget {
   const CustomAppbar({super.key});
@@ -42,7 +44,7 @@ class CustomAppbar extends ConsumerWidget {
                   //       algo de cualquier tipo e idealmente lo que voy a querer hacer es regresar el id de la película, o la película entera, según lo que yo necesite.
                   //       Por lo tanto ese SearchDelegate es el que se va a encargar de trabajar la búsqueda.
                   //       Entonces lo que vamos a hacer es crearnos una clase que extienda de ese SearchDelegate
-                  showSearch(
+                  showSearch<Movie?>(
                     context: context,
                     // NOTA: Entonces ya como nuestro SearchMovieDelegate tiene un Function la tenemos que pasar y la cual ya la tenemos
                     //       en el MovieRepositoryImpl el cual a la final va a llegar al provider movieRepositoryProvider en si.
@@ -51,7 +53,14 @@ class CustomAppbar extends ConsumerWidget {
                     //       la referencia y no la ejecutamos y recordemos que para mandar la referencia es sin agregarle los ()
                     delegate: SearchMovieDelegate(
                         searchMovies: movieRepository.searchMovies),
-                  );
+
+                    // NOTA: EL showSearch al ser un Future podemos usar el método then y tener la película opcional y evaluar y navegar cuando tengamos un valor
+                  ).then((movie) {
+                    if (movie == null) return;
+
+                    // Navegamos usando goRouter
+                    context.push('/movie/${movie.id}');
+                  });
                 },
               )
             ],
