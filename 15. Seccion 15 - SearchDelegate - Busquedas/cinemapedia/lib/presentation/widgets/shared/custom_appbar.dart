@@ -1,11 +1,13 @@
 import 'package:cinemapedia/presentation/delegates/search_movie_delegate.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CustomAppbar extends StatelessWidget {
+class CustomAppbar extends ConsumerWidget {
   const CustomAppbar({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = Theme.of(context).colorScheme;
     final titleStyle = Theme.of(context).textTheme.titleMedium;
 
@@ -33,12 +35,23 @@ class CustomAppbar extends StatelessWidget {
               IconButton(
                 icon: const Icon(Icons.search),
                 onPressed: () {
+                  final movieRepository = ref.read(movieRepositoryProvider);
+
                   // NOTA: Acá vamos a mandar a llamar una función que ya viene en Flutter que se llama showSearch el cual tiene el contexto de la app que ya sabemos
                   //       que tiene el árbol de widgets, y adicionalmente pide un delegate el cual recibe un SearchDelegate de tipo dynamic, por lo tanto, regresa
                   //       algo de cualquier tipo e idealmente lo que voy a querer hacer es regresar el id de la película, o la película entera, según lo que yo necesite.
                   //       Por lo tanto ese SearchDelegate es el que se va a encargar de trabajar la búsqueda.
                   //       Entonces lo que vamos a hacer es crearnos una clase que extienda de ese SearchDelegate
-                  showSearch(context: context, delegate: SearchMovieDelegate());
+                  showSearch(
+                    context: context,
+                    // NOTA: Entonces ya como nuestro SearchMovieDelegate tiene un Function la tenemos que pasar y la cual ya la tenemos
+                    //       en el MovieRepositoryImpl el cual a la final va a llegar al provider movieRepositoryProvider en si.
+                    //       Por lo tanto convertimos este en un ConsumerWidget, agregamos el ref, hacemos el read del provider y recordemos
+                    //       que es read porque estamos dentro de un método, y al final mandamos la función  searchMovies pero OJO solo mandamos
+                    //       la referencia y no la ejecutamos y recordemos que para mandar la referencia es sin agregarle los ()
+                    delegate: SearchMovieDelegate(
+                        searchMovies: movieRepository.searchMovies),
+                  );
                 },
               )
             ],

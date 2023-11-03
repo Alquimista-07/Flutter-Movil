@@ -2,6 +2,12 @@ import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
 
+// NOTA: Voy a definirme un tipo de función específica que me va a ayudar a definir el tipo del método
+//       searchMovies que voy a crear para que sea llamado por el build buildSuggestions y va a hacer
+//       el trabajo de buscar las películas que coincidan con el query.
+//       Y por lo tanto ya la función que ese este typedef tiene que cumplir con esta firma
+typedef SearcMoviesCallback = Future<List<Movie>> Function(String query);
+
 // NOTA: OJO hay que tener en cuenta que al extender del SearchDelegate nos va a pedir que implementemos cuatro métodos
 //       (buildActions, buildLeading, buildResults y buildSuggestions) los cuales al implementarlos nos va a indicar que
 //       algunos métodos son opcionales (2 métodos), y otros obligatorios (2 métodos), adicionalmente hay que mirar el tipo
@@ -10,6 +16,10 @@ import 'package:flutter/material.dart';
 //       extend del SearchDelegate colocamos el objeto y lo dejamos opcional pero como se mencionó podría ser solo el id
 //       (String?).
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
+  final SearcMoviesCallback searchMovies;
+
+  SearchMovieDelegate({required this.searchMovies});
+
   // NOTA: Otra cosa es que nosotros podemos implementar otro override que no es obligatorio al estender del SearchDelegate
   //       pero que nos va a servir para cambiar el texto de la caja de texto para que no diga Search sino lo que nosotros
   //       indiquemos
@@ -64,6 +74,23 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   //       vaya escribiendo y cuando se detenga y pase un tiempo determinado ahí se dispare la petición y se realice la búsqueda.
   @override
   Widget buildSuggestions(BuildContext context) {
-    return const Text('BuildSuggestions');
+    //return const Text('BuildSuggestions');
+    // NOTA: Acá vamos a disparar la petición y contruir el widget donde se van a mostrar los resultados.
+    //       Ahora el widget que ocupariamos para trabajar y que sirva con un Future. Entonces usaríamos
+    //       un FutureBuilder
+    return FutureBuilder(
+      future: searchMovies(query),
+      builder: (context, snapshot) {
+        final movies = snapshot.data ?? [];
+
+        return ListView.builder(
+          itemCount: movies.length,
+          itemBuilder: (context, index) {
+            final movie = movies[index];
+            return ListTile(title: Text(movie.title));
+          },
+        );
+      },
+    );
   }
 }
