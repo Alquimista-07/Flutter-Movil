@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
@@ -19,7 +21,28 @@ typedef SearcMoviesCallback = Future<List<Movie>> Function(String query);
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
   final SearcMoviesCallback searchMovies;
 
+  // NOTA: Ahora para el dobounce vamos a usar un stream controller, adicionalmente si queremos tener múltiples listener
+  //       usamos el método broadcast, pero OJO eso es solo si no sabemos o necesitamos esos multiples listener de lo contrario
+  //       si solo vamos a tener uno simplemente usamos el StreamController
+  StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
+  // NOTA: Creamos una nueva propiedad también para el debounce el cual permite determinar un periodo de tiempo, limpiarlo y cancelarlo
+  Timer? _debounceTimer;
+
   SearchMovieDelegate({required this.searchMovies});
+
+  // Cramos un método para detectar cuando el query cambie
+  void _onQueryChanged(String query) {
+    print('Query String cambio');
+    if (_debounceTimer?.isActive ?? false) {
+      // Lo limpiamos
+      _debounceTimer!.cancel();
+    }
+
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+      // Cuando deja de escribir durante 500 milisegundos
+      // TODO: Buscar películas y emitir al stream
+    });
+  }
 
   // NOTA: Otra cosa es que nosotros podemos implementar otro override que no es obligatorio al estender del SearchDelegate
   //       pero que nos va a servir para cambiar el texto de la caja de texto para que no diga Search sino lo que nosotros
@@ -75,12 +98,17 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   //       vaya escribiendo y cuando se detenga y pase un tiempo determinado ahí se dispare la petición y se realice la búsqueda.
   @override
   Widget buildSuggestions(BuildContext context) {
+    // NOTA: Llamamos la función para el debounce
+    _onQueryChanged(query);
+
     //return const Text('BuildSuggestions');
     // NOTA: Acá vamos a disparar la petición y contruir el widget donde se van a mostrar los resultados.
     //       Ahora el widget que ocupariamos para trabajar y que sirva con un Future. Entonces usaríamos
-    //       un FutureBuilder
-    return FutureBuilder(
-      future: searchMovies(query),
+    //       un FutureBuilder que luego vamos a cambiar por un Streambuilder para implementar el debounce
+    // return FutureBuilder(
+    //   future: searchMovies(query),
+    return StreamBuilder(
+      stream: debouncedMovies.stream,
       builder: (context, snapshot) {
         final movies = snapshot.data ?? [];
 
