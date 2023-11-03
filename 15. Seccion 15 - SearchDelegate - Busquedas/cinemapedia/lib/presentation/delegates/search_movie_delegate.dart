@@ -30,17 +30,29 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
   SearchMovieDelegate({required this.searchMovies});
 
+  // Método para limpiar los streams y que no queden en memoria
+  void clearStreams() {
+    debouncedMovies.close();
+  }
+
   // Cramos un método para detectar cuando el query cambie
   void _onQueryChanged(String query) {
-    print('Query String cambio');
     if (_debounceTimer?.isActive ?? false) {
       // Lo limpiamos
       _debounceTimer!.cancel();
     }
 
-    _debounceTimer = Timer(const Duration(milliseconds: 500), () {
+    _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
       // Cuando deja de escribir durante 500 milisegundos
-      // TODO: Buscar películas y emitir al stream
+      if (query.isEmpty) {
+        // Este add lo hacemos acá para que no se limpie el arreglo y muestre los resultados anteriores
+        // pero fácilmente podemos agregarlo al inicio del método y limpiar tan pronto se inicie a escribir
+        debouncedMovies.add([]);
+        return;
+      }
+
+      final movies = await searchMovies(query);
+      debouncedMovies.add(movies);
     });
   }
 
@@ -84,7 +96,12 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
       //       el cual recibe el context y un result, el result es lo que yo quiero regresar cuando cierre el showsearch.
       //       En este caso como estoy en el buildLeading suponemos que la persona no hizo nada ya que estamos dando atrás
       //       entonces mandamos un null
-      onPressed: () => close(context, null),
+      onPressed: () {
+        // Limpiamos los streams
+        clearStreams();
+        // Cerramos el SearchDelegate
+        close(context, null);
+      },
     );
   }
 
@@ -118,8 +135,12 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
             final movie = movies[index];
             return _MovieItem(
               movie: movie,
-              // NOTA: Como ya creamos la función en nuestro _MovieItem entonces le mandamos la referencia al close del SearchDelegate
-              onMovieSelected: close,
+              // NOTA: Como ya creamos la función en nuestro _MovieItem entonces le mandamos la referencia al close del SearchDelegate y ahora como tenemos el
+              //       debounce también ocupamos ajustar y mandar el context, adicionalmente también limpiar los streams
+              onMovieSelected: (context, movie) {
+                clearStreams();
+                close(context, movie);
+              },
             );
           },
         );
