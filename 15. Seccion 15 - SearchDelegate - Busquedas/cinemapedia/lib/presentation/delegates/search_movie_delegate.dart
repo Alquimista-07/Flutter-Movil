@@ -27,6 +27,10 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   //       usamos el método broadcast, pero OJO eso es solo si no sabemos o necesitamos esos multiples listener de lo contrario
   //       si solo vamos a tener uno simplemente usamos el StreamController
   StreamController<List<Movie>> debouncedMovies = StreamController.broadcast();
+
+  // NOTA: Creamos un nuevo stream para hacer lo del indicador de carga
+  StreamController<bool> isLoadingStream = StreamController.broadcast();
+
   // NOTA: Creamos una nueva propiedad también para el debounce el cual permite determinar un periodo de tiempo, limpiarlo y cancelarlo
   Timer? _debounceTimer;
 
@@ -43,6 +47,8 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
   // Cramos un método para detectar cuando el query cambie
   void _onQueryChanged(String query) {
+    // NOTA: Ahora cambiamos el valor del stram isLoadingStream para que tan pronto se inicie a escribir cambie el icono por el indicador de carga
+    isLoadingStream.add(true);
     if (_debounceTimer?.isActive ?? false) {
       // Lo limpiamos
       _debounceTimer!.cancel();
@@ -64,6 +70,9 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
       final movies = await searchMovies(query);
       debouncedMovies.add(movies);
       initialMovies = movies;
+
+      // NOTA: Y detenemos el loadin del stream tan pronto tengo las películas
+      isLoadingStream.add(false);
     });
   }
 
@@ -110,21 +119,40 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   List<Widget>? buildActions(BuildContext context) {
     //return [const Text('BuildActions')];
     return [
-      // NOTA: Colocamos un botón para limpiar lo que se escribió pero de forma condicional para que no se muestre si no hay nada
-      //       escrito
-      //       Entonces en este caso vamos a usar una propiedad que nos ofrece el SearchDelegate que es el query la cual contiene
-      //       la información de esa caja de texto, por lo tanto podemos setearle un nuevo valor por ejemplo un valor vacío y de
-      //       esta forma ya lo limpiamos
+      // NOTA: Ahora vamos a hacer una modificación para mostrar de forma condicional basado en un stream para mostrar un widget u otro
+      //       que nos muestre el indicador de carga o borrado del texto de la caja de buscar
+      StreamBuilder(
+        initialData: false,
+        stream: isLoadingStream.stream,
+        builder: (context, snapshot) {
+          if (snapshot.data ?? false) {
+            //* Indicador de carga
+            return SpinPerfect(
+              duration: const Duration(seconds: 20),
+              spins: 10,
+              infinite: true,
+              child: const IconButton(
+                  icon: Icon(Icons.refresh_rounded), onPressed: null),
+            );
+          }
+          // NOTA: Colocamos un botón para limpiar lo que se escribió pero de forma condicional para que no se muestre si no hay nada
+          //       escrito
+          //       Entonces en este caso vamos a usar una propiedad que nos ofrece el SearchDelegate que es el query la cual contiene
+          //       la información de esa caja de texto, por lo tanto podemos setearle un nuevo valor por ejemplo un valor vacío y de
+          //       esta forma ya lo limpiamos
 
-      //if (query.isNotEmpty)
-      FadeIn(
-        // NOTA: Una propiedad adicional del fadeIn del animate_do es el animate, que es un valor booleano el cual trabaja en vase a una condición
-        //       y fácilmente esta reemplazaría al if que teniamos anteriormente
-        animate: query.isNotEmpty,
-        //duration: const Duration(milliseconds: 200), // Velociadad de la animación
-        child: IconButton(
-            icon: const Icon(Icons.clear), onPressed: () => query = ''),
-      )
+          //if (query.isNotEmpty)
+          //* Borrar la caja de texto
+          return FadeIn(
+            // NOTA: Una propiedad adicional del fadeIn del animate_do es el animate, que es un valor booleano el cual trabaja en vase a una condición
+            //       y fácilmente esta reemplazaría al if que teniamos anteriormente
+            animate: query.isNotEmpty,
+            //duration: const Duration(milliseconds: 200), // Velociadad de la animación
+            child: IconButton(
+                icon: const Icon(Icons.clear), onPressed: () => query = ''),
+          );
+        },
+      ),
     ];
   }
 
