@@ -67,6 +67,35 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
     });
   }
 
+  // NOTA: Ahora como prácticamente el código del stram que tenemos en el results y el suggestions es el mismo entonces vamos a
+  //       crear un método que regrese un widget para llamarlo tanto en el suggestions como el results y de esta forma cumplir
+  //       con el principio DRY
+  Widget buildResultsAndSuggestions() {
+    return StreamBuilder(
+      initialData: initialMovies,
+      stream: debouncedMovies.stream,
+      builder: (context, snapshot) {
+        final movies = snapshot.data ?? [];
+
+        return ListView.builder(
+          itemCount: movies.length,
+          itemBuilder: (context, index) {
+            final movie = movies[index];
+            return _MovieItem(
+              movie: movie,
+              // NOTA: Como ya creamos la función en nuestro _MovieItem entonces le mandamos la referencia al close del SearchDelegate y ahora como tenemos el
+              //       debounce también ocupamos ajustar y mandar el context, adicionalmente también limpiar los streams
+              onMovieSelected: (context, movie) {
+                clearStreams();
+                close(context, movie);
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
   // NOTA: Otra cosa es que nosotros podemos implementar otro override que no es obligatorio al estender del SearchDelegate
   //       pero que nos va a servir para cambiar el texto de la caja de texto para que no diga Search sino lo que nosotros
   //       indiquemos
@@ -128,30 +157,9 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
     //       enter va a crear un nuevo listener por lo tanto a pesar de que el stream que tenemos en el buildSuggestions ya emitio algo antes
     //       este no ha emitido ningún valor, entonces hay varias formas de solucionarlo la cual una sería llamar el _onQueryChanged antes del
     //       return del stream pero esto haría la petición dos veces, otra sería deshabilitar el enter de alguna forma, otra forma sería con
-    //       la propiedad que habíamos definido para tener la lista de initialMovies por lo tanto ya no sería final para poderla cambiar
-    return StreamBuilder(
-      initialData: initialMovies,
-      stream: debouncedMovies.stream,
-      builder: (context, snapshot) {
-        final movies = snapshot.data ?? [];
-
-        return ListView.builder(
-          itemCount: movies.length,
-          itemBuilder: (context, index) {
-            final movie = movies[index];
-            return _MovieItem(
-              movie: movie,
-              // NOTA: Como ya creamos la función en nuestro _MovieItem entonces le mandamos la referencia al close del SearchDelegate y ahora como tenemos el
-              //       debounce también ocupamos ajustar y mandar el context, adicionalmente también limpiar los streams
-              onMovieSelected: (context, movie) {
-                clearStreams();
-                close(context, movie);
-              },
-            );
-          },
-        );
-      },
-    );
+    //       la propiedad que habíamos definido para tener la lista de initialMovies por lo tanto ya no sería final para poderla cambiar.
+    // NOTA: Cambiamos este stream para llamar nuestro método que cumple con el principio DRY
+    return buildResultsAndSuggestions();
   }
 
   // NOTA: Este sería para cuando la persona este escribiendo y es el que en este caso vamos a usar ya que la idea es que el usuario
@@ -167,29 +175,8 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
     //       un FutureBuilder que luego vamos a cambiar por un Streambuilder para implementar el debounce
     // return FutureBuilder(
     //   future: searchMovies(query),
-    return StreamBuilder(
-      initialData: initialMovies,
-      stream: debouncedMovies.stream,
-      builder: (context, snapshot) {
-        final movies = snapshot.data ?? [];
-
-        return ListView.builder(
-          itemCount: movies.length,
-          itemBuilder: (context, index) {
-            final movie = movies[index];
-            return _MovieItem(
-              movie: movie,
-              // NOTA: Como ya creamos la función en nuestro _MovieItem entonces le mandamos la referencia al close del SearchDelegate y ahora como tenemos el
-              //       debounce también ocupamos ajustar y mandar el context, adicionalmente también limpiar los streams
-              onMovieSelected: (context, movie) {
-                clearStreams();
-                close(context, movie);
-              },
-            );
-          },
-        );
-      },
-    );
+    // NOTA: Cambiamos este stream para llamar nuestro método que cumple con el principio DRY
+    return buildResultsAndSuggestions();
   }
 }
 
