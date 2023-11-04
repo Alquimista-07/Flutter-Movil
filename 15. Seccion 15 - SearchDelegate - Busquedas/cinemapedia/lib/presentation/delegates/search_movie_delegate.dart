@@ -21,7 +21,7 @@ typedef SearcMoviesCallback = Future<List<Movie>> Function(String query);
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
   final SearcMoviesCallback searchMovies;
 
-  final List<Movie> initialMovies;
+  List<Movie> initialMovies;
 
   // NOTA: Ahora para el dobounce vamos a usar un stream controller, adicionalmente si queremos tener múltiples listener
   //       usamos el método broadcast, pero OJO eso es solo si no sabemos o necesitamos esos multiples listener de lo contrario
@@ -30,8 +30,11 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   // NOTA: Creamos una nueva propiedad también para el debounce el cual permite determinar un periodo de tiempo, limpiarlo y cancelarlo
   Timer? _debounceTimer;
 
-  SearchMovieDelegate(
-      {required this.searchMovies, required this.initialMovies});
+  SearchMovieDelegate({required this.searchMovies, required this.initialMovies})
+      // NOTA: Con este super podemos también cambiar el texto del input del delegate y el nombre del botón de enter del teclado
+      : super(
+            searchFieldLabel: 'Buscar Película',
+            textInputAction: TextInputAction.done);
 
   // Método para limpiar los streams y que no queden en memoria
   void clearStreams() {
@@ -60,14 +63,18 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
 
       final movies = await searchMovies(query);
       debouncedMovies.add(movies);
+      initialMovies = movies;
     });
   }
 
   // NOTA: Otra cosa es que nosotros podemos implementar otro override que no es obligatorio al estender del SearchDelegate
   //       pero que nos va a servir para cambiar el texto de la caja de texto para que no diga Search sino lo que nosotros
   //       indiquemos
+  // NOTA: Comentamos esta parte ya que en el super del constructor también podemos cambiar esto
+  /*
   @override
   String get searchFieldLabel => 'Buscar Película';
+  */
 
   // NOTA: Este es como para contruir las acciones
   @override
@@ -115,7 +122,36 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   // NOTA: Este serían los resultados que van a aparecer cuando el usuario persione Enter
   @override
   Widget buildResults(BuildContext context) {
-    return const Text('BuildResults');
+    //return const Text('BuildResults');
+    // NOTA: Acá básicamente ocupamos mostrar lo mismo que tenemos en el buildSuggestions por lo tanto podemos reutilizar parte del código
+    //       que tenemos allá y hacerle algunas modificaciones ya que se nos presenta un problema es que al ser un Stream, esta cuando demos
+    //       enter va a crear un nuevo listener por lo tanto a pesar de que el stream que tenemos en el buildSuggestions ya emitio algo antes
+    //       este no ha emitido ningún valor, entonces hay varias formas de solucionarlo la cual una sería llamar el _onQueryChanged antes del
+    //       return del stream pero esto haría la petición dos veces, otra sería deshabilitar el enter de alguna forma, otra forma sería con
+    //       la propiedad que habíamos definido para tener la lista de initialMovies por lo tanto ya no sería final para poderla cambiar
+    return StreamBuilder(
+      initialData: initialMovies,
+      stream: debouncedMovies.stream,
+      builder: (context, snapshot) {
+        final movies = snapshot.data ?? [];
+
+        return ListView.builder(
+          itemCount: movies.length,
+          itemBuilder: (context, index) {
+            final movie = movies[index];
+            return _MovieItem(
+              movie: movie,
+              // NOTA: Como ya creamos la función en nuestro _MovieItem entonces le mandamos la referencia al close del SearchDelegate y ahora como tenemos el
+              //       debounce también ocupamos ajustar y mandar el context, adicionalmente también limpiar los streams
+              onMovieSelected: (context, movie) {
+                clearStreams();
+                close(context, movie);
+              },
+            );
+          },
+        );
+      },
+    );
   }
 
   // NOTA: Este sería para cuando la persona este escribiendo y es el que en este caso vamos a usar ya que la idea es que el usuario
