@@ -57,6 +57,8 @@ class CustomAppbar extends ConsumerWidget {
                     //       que es read porque estamos dentro de un método, y al final mandamos la función  searchMovies pero OJO solo mandamos
                     //       la referencia y no la ejecutamos y recordemos que para mandar la referencia es sin agregarle los ()
                     delegate: SearchMovieDelegate(
+                        // NOTA: Mandamos las películas almacenadas resultantes de la búsqueda previamente realizada
+                        initialMovies: searchedMovies,
                         // NOTA: Entonces ahora para almacenar el query y no se borre cuando se cierre el SearchDelegate podríamos mandar la actualización del state acá
                         //       y cambiamos para que ya no pasemos la referencia a la función sino que la llamamaos y le pasamos el query
                         // NOTA: Comentamos esto ya que ahora la responsabilidad de almacenar el query la tiene el provider que creamos para almacenar el listado de películas

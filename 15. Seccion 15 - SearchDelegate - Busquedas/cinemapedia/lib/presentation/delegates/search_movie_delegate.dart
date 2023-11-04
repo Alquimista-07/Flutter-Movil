@@ -21,6 +21,8 @@ typedef SearcMoviesCallback = Future<List<Movie>> Function(String query);
 class SearchMovieDelegate extends SearchDelegate<Movie?> {
   final SearcMoviesCallback searchMovies;
 
+  final List<Movie> initialMovies;
+
   // NOTA: Ahora para el dobounce vamos a usar un stream controller, adicionalmente si queremos tener múltiples listener
   //       usamos el método broadcast, pero OJO eso es solo si no sabemos o necesitamos esos multiples listener de lo contrario
   //       si solo vamos a tener uno simplemente usamos el StreamController
@@ -28,7 +30,8 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   // NOTA: Creamos una nueva propiedad también para el debounce el cual permite determinar un periodo de tiempo, limpiarlo y cancelarlo
   Timer? _debounceTimer;
 
-  SearchMovieDelegate({required this.searchMovies});
+  SearchMovieDelegate(
+      {required this.searchMovies, required this.initialMovies});
 
   // Método para limpiar los streams y que no queden en memoria
   void clearStreams() {
@@ -43,6 +46,9 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
     }
 
     _debounceTimer = Timer(const Duration(milliseconds: 500), () async {
+      // NOTA: Como ya estamos almacenando la data en un provider tenemos que limpiar y evitar hacer la petición.
+      //       Por lo tanto modificamos en el moviedb_datasource para agregar la validación de si el query esta vacío.
+      /*
       // Cuando deja de escribir durante 500 milisegundos
       if (query.isEmpty) {
         // Este add lo hacemos acá para que no se limpie el arreglo y muestre los resultados anteriores
@@ -50,6 +56,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
         debouncedMovies.add([]);
         return;
       }
+      */
 
       final movies = await searchMovies(query);
       debouncedMovies.add(movies);
@@ -125,6 +132,7 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
     // return FutureBuilder(
     //   future: searchMovies(query),
     return StreamBuilder(
+      initialData: initialMovies,
       stream: debouncedMovies.stream,
       builder: (context, snapshot) {
         final movies = snapshot.data ?? [];
