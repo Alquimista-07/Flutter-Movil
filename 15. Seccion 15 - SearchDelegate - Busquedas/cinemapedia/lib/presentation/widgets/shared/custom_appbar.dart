@@ -37,7 +37,9 @@ class CustomAppbar extends ConsumerWidget {
               IconButton(
                 icon: const Icon(Icons.search),
                 onPressed: () {
-                  final movieRepository = ref.read(movieRepositoryProvider);
+                  final searchedMovies = ref.read(searchedMoviesProvider);
+                  // NOTA: Esto lo comentamos porque ahora tenemos un nuevo provider que almacena las películas y el término de búsqueda
+                  //final movieRepository = ref.read(movieRepositoryProvider);
                   final searchQuery = ref.read(searchQueryProvider);
 
                   // NOTA: Acá vamos a mandar a llamar una función que ya viene en Flutter que se llama showSearch el cual tiene el contexto de la app que ya sabemos
@@ -55,15 +57,21 @@ class CustomAppbar extends ConsumerWidget {
                     //       que es read porque estamos dentro de un método, y al final mandamos la función  searchMovies pero OJO solo mandamos
                     //       la referencia y no la ejecutamos y recordemos que para mandar la referencia es sin agregarle los ()
                     delegate: SearchMovieDelegate(
-                      // NOTA: Entonces ahora para almacenar el query y no se borre cuando se cierre el SearchDelegate podríamos mandar la actualización del state acá
-                      //       y cambiamos para que ya no pasemos la referencia a la función sino que la llamamaos y le pasamos el query
+                        // NOTA: Entonces ahora para almacenar el query y no se borre cuando se cierre el SearchDelegate podríamos mandar la actualización del state acá
+                        //       y cambiamos para que ya no pasemos la referencia a la función sino que la llamamaos y le pasamos el query
+                        // NOTA: Comentamos esto ya que ahora la responsabilidad de almacenar el query la tiene el provider que creamos para almacenar el listado de películas
+                        //       resultantes de la búsqueda.
+                        /*
                       searchMovies: (query) {
                         ref
                             .read(searchQueryProvider.notifier)
                             .update((state) => query);
                         return movieRepository.searchMovies(query);
                       },
-                    ),
+                      */
+                        searchMovies: ref
+                            .read(searchedMoviesProvider.notifier)
+                            .searchMoviesByQuery),
 
                     // NOTA: EL showSearch al ser un Future podemos usar el método then y tener la película opcional y evaluar y navegar cuando tengamos un valor
                   ).then((movie) {
