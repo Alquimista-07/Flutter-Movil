@@ -1,4 +1,5 @@
 import 'package:cinemapedia/presentation/screens/screens.dart';
+import 'package:cinemapedia/presentation/views/views.dart';
 import 'package:go_router/go_router.dart';
 
 final appRouter = GoRouter(
@@ -13,7 +14,8 @@ final appRouter = GoRouter(
     GoRoute(
       name: HomeScreen.name,
       path: '/',
-      builder: (context, state) => const HomeScreen(),
+      // NOTA: Por lo tanto como ahora tenemos nuestra propiedad llamada childView que le indica que vista va a tener entonces necesitamos usarla.
+      builder: (context, state) => const HomeScreen(childView: HomeView()),
       routes: [
         // NOTA: Acá vamos a crear una ruta que va a enviar un parámetro para navegar a una película por id
         GoRoute(
