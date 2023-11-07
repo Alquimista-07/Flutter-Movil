@@ -89,6 +89,19 @@ class _CustomSliverAppBar extends StatelessWidget {
       backgroundColor: Colors.black,
       expandedHeight: size.height * 0.7, // 70% de la pantalla
       foregroundColor: Colors.white, // Color del primer plano
+      // NOTA: Para colocar el ícono del corazón para agregar a favoritos vamos a agregar la propiedad actions
+      actions: [
+        IconButton(
+          onPressed: () {
+            // TODO: Realizar el toggle
+          },
+          icon: const Icon(Icons.favorite_border),
+          // icon: const Icon(
+          //   Icons.favorite_rounded,
+          //   color: Colors.red,
+          // ),
+        )
+      ],
       // NOTA: El flexibleSpace es el epacio flexible del nuestro custom AppBar
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
