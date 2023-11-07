@@ -130,43 +130,32 @@ class _CustomSliverAppBar extends StatelessWidget {
               ),
             ),
 
-            // NOTA: Vamos a colocar un gradiente para los posters con color claro
-            const SizedBox.expand(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    // NOTA: El begin y el end los asignamos para que el gradiente sea de arriba hacia abajo
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    // NOTA: Ahora como queremos que el gradiente no inicie deste el tope de la pantalla le decimos
-                    //       con los stops que inicie en el 70% del espacio asignado y termine en el 100% del espacio
-                    //       asignado
-                    stops: [0.7, 1.0],
-                    // NOTA: Asignamos los colore
-                    colors: [
-                      Colors.transparent,
-                      Colors.black87,
-                    ],
-                  ),
-                ),
-              ),
+            // NOTA: Como vemos que el gradiente lo estamos usando en varios lados, entonces hacemos un refactora para crear un widget personalizado
+            //       que reciba las propiedades necesarias y nos ayude a evitar copiar y pegar código.
+            const _CustomGradient(
+              begin: Alignment.topRight,
+              end: Alignment.bottomLeft,
+              stops: [0.0, 0.2],
+              colors: [Colors.black54, Colors.transparent],
             ),
 
-            // NOTA: Vamos a colocar un gradiente en la sección de la flecha del appbar que sirve para regresar ya que de la misma forma
-            //       en algunos posters no se alcanza a apreciar
-            const SizedBox.expand(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    stops: [0.0, 0.3],
-                    colors: [
-                      Colors.black87,
-                      Colors.transparent,
-                    ],
-                  ),
-                ),
-              ),
+            const _CustomGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              stops: [0.8, 1.0],
+              colors: [
+                Colors.transparent,
+                Colors.black54,
+              ],
+            ),
+
+            const _CustomGradient(
+              begin: Alignment.topLeft,
+              stops: [0.0, 0.3],
+              colors: [
+                Colors.black87,
+                Colors.transparent,
+              ],
             ),
           ],
         ),
@@ -328,6 +317,41 @@ class _ActorsByMovie extends ConsumerWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class _CustomGradient extends StatelessWidget {
+  final AlignmentGeometry begin;
+  final AlignmentGeometry end;
+  final List<double> stops;
+  final List<Color> colors;
+
+  const _CustomGradient({
+    this.begin = Alignment.topCenter,
+    this.end = Alignment.topRight,
+    required this.stops,
+    required this.colors,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            // NOTA: El begin y el end los asignamos para que el gradiente sea de arriba hacia abajo
+            begin: begin,
+            end: end,
+            // NOTA: Ahora como queremos que el gradiente no inicie deste el tope de la pantalla le decimos
+            //       con los stops que inicie en el 70% del espacio asignado y termine en el 100% del espacio
+            //       asignado
+            stops: stops,
+            // NOTA: Asignamos los colore
+            colors: colors,
+          ),
+        ),
       ),
     );
   }
