@@ -161,7 +161,7 @@ class _Slide extends StatelessWidget {
                   return GestureDetector(
                     // NOTA: Recordemos que el push de go_router no destruye la anterior ruta por lo tanto podemos regresar a la pantalla anterior.
                     //       Si quisieramos destruir la ruta anterior usariamos el go
-                    onTap: () => context.push('/movie/${movie.id}'),
+                    onTap: () => context.push('/home/0/movie/${movie.id}'),
                     child: FadeIn(child: child),
                   );
                 },
