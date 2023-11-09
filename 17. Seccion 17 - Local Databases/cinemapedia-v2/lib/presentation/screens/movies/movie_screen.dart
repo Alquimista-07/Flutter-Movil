@@ -75,12 +75,44 @@ class MovieScreenState extends ConsumerState<MovieScreen> {
   }
 }
 
+// NOTA: El .autoDispose hace que cuando el widget donde se esta usando el provider se destruye, automáticamente
+//       lo deja en su estado inicial.
+//       Ej:
+//       Provider.autoDispose((ref)
+//
+//       También tenemos el .family el cual nos permite recibir un argumento y lo podemos definir de cualquier tipo:
+//       Ej:
+//       Provider.autoDispose((ref)
+//
+//       Adicionalmente se pueden usar juntos.
+//       EJ:
+//      Provider.family.autoDispose((ref, arg)
+//
+// NOTA: Como el toggle del corazón para cambiar a favorito o no es algo que solo voy a ocupar en esta pantalla, entonces lo que voy a hacer es
+//       crear el estado o ese pequeño provider que va a regresar un booleano lo voy a tener aquí, pero lo podriamos colocar en los providers, o
+//       en otro lado.
+//       EL FutureProvider es otro provider de riverpod que podemos ver en la documentación, el cual sirve cuando tenemos algún tipo de tarea
+//       asíncrona para que se resuevla y una vez se resuelva obtenemos el valor.
+//       Como mencionamos que el family nos permite mandar un argumento, entonces ese nos sive para obtener el id de la película y el aucl necesitamos
+//       para hacer la consulta en la base de datos y verificar si es favorita o no. Adicionalmente lo colocamos con el autodispose
+final isFavoriteProvider =
+    FutureProvider.family.autoDispose((ref, int movieId) {
+  // Consultamos en la base de datos
+  final localStorageRepository = ref.watch(localStorageRepositoryProvider);
+
+  return localStorageRepository
+      .isMovieFavorite(movieId); // Si esta en favoritos
+});
+
 class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
   const _CustomSliverAppBar({required this.movie});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // NOTA: Tomamos la instancia del provider que devuelve si es favorito y que recibe el id de la película
+    final isFavoriteFuture = ref.watch(isFavoriteProvider(movie.id));
+
     // Obtenemos las dimensiones del dispositivo con el fin de más adelante usar el porcentaje que necesitemos
     final size = MediaQuery.of(context).size;
 
@@ -91,15 +123,34 @@ class _CustomSliverAppBar extends ConsumerWidget {
       // NOTA: Para colocar el ícono del corazón para agregar a favoritos vamos a agregar la propiedad actions
       actions: [
         IconButton(
-          onPressed: () {
-            ref.watch(localStorageRepositoryProvider).toggleFavorite(movie);
-          },
-          icon: const Icon(Icons.favorite_border),
-          // icon: const Icon(
-          //   Icons.favorite_rounded,
-          //   color: Colors.red,
-          // ),
-        )
+            // NOTA: Convertimos la función en asíncrona y le decimos que espere hasta que haga el toggle antes de invalidar el provider
+            //       ya que si esto no se algunas veces se hace muy rápido la invalidación y el icono no cambia correctamente dando la
+            //       sensación de que no funciona.
+            onPressed: () async {
+              await ref
+                  .watch(localStorageRepositoryProvider)
+                  .toggleFavorite(movie);
+
+              // NOTA: Entonces como no vemos que el incono de favorito cambie, sino hasta que salimos y volvemos a entrar, por lo tanto
+              //       técnicamete podriamos hacer la petición al provider nuevemten, por lo tanto podemos invalidar el provider para que
+              //       vuelva a hacer la petición y confirme.
+              ref.invalidate(isFavoriteProvider(movie.id));
+            },
+            // NOTA: Entonces para cambiar el icono de favorito en base a la consulta del provider vamos a usar un helper method
+            //       que es el when que tiene tres proiedades, que es cuando tenemos data, cuando hay un error y cuando se esta
+            //       haciendo la petición y le podemos colocar un inicador de progreso, pero este en este caso se va a hacer tan
+            //       rápido que no lo vamos a poder ver ya que el acceso a la base de datos es muy rápido.
+            icon: isFavoriteFuture.when(
+              data: (isFavorite) => isFavorite
+                  ? const Icon(Icons.favorite_rounded, color: Colors.red)
+                  : const Icon(Icons.favorite_border),
+              //error: (error, stackTrace) =>
+              error: (_, __) =>
+                  throw UnimplementedError(), // Acá podriamos mandar un widget como un Saffold notifier, un snackbar u otro para mostrar el error
+              loading: () => const CircularProgressIndicator(
+                strokeWidth: 2,
+              ),
+            ))
       ],
       // NOTA: El flexibleSpace es el epacio flexible del nuestro custom AppBar
       flexibleSpace: FlexibleSpaceBar(
