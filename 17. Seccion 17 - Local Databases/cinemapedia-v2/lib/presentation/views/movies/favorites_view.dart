@@ -2,6 +2,7 @@
 //       no es más que un widget que es muy similar a un widget que sea un screen solo que este es parcial y no ocupa toda la pantalla. Otra cosa
 //       es que la vista puede o no tener un scaffold
 import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/presentation/views/movies/movie_masonry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -34,14 +35,7 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
     final favoriteMovies = ref.watch(favoriteMoviesProvider).values.toList();
 
     return Scaffold(
-      //* Tarea clase 271
-      body: ListView.builder(
-        itemCount: favoriteMovies.length,
-        itemBuilder: (context, index) {
-          final favorites = favoriteMovies[index];
-          return ListTile(title: Text(favorites.title));
-        },
-      ),
+      body: MovieMasonry(movies: favoriteMovies),
     );
   }
 }
