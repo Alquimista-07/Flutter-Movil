@@ -5,6 +5,7 @@ import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:cinemapedia/presentation/views/movies/movie_masonry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 //* Tarea clase 271
 // NOTA: Es necesario primero convertir en un statefulwidget para la luego nuevamente convertirlo en un consumerstatefulwidget
@@ -52,6 +53,37 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
     //       y esto podemos hacerlo con un ciclo for, pero hay una forma más sencilla que es tomando el values y
     //       convirtiendolo a una lista con el método toList()
     final favoriteMovies = ref.watch(favoriteMoviesProvider).values.toList();
+
+    if (favoriteMovies.isEmpty) {
+      final colors = Theme.of(context).colorScheme;
+
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.favorite_outline_sharp,
+              size: 60,
+              color: colors.primary,
+            ),
+            Text(
+              'Ohhh no!!!',
+              style: TextStyle(fontSize: 30, color: colors.primary),
+            ),
+            const Text(
+              'No tienes películas favoritas.',
+              style: TextStyle(fontSize: 20, color: Colors.black45),
+            ),
+            const SizedBox(height: 20),
+            FilledButton.tonal(
+              onPressed: () => context.go('/home/0'),
+              child: const Text('Empieza a buscar'),
+            ),
+          ],
+        ),
+      );
+    }
 
     return Scaffold(
       body: MovieMasonry(
