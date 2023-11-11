@@ -127,8 +127,16 @@ class _CustomSliverAppBar extends ConsumerWidget {
             //       ya que si esto no se algunas veces se hace muy rápido la invalidación y el icono no cambia correctamente dando la
             //       sensación de que no funciona.
             onPressed: () async {
+              // await ref
+              //     .read(localStorageRepositoryProvider)
+              //     .toggleFavorite(movie);
+
+              // NOTA: Cambiamos este toggle para usar el nuevo método que creamos en el favorite_movies_provider
+              //       y que se encarga de eliminar de la base de datos como rendibujar la vista de favoritos.
+              //       Y de la misma manera hacemos esto síncrono para evitar que se invalide y el icono cambie
+              //       correctamente, y sobre el cual anteriormente se había comentado que existía ese error.
               await ref
-                  .watch(localStorageRepositoryProvider)
+                  .read(favoriteMoviesProvider.notifier)
                   .toggleFavorite(movie);
 
               // NOTA: Entonces como no vemos que el incono de favorito cambie, sino hasta que salimos y volvemos a entrar, por lo tanto

@@ -31,7 +31,8 @@ class StorageMoviesNotifier extends StateNotifier<Map<int, Movie>> {
 
   // NOTA: Cargar las siguiente películas
   Future<List<Movie>> loadNextPage() async {
-    final movies = await localStorageRepository.loadMovies(offset: page * 10);
+    final movies =
+        await localStorageRepository.loadMovies(offset: page * 10, limit: 20);
     page++;
 
     // NOTA: Actualizamos el estado cuando la pagina incremento y actualizo los items
@@ -48,5 +49,27 @@ class StorageMoviesNotifier extends StateNotifier<Map<int, Movie>> {
     state = {...state, ...tempMoviesMap};
 
     return movies;
+  }
+
+  // NOTA: Vamos a crear un método que nos ayude a remover y redibujar en favoritos
+  Future<void> toggleFavorite(Movie movie) async {
+    await localStorageRepository.toggleFavorite(movie);
+
+    final bool isMovieInFavorites = state[movie.id] != null;
+
+    // NOTA: Validamos y removemos del estado pero hay que tener un cuenta que esto no displara
+    //       la re renderización del widget ya que necesita un nuevo objeto y lo estamos es mutando
+    //       por lo tanto para disparar la renderización igualamos el state a un nuevo objeto usando
+    //       el spred
+    if (isMovieInFavorites) {
+      state.remove(movie.id);
+
+      // NOTA: Acá pasamos el nuevo objeto para disparar la renderización usando el spred que es una forma sencilla
+      //       de hacerlo y no tener que barrer los keys ni nada de eso
+      state = {...state};
+    } else {
+      // NOTA: Caso contrario tomamos el objeto y le pasamos id para que apunte a la nueva película
+      state = {...state, movie.id: movie};
+    }
   }
 }
