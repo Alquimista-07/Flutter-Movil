@@ -1,4 +1,4 @@
-import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/domain/entities/entities.dart';
 
 abstract class LocalStorageRepository {
   // NOTA: Esto lo podemos hacer mandado la pelicula, o simplemente un booleano y de hecho lo vamos a hacer de las dos formas

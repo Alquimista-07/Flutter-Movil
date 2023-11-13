@@ -7,9 +7,8 @@
 //       Adicionalmente esto genera una capa de protección para nuestra aplicacióno frente a posibles cambios de la API de terceros o API Externa.
 // NOTA: Ahora ¿cuál es el objetivo del Mapper? El Mapper va a tener como única misión leer diferentes modelos y crear mi entidad.
 
-import 'package:cinemapedia/domain/entities/movie.dart';
-import 'package:cinemapedia/infrastructure/models/moviedb/movie_details.dart';
-import 'package:cinemapedia/infrastructure/models/moviedb/movie_moviedb.dart';
+import 'package:cinemapedia/domain/entities/entities.dart';
+import 'package:cinemapedia/infrastructure/models/models.dart';
 
 class MovieMapper {
   static Movie movieDBToEntity(MovieMovieDB moviedb) => Movie(

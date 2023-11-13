@@ -1,8 +1,10 @@
-import 'package:animate_do/animate_do.dart';
-import 'package:cinemapedia/domain/entities/movie.dart';
-import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter/material.dart';
+import 'package:animate_do/animate_do.dart';
+import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cinemapedia/domain/entities/entities.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
+import 'package:cinemapedia/presentation/widgets/widgets.dart';
 
 // NOTA: Ahora como tenemos un provider con Riverpod tenemos que transformarlo en un ConsumerStatefulWidget
 class MovieScreen extends ConsumerStatefulWidget {
@@ -10,7 +12,10 @@ class MovieScreen extends ConsumerStatefulWidget {
 
   final String movieId;
 
-  const MovieScreen({super.key, required this.movieId});
+  const MovieScreen({
+    super.key,
+    required this.movieId,
+  });
 
   // NOTA: De la misma forma como tenemos el provider con Riverpod acá también cambiamos
   @override
@@ -106,7 +111,9 @@ final isFavoriteProvider =
 
 class _CustomSliverAppBar extends ConsumerWidget {
   final Movie movie;
-  const _CustomSliverAppBar({required this.movie});
+  const _CustomSliverAppBar({
+    required this.movie,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -115,6 +122,8 @@ class _CustomSliverAppBar extends ConsumerWidget {
 
     // Obtenemos las dimensiones del dispositivo con el fin de más adelante usar el porcentaje que necesitemos
     final size = MediaQuery.of(context).size;
+
+    final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
 
     return SliverAppBar(
       backgroundColor: Colors.black,
@@ -162,7 +171,13 @@ class _CustomSliverAppBar extends ConsumerWidget {
       ],
       // NOTA: El flexibleSpace es el epacio flexible del nuestro custom AppBar
       flexibleSpace: FlexibleSpaceBar(
-        titlePadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+        titlePadding: const EdgeInsets.only(bottom: 0),
+        title: _CustomGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          stops: const [0.7, 1.0],
+          colors: [Colors.transparent, scaffoldBackgroundColor],
+        ),
         // NOTA: Comentamos el titulo ya que no cuadra como se ve, más sin embargo lo dejamos como referencia
         // title: Text(
         //   movie.title,
@@ -188,6 +203,7 @@ class _CustomSliverAppBar extends ConsumerWidget {
               ),
             ),
 
+            //* Favorite Gradient Background
             // NOTA: Como vemos que el gradiente lo estamos usando en varios lados, entonces hacemos un refactora para crear un widget personalizado
             //       que reciba las propiedades necesarias y nos ayude a evitar copiar y pegar código.
             const _CustomGradient(
@@ -207,6 +223,7 @@ class _CustomSliverAppBar extends ConsumerWidget {
               ],
             ),
 
+            //* Back arrow background
             const _CustomGradient(
               begin: Alignment.topLeft,
               stops: [0.0, 0.3],
@@ -235,146 +252,115 @@ class _MovieDetails extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //* Imágen
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(
-                  movie.posterPath,
-                  width: size.width * 0.3,
-                ),
-              ),
-              const SizedBox(width: 10),
-
-              //* Descripción película
-              SizedBox(
-                // 70% menos los pixeles que asignamos al padding y el anterior sizedbox (que serían 40 aprox.)
-                width: (size.width - 40) * 0.7,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      movie.title,
-                      style: textStyle.titleLarge,
-                    ),
-                    Text(movie.overview),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
+        //* Titulo, Overview y Rating
+        _TitleAndOverview(movie: movie, size: size, textStyle: textStyle),
 
         //* Generos de la película
-        Padding(
-          padding: const EdgeInsets.all(8),
-          // NOTA: El widget wrap lo que hace es como si tuvieramos una grilla e ir acomodando los elementos automáticamente debajo cuando no
-          //       hay espacio disponible en la pantalla
-          child: Wrap(
-            children: [
-              ...movie.genreIds.map(
-                (gender) => Container(
-                  margin: const EdgeInsets.only(right: 10),
-                  // El widget Chip es esas cajitas donde vamos a motrar los géneros de la película y las hacemos que tengan bordes redondeados
-                  child: Chip(
-                    label: Text(gender),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+        _Genres(movie: movie),
 
         //* Mostrar los actores
-        _ActorsByMovie(movieId: movie.id.toString()),
+        ActorsByMovie(movieId: movie.id.toString()),
 
-        // NOTA: Espacio adicional para que la persona pueda seguir haciendo scroll y vea toda la descripción de la película
-        const SizedBox(height: 50),
+        //* Videos de la película (si tiene)
+        VideosFromMovie(movieId: movie.id),
+
+        //* Películas similares
+        SimilarMovies(movieId: movie.id),
       ],
     );
   }
 }
 
-// NOTA: OJO usamos el ConsumerStatefulWidget solo cuando necesitamos usar el initState para inicializar algo tan pronto sea construido
-//       de resto usamos el ConsumerWidget que es básicamente el StatefulWidget solo que el consumer es de Rverpod, adicionalmente el
-//       ConsumerStatefulWidget también es el mismo StatefulWidget solo que de riverpod y con la diferencia de que el ConsumerStatefulWidget
-//       tiene ese método initState que mencionamos.
+class _Genres extends StatelessWidget {
+  const _Genres({
+    required this.movie,
+  });
 
-//* Actores
-class _ActorsByMovie extends ConsumerWidget {
-  final String movieId;
-
-  const _ActorsByMovie({required this.movieId});
+  final Movie movie;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // NOTA: Escuchamos el provider de actores y ahí ya tengo mi mapa de actores, pero este puede ser nulo entonces hay que validar
-    final actorsByMovie = ref.watch(actorsByMovieProvider);
-
-    if (actorsByMovie[movieId] == null) {
-      // Si se cumple entonces estoy cargando los actores y mostramos un indicador de progreso
-      return const CircularProgressIndicator(strokeWidth: 2);
-    }
-
-    // NOTA: Acá con el movieId yo ya tengo los actores y ya se que los tengo entonces indicmaos un !
-    //       porque ya la evaluación la realizamos antes.
-    final actors = actorsByMovie[movieId]!;
-
-    return SizedBox(
-      height: 300,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: actors.length,
-        itemBuilder: (context, index) {
-          final actor = actors[index];
-
-          return Container(
-            padding: const EdgeInsets.all(8.0),
-            width: 135,
-            child: Column(
-              // NOTA: Alineamos los el contenido del Column a la izquierda
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Actor Photo
-                // NOTA: Adicionalmente le colocamos una animación FadeInRight al carrusel de las fotos de los actores
-                FadeInRight(
-                  child: ClipRRect(
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: SizedBox(
+        width: double.infinity,
+        // NOTA: El widget wrap lo que hace es como si tuvieramos una grilla e ir acomodando los elementos automáticamente debajo cuando no
+        //       hay espacio disponible en la pantalla
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          alignment: WrapAlignment.center,
+          children: [
+            ...movie.genreIds.map(
+              (gender) => Container(
+                margin: const EdgeInsets.only(right: 10),
+                // El widget Chip es esas cajitas donde vamos a motrar los géneros de la película y las hacemos que tengan bordes redondeados
+                child: Chip(
+                  label: Text(gender),
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
-                    child: Image.network(
-                      actor.profilePath,
-                      height: 180,
-                      width: 135,
-                      fit: BoxFit.cover,
-                    ),
                   ),
                 ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
-                // Nombre Actor
-                const SizedBox(height: 5),
+class _TitleAndOverview extends StatelessWidget {
+  const _TitleAndOverview({
+    required this.movie,
+    required this.size,
+    required this.textStyle,
+  });
 
-                Text(
-                  actor.name,
-                  maxLines: 2,
-                ),
+  final Movie movie;
+  final Size size;
+  final TextTheme textStyle;
 
-                Text(
-                  actor.character ?? '',
-                  maxLines: 2,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                  // La propiedad Overflow va a hacer es que si el texto es muy largo va a colocar ...
-                  overflow: TextOverflow.ellipsis,
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 15),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          //* Imágen
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: Image.network(
+              movie.posterPath,
+              width: size.width * 0.3,
+            ),
+          ),
+
+          const SizedBox(width: 10),
+
+          //* Descripción película
+          SizedBox(
+            // 70% menos los pixeles que asignamos al padding y el anterior sizedbox (que serían 40 aprox.)
+            width: (size.width - 40) * 0.7,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(movie.title, style: textStyle.titleLarge),
+                Text(movie.overview),
+                const SizedBox(height: 10),
+                MovieRating(voteAverage: movie.voteAverage),
+                Row(
+                  children: [
+                    const Text('Estreno:',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(width: 5),
+                    Text(HumanFormats.shortDate(movie.releaseDate))
+                  ],
                 ),
               ],
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }

@@ -6,6 +6,7 @@ import 'package:cinemapedia/config/theme/app_theme.dart';
 // NOTA: Importamos el paquete de dotenv que nos ayuda a manejar las variables de entorno, que instalamos y configuramos en nuestro pubspec.yaml
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 // NOTA: A continuación para usar dotenv debemos convertir el manin en un Future que no retorna nada
 Future<void> main() async {
@@ -25,6 +26,10 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // NOTA: Importante inicializar la fecha para que no de error al momento de formatearla a través del método
+    //       shorDate en el archivo human_formats.dart
+    initializeDateFormatting();
+
     return MaterialApp.router(
       routerConfig: appRouter,
       debugShowCheckedModeBanner: false,

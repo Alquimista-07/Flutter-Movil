@@ -1,7 +1,7 @@
 // NOTA: Esto es muy similar a como manejamos la películas de forma
 //       local (movie_info_provider) por lo tanto podemos copiar y
 //       pegar esa clase y ajustarla
-import 'package:cinemapedia/domain/entities/actor.dart';
+import 'package:cinemapedia/domain/entities/entities.dart';
 import 'package:cinemapedia/presentation/providers/actors/actors_repository_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -34,7 +34,9 @@ class ActorsByMovieNotifier extends StateNotifier<Map<String, List<Actor>>> {
   final GetActorsCallback getActors;
 
   // Constructor que regresa un mapa vacío
-  ActorsByMovieNotifier({required this.getActors}) : super({});
+  ActorsByMovieNotifier({
+    required this.getActors,
+  }) : super({});
 
   Future<void> loadActors(String movieId) async {
     // No voy a cargar nada si ya tiene el listado de los actores

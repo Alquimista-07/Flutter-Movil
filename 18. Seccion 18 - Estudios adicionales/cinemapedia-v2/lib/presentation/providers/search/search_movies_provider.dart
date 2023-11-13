@@ -1,6 +1,6 @@
 // NOTA: Este provider me va a aydar para mantener en memoria el query de búsqueda con el fin de que cuando cerremos
 //       el searchDelegate y volvamos a él tengamos lo que buscamos anteriormente
-import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/domain/entities/entities.dart';
 import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,8 +22,10 @@ class SearchedMoviesNotifier extends StateNotifier<List<Movie>> {
   SearchMoviesCallback searchMovies;
   final Ref ref;
 
-  SearchedMoviesNotifier({required this.searchMovies, required this.ref})
-      : super([]);
+  SearchedMoviesNotifier({
+    required this.searchMovies,
+    required this.ref,
+  }) : super([]);
 
   // NOTA: Ahora esté método a parte de almacenar lo que buscamos nos va a ayudar también a almacenar el término (query) de búsqueda
   //       con el fin de simplificar y quitarle esa tarea al CustomAppBar en la porpiedad searchMovies la cual habíamos modificado para

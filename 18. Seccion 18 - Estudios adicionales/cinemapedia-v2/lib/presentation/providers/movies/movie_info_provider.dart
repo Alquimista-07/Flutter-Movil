@@ -3,8 +3,8 @@
 //       Ahora lo que este provider va a hacer es crear un cache local para evitar hacer peticiones a la API innecesarias si ya habíamos
 //       visualizado la información de una película.
 
-import 'package:cinemapedia/domain/entities/movie.dart';
-import 'package:cinemapedia/presentation/providers/movies/movies_repository_provider.dart';
+import 'package:cinemapedia/domain/entities/entities.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // NOTA: Creamos el provider
@@ -35,14 +35,14 @@ class MovieMapNotifier extends StateNotifier<Map<String, Movie>> {
   final GetMovieCallback getMovie;
 
   // Constructor que regresa un mapa vacío
-  MovieMapNotifier({required this.getMovie}) : super({});
+  MovieMapNotifier({
+    required this.getMovie,
+  }) : super({});
 
   Future<void> loadMovie(String movieId) async {
     // No voy a cargar nada si ya la tiene, adicionalmente podríamos colocar una fecha y si ya la fecha cambio traemos
     // la data nuevamente dese la API y habrían muchas cosas que podríamos hacer
     if (state[movieId] != null) return;
-
-    print('Realizando petición HTTP');
 
     // Si no la tenemos pedimos la data de la película a la API.
     // NOTA: Pero notemos que acá aún no estoy usando la implementación, simplemente estoy definiendolo

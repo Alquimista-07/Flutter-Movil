@@ -7,6 +7,7 @@
 // NOTA: Ahora ocupamos convertir el widget en un statefulwidget y luego en un ConsumerStatefulWidget con el fin de tener acceso
 //       al initstate, esto debido a que queremos que cuando el homeview se cargue yo quiero en el ciclo de vida realizar la carga
 //       de la primera página, es decir, usar el initistate
+import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,7 +25,8 @@ class HomeView extends ConsumerStatefulWidget {
 // NOTA: Y luego como convertimos de un StatefulWidget a un ConsumerStatefulWidget acá ya no manejamos el state sino un
 //       ConsumerState. Y con esto a lo largo de todo este ConsumerState ya tengo acceso al ref de forma global en todo
 //       este scope.
-class HomeViewState extends ConsumerState<HomeView> {
+class HomeViewState extends ConsumerState<HomeView>
+    with AutomaticKeepAliveClientMixin {
   @override
   void initState() {
     super.initState();
@@ -44,6 +46,8 @@ class HomeViewState extends ConsumerState<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     // NOTA: Mostramos nuestro Full Screen Loader divertido y personalizado.
     //       Ahora hay que tener en cuenta que este loader lo vamos a mostrar der forma condicional ya que necesitamos
     //       estar pendiente de los cuatro providers y validar cuando los cuatro tengan data o algún valor vamos a ocultar
@@ -62,9 +66,6 @@ class HomeViewState extends ConsumerState<HomeView> {
 
     // NOTA: Usamos el provider que creamos para cargar solo 6 de las 20 slides de peliculas que nos da la API.
     final slideShowMovies = ref.watch(moviesSliderProvider);
-
-    // NOTA: Hacemos referencia nuestro provider para obtener las pelpiculas populares
-    final popularMovies = ref.watch(popularMoviesProvider);
 
     //* Tarea: Referencia al provider que obtiene las películas que van a estar próximamente
     final upcomingMovies = ref.watch(upcomingMoviesProvider);
@@ -107,7 +108,8 @@ class HomeViewState extends ConsumerState<HomeView> {
                   MovieHorizontalListView(
                     movies: nowPlayingMovies,
                     title: 'En Cines',
-                    subTitle: 'Viernes 28',
+                    // NOTA: Ajuste para tomar la fecha del sistema y darle formato.
+                    subTitle: HumanFormats.shortDate(DateTime.now()),
                     loadNextPage: () {
                       //print('Llamado del padre');
                       ref
@@ -122,14 +124,6 @@ class HomeViewState extends ConsumerState<HomeView> {
                     subTitle: 'En este mes',
                     loadNextPage: () {
                       ref.read(upcomingMoviesProvider.notifier).loadNextPage();
-                    },
-                  ),
-
-                  MovieHorizontalListView(
-                    movies: popularMovies,
-                    title: 'Populares',
-                    loadNextPage: () {
-                      ref.read(popularMoviesProvider.notifier).loadNextPage();
                     },
                   ),
 
@@ -152,4 +146,7 @@ class HomeViewState extends ConsumerState<HomeView> {
       ],
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

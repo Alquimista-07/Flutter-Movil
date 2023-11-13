@@ -3,7 +3,7 @@
 //       crear es que basado en los principios SOLID nuestras clases deberian ser fácilmente extendibles pero
 //       cerradas a la modificación
 
-import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/domain/entities/entities.dart';
 import 'package:cinemapedia/presentation/providers/movies/movies_repository_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

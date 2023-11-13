@@ -3,7 +3,7 @@
 //       pantalla inicial.
 //       Entonces este provider va a cambiar basado en otros providers
 
-import 'package:cinemapedia/presentation/providers/movies/movies_providers.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // NOTA: En este caso como no ocupamos nada más que regresar un valor booleano entonces vamos a

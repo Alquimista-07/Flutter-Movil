@@ -13,4 +13,10 @@ class HumanFormats {
 
     return formattedNumber;
   }
+
+  // Método para dar formato a la fecha
+  static String shortDate(DateTime date) {
+    final format = DateFormat.yMMMEd('es');
+    return format.format(date);
+  }
 }

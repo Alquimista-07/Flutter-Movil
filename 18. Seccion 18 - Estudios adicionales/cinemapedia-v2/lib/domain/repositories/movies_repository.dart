@@ -3,7 +3,8 @@
 //       del repositorio yq eue el repositorio es el que va a permitir cambiar el datasource, por ejemplo, al día de
 //       mañana ya no quiero traer la información de MovieDB sino de IMDB y gracias a esto puedo hacer el cambio de
 //       forma sencilla sin afectar la aplicación y el código, es decir, el cambio debe de ser transparente.
-import 'package:cinemapedia/domain/entities/movie.dart';
+
+import 'package:cinemapedia/domain/entities/entities.dart';
 
 abstract class MoviesRepository {
   // Peliculas actualmente en cartelera
@@ -23,4 +24,10 @@ abstract class MoviesRepository {
 
   // Busqueda de películas
   Future<List<Movie>> searchMovies(String query);
+
+  // Obtener películas similares para recomendar
+  Future<List<Movie>> getSimilarMovies(int movieId);
+
+  // Obtener video trailer de YouTube por id de la película
+  Future<List<Video>> getYoutubeVideosById(int movieId);
 }

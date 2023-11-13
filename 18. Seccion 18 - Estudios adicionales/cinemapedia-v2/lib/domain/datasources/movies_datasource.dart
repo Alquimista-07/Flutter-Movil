@@ -6,7 +6,7 @@
 //       que pueden traer peliculas, puede ser de MovieDB, IMDB, mi API propia, un JSON de
 //       donde sea.
 
-import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/domain/entities/entities.dart';
 
 abstract class MoviesDatasource {
   // Peliculas actualmente en cartelera
@@ -26,4 +26,10 @@ abstract class MoviesDatasource {
 
   // Busqueda de películas
   Future<List<Movie>> searchMovies(String query);
+
+  // Peliculas similares para las recomendaciones
+  Future<List<Movie>> getSimilarMovies(int movieId);
+
+  // Obtener video trailer de yotuube por id de la película
+  Future<List<Video>> getYoutubeVideosById(int movieId);
 }

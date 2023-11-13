@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:animate_do/animate_do.dart';
 import 'package:cinemapedia/config/helpers/human_formats.dart';
-import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/domain/entities/entities.dart';
 import 'package:flutter/material.dart';
 
 // NOTA: Voy a definirme un tipo de función específica que me va a ayudar a definir el tipo del método
@@ -34,11 +34,15 @@ class SearchMovieDelegate extends SearchDelegate<Movie?> {
   // NOTA: Creamos una nueva propiedad también para el debounce el cual permite determinar un periodo de tiempo, limpiarlo y cancelarlo
   Timer? _debounceTimer;
 
-  SearchMovieDelegate({required this.searchMovies, required this.initialMovies})
-      // NOTA: Con este super podemos también cambiar el texto del input del delegate y el nombre del botón de enter del teclado
-      : super(
-            searchFieldLabel: 'Buscar Película',
-            textInputAction: TextInputAction.done);
+  SearchMovieDelegate({
+    required this.searchMovies,
+    required this.initialMovies,
+  })
+  // NOTA: Con este super podemos también cambiar el texto del input del delegate y el nombre del botón de enter del teclado
+  : super(
+          searchFieldLabel: 'Buscar Película',
+          //textInputAction: TextInputAction.done,
+        );
 
   // Método para limpiar los streams y que no queden en memoria
   void clearStreams() {
@@ -229,54 +233,60 @@ class _MovieItem extends StatelessWidget {
       onTap: () {
         onMovieSelected(context, movie);
       },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-        child: Row(
-          children: [
-            //* Image
-            SizedBox(
-              width: size.width * 0.2,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  movie.posterPath,
-                  loadingBuilder: (context, child, loadingProgress) =>
-                      FadeIn(child: child),
+      child: FadeIn(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+          child: Row(
+            children: [
+              //* Image
+              SizedBox(
+                width: size.width * 0.2,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  // NOTA: Cambiamos por una animación, con un tamaño predefinido para que cuando este cargando la imágen se muestre un loader
+                  //       y no saleten los textos cuando se este cargando y se termine de cargar una imágen.
+                  child: FadeInImage(
+                    height: 130,
+                    fit: BoxFit.cover,
+                    image: NetworkImage(movie.posterPath),
+                    placeholder:
+                        const AssetImage('assets/loaders/bottle-loader.gif'),
+                  ),
                 ),
               ),
-            ),
 
-            const SizedBox(width: 10),
+              const SizedBox(width: 10),
 
-            //* Description
-            SizedBox(
-              width: size.width * 0.7,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(movie.title, style: textStyles.titleMedium),
-                  (movie.overview.length > 100)
-                      ? Text('${movie.overview.substring(0, 100)}...')
-                      : Text(movie.overview),
-                  //* Calificación
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.star_half_rounded,
-                        color: Colors.yellow.shade800,
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        HumanFormats.number(movie.voteAverage, 1),
-                        style: textStyles.bodyMedium!
-                            .copyWith(color: Colors.yellow.shade900),
-                      ),
-                    ],
-                  )
-                ],
+              //* Description
+              SizedBox(
+                width: size.width * 0.7,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(movie.title, style: textStyles.titleMedium),
+                    (movie.overview.length > 100)
+                        ? Text('${movie.overview.substring(0, 100)}...')
+                        : Text(movie.overview),
+                    //* Calificación
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.star_half_rounded,
+                          color: Colors.yellow.shade800,
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          HumanFormats.number(movie.voteAverage, 1),
+                          style: textStyles.bodyMedium!
+                              .copyWith(color: Colors.yellow.shade900),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

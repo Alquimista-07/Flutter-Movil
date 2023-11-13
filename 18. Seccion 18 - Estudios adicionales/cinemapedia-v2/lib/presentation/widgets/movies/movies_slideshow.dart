@@ -4,7 +4,8 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
-import 'package:cinemapedia/domain/entities/movie.dart';
+import 'package:cinemapedia/domain/entities/entities.dart';
+import 'package:go_router/go_router.dart';
 
 class MoviesSlideshow extends StatelessWidget {
   // NOTA: Vamos a necesitar un listado de películas
@@ -72,22 +73,14 @@ class _Slide extends StatelessWidget {
         // NOTA: El widget ClipRRect me permite colocar bordes redondeados
         child: ClipRRect(
           borderRadius: BorderRadius.circular(20),
-          child: Image.network(
-            movie.backdropPath,
-            // NOTA: Con la propiedad fit ajustamos el tamaño de la imágen para que se adapte al padre.
-            fit: BoxFit.cover,
-            // NOTA: El loadingBuilder nos va a ayudar a saber cuando la imágen se contruyo y mostrar un loader de forma condicional
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress != null) {
-                return const DecoratedBox(
-                  decoration: BoxDecoration(color: Colors.black12),
-                );
-              }
-
-              // NOTA: Este child es básicamente lo que habiamos construido, es decir, el Image.network
-              //       Adicionalmente usamos el paquete animated_do para agregar una animación.
-              return FadeIn(child: child);
-            },
+          child: GestureDetector(
+            onTap: () => context.push('/home/0/movie/${movie.id}'),
+            child: FadeInImage(
+              // NOTA: Con la propiedad fit ajustamos el tamaño de la imágen para que se adapte al padre.
+              fit: BoxFit.cover,
+              placeholder: const AssetImage('assets/loaders/bottle-loader.gif'),
+              image: NetworkImage(movie.backdropPath),
+            ),
           ),
         ),
       ),

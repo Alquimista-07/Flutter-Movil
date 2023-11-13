@@ -1,10 +1,10 @@
 // NOTA: Esta va a ser una view pero va a ser parcial la cual va a estar dentro de un widget padre, por lo tanto el concepto de un view o vista
 //       no es más que un widget que es muy similar a un widget que sea un screen solo que este es parcial y no ocupa toda la pantalla. Otra cosa
 //       es que la vista puede o no tener un scaffold
-import 'package:cinemapedia/presentation/providers/providers.dart';
-import 'package:cinemapedia/presentation/views/movies/movie_masonry.dart';
+import 'package:cinemapedia/presentation/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cinemapedia/presentation/providers/providers.dart';
 import 'package:go_router/go_router.dart';
 
 //* Tarea clase 271
@@ -19,7 +19,8 @@ class FavoritesView extends ConsumerStatefulWidget {
   FavoritesViewState createState() => FavoritesViewState();
 }
 
-class FavoritesViewState extends ConsumerState<FavoritesView> {
+class FavoritesViewState extends ConsumerState<FavoritesView>
+    with AutomaticKeepAliveClientMixin {
   bool isLastPage = false;
   bool isLoading = false;
 
@@ -48,6 +49,8 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     //* Tarea clase 271
     // NOTA: Como el favoriteMovies es un mapa<int, movie> entonces esto lo necesitamos transformar a una lista
     //       y esto podemos hacerlo con un ciclo for, pero hay una forma más sencilla que es tomando el values y
@@ -73,7 +76,7 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
             ),
             const Text(
               'No tienes películas favoritas.',
-              style: TextStyle(fontSize: 20, color: Colors.black45),
+              style: TextStyle(fontSize: 20),
             ),
             const SizedBox(height: 20),
             FilledButton.tonal(
@@ -92,4 +95,7 @@ class FavoritesViewState extends ConsumerState<FavoritesView> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
