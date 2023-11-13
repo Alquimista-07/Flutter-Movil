@@ -1,7 +1,6 @@
 // NOTA: Para crear este Slider lo podríamos hacer desde cero pero en este caso ya existe un paquete
 //       llamado card_swiper que lo encontramos en https://pub.dev/packages/card_swiper y que nos sirve
 //       bastante para lo que queremos hacer.
-import 'package:animate_do/animate_do.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/material.dart';
 import 'package:cinemapedia/domain/entities/entities.dart';
