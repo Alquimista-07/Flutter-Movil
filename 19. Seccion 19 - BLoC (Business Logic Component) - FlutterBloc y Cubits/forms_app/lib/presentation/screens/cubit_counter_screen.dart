@@ -24,6 +24,13 @@ class CubitCounterScreen extends StatelessWidget {
 
 // NOTA: Por lo tanto como envolvimos esto en el BlocProvider entonces en todo lado de acá vamos a poderlo usar
 class _CubitCounterView extends StatelessWidget {
+  // NOTA: Para evitar repetir código y hacerlo más legible vamos a crear un método
+  //       que reciba el context y el valor opcional que si no se define el valor por
+  //       defecto es 1
+  void increaseCounterBy(BuildContext context, [int value = 1]) {
+    context.read<CounterCubit>().increaseBy(value);
+  }
+
   const _CubitCounterView();
 
   @override
@@ -36,14 +43,16 @@ class _CubitCounterView extends StatelessWidget {
     //       que tiene el state. Y es similar a Riverpod, adicionalmente también a parte del state tenemos acceso a los
     //       métodos como por ejemplo el increasedBy.
     //       Otra cosa es que recordemos que el watch cuando el state cambie va a volver a redibujar
-    final counterState = context.watch<CounterCubit>().state;
+    //final counterState = context.watch<CounterCubit>().state;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cubit Counter: ${counterState.transactionCount}'),
+        //title: Text('Cubit Counter: ${counterState.transactionCount}'),
         actions: [
           IconButton(
-            onPressed: () => {},
+            onPressed: () {
+              context.read<CounterCubit>().reset();
+            },
             icon: const Icon(Icons.refresh_outlined),
           ),
         ],
@@ -61,9 +70,13 @@ class _CubitCounterView extends StatelessWidget {
           // NOTA: En teoría si lo dejamos solo con el builder podría verse que el state cambia muchas veces, pero nosotros podemos inclusive venir acá y definir
           //       la propiedad buildWhen para contruirlo únicamente cuando el valor del counter cambie, es decir cuando el valor actual del counter sea diferente
           //       a su valor anterior y esto es una forma de hacerlo eficiente. Pero incluso existe una manera de evitar que colocar esta condiciones o validaciones
-          //       si el estado no cambia, por lo tanto dejamos comentada esta línea
+          //       si el estado no cambia, por lo tanto dejamos comentada esta línea.
+          // OJO: Hay que tener en cuenta que este buildwhen acá básicamente no nos va a servir ya que al estar definiendo el counterState a nivel del build y llamar
+          //      el whatch esto causa que cada vez se cree una nueva instancia del state por lo tanto no nos sirve dicha condición, pero si comentamos las 2 líneas
+          //      donde lo usamos vamos a ver que el print en la consola se muestra una solva vez cuando se resetea y no vuelve a mostrarse
           //buildWhen: (previous, current) => current.counter != previous.counter,
           builder: (context, state) {
+            print('Counter cambió');
             return Text('Counter value: ${state.counter}');
           },
         ),
@@ -76,19 +89,19 @@ class _CubitCounterView extends StatelessWidget {
             //       FloatingActionButton que se anima por defecto entre Scaffolds
             heroTag: '1',
             child: const Text('+3'),
-            onPressed: () => {},
+            onPressed: () => increaseCounterBy(context, 3),
           ),
           const SizedBox(height: 15),
           FloatingActionButton(
             heroTag: '2',
             child: const Text('+2'),
-            onPressed: () => {},
+            onPressed: () => increaseCounterBy(context, 2),
           ),
           const SizedBox(height: 15),
           FloatingActionButton(
             heroTag: '3',
             child: const Text('+1'),
-            onPressed: () => {},
+            onPressed: () => increaseCounterBy(context),
           ),
         ],
       ),

@@ -33,7 +33,7 @@ class CounterCubit extends Cubit<CounterState> {
     //     creamos nuestro copyWith() y funciona exáctemente igual que si hicieramos lo mencionado anterioemte, adicionalmente las propiedades no van a ser
     //     obligatorias ya que así lo definimos para que si no mandamos una propiedad tome el valor actual de ese estado
     emit(state.copyWith(
-      counter: state.counter,
+      counter: state.counter + value,
       transactionCount: state.transactionCount + 1,
     ));
   }
