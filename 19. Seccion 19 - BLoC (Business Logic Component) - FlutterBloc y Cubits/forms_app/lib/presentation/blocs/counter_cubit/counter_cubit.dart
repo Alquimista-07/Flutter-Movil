@@ -8,6 +8,7 @@
 
 // NOTA: Acá cambioamos la importación (import 'package:bloc/bloc.dart';) por la de flutter bloc ya que no tenemos bloc y además es porque Flutter Bloc ya contiene
 //       Bloc.
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // NOTA: Acá quitamos el (import 'package:meta/meta.dart') ya que como quitamos el @inmutable en el state entonces ya no es necesario, además porque una clase
@@ -16,7 +17,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 part 'counter_state.dart';
 
 class CounterCubit extends Cubit<CounterState> {
-  CounterCubit() : super(CounterState(counter: 5));
+  CounterCubit() : super(const CounterState(counter: 5));
 
   // NOTA: Una cosa genial de este CounterCubit que podríamos asimilarlo como si fuera un Provider, es decir, podemos verlo como si fuera algo similar.
   //       Nosotros podemos tener métodos, propiedades, propiedades propias del Cubit que no están amarradas al estado (CounterState), por ejemplo strings

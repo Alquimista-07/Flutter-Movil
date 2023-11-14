@@ -12,12 +12,12 @@ part of 'counter_cubit.dart';
 // NOTA: Ahora en el estado tenemos un clase abstracta porque podemos emitir diferentes estados, en este caso vamos a modificar lo que se nos había autogenerado
 //       para crear nuestra propia clase
 
-class CounterState {
+class CounterState extends Equatable {
   // NOTA: Acá definimos como queremos que luzca nuestro estado
   final int counter;
   final int transactionCount; // Número de veces que ha cambiado el counter
 
-  CounterState({
+  const CounterState({
     this.counter = 0,
     this.transactionCount = 0,
   });
@@ -33,4 +33,9 @@ class CounterState {
         counter: counter ?? this.counter,
         transactionCount: transactionCount ?? this.transactionCount,
       );
+
+// NOTA: Aunque el object lo podemos dejar opcional <Object?> esto es solo si tenemos propiedades que pueden llegar a ser nular
+//       y este no es el caso de nuestro ejercicio entonces le quitamos el ?
+  @override
+  List<Object> get props => [counter, transactionCount];
 }

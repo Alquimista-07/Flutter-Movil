@@ -15,7 +15,14 @@ class CubitCounterScreen extends StatelessWidget {
     //      al MultiProvider que usamos anteriormente, inclusive tenemos ese mismo MultiBlocProvider y todo lo demás.
     return BlocProvider(
       // NOTA: Este pide la propiedad create que recibe el BuildContext que no lo voy a usar entonces lo dejamos con _ y este tiene que
-      //       regresar la instancia del Cubit
+      //       regresar la instancia del Cubit.
+      //       OJOOOOOOOOOOOOOOO hay que tener en cuenta con Cubit es que tiene una limitante ya que si ocuparamos tener más de uno tendriamos que
+      //       ingeniarnosla para mantenerlos y ese es el inconveniente que tiene y el cual ese si lo resuelve Riverpod sin ningún problema, ya que por
+      //       ejemplo cuando realizamos el context.select para el Cubit Counter donde tenemos el transactionaCounter este va a retornar la primer
+      //       instancia en el build Context de ese Cubit cosa que puede ser un problema ya que por ejemplo en la aplicación de cinemapedia teniamos
+      //       el mismo provider pero cambiaba el estado y el nombre y esta es una de las limitante en general el Provider y no es de BLoC ni FlutterBloc
+      //       y esto es una consideración pero no signigica que no se pueda trabajar y no quiere decir que no nos la podamos ingeniar para tener más de una
+      //       instancia de una clase que haga cosas similares.
       create: (_) => CounterCubit(),
       child: const _CubitCounterView(),
     );
@@ -43,11 +50,23 @@ class _CubitCounterView extends StatelessWidget {
     //       que tiene el state. Y es similar a Riverpod, adicionalmente también a parte del state tenemos acceso a los
     //       métodos como por ejemplo el increasedBy.
     //       Otra cosa es que recordemos que el watch cuando el state cambie va a volver a redibujar
-    //final counterState = context.watch<CounterCubit>().state;
+    // final counterState = context.watch<CounterCubit>().state;
 
     return Scaffold(
       appBar: AppBar(
-        //title: Text('Cubit Counter: ${counterState.transactionCount}'),
+        //------------------------------
+        // Tercera forma
+        //------------------------------
+        // NOTA: Tenemos otra forma para que en vez de estar escuchando con el watch los cambios ya que con el watch vamos al context y estamos evaluando
+        //       todos los widgets y decirle a Flutter que verifique los widgets si algo cambió y si no use la misma instancia y Flutter es muy eficiente
+        //       en esto. Pero la verdad si no es necesario que yo tome la referencia al whatch puedo hacerlo aún más eficiente e ir simplemente a donde
+        //       necesito el cambio del state y usar otro BLoC Builder y si quiero estar pendiente de un BLoC podemos usar el select que pide un value y la
+        //       función, donde el value es literalmente un objeto que va a ser el objeto que me interesa buscar que sería en este caso el CounterCubit.
+        //       Por lo tnato esto que colocamos acá es literlamente igual a todo lo que colocamso en la Primera forma donde tenemos el Counter value:
+        title: context.select((CounterCubit value) {
+          return Text('Cubit Counter: ${value.state.transactionCount}');
+        }),
+
         actions: [
           IconButton(
             onPressed: () {
@@ -74,7 +93,28 @@ class _CubitCounterView extends StatelessWidget {
           // OJO: Hay que tener en cuenta que este buildwhen acá básicamente no nos va a servir ya que al estar definiendo el counterState a nivel del build y llamar
           //      el whatch esto causa que cada vez se cree una nueva instancia del state por lo tanto no nos sirve dicha condición, pero si comentamos las 2 líneas
           //      donde lo usamos vamos a ver que el print en la consola se muestra una solva vez cuando se resetea y no vuelve a mostrarse
-          //buildWhen: (previous, current) => current.counter != previous.counter,
+
+          /*
+          buildWhen: (previous, current) => current.counter != previous.counter,
+          */
+
+          //NOTA: Entonces como mencionamos tenemos un problema que es que aunque no estemos cambiando los valores, estamos creando una nueva instancia del estado
+          //      y esto hace que se dispare cada vez, por lo tanto mencinamos que para solucionar ese problema podíamos usar el buildWhen pero este se usa sobre
+          //      todo cuando tenemos una condición específica.
+          //      Adicionalmente habíamos mencionado que existía una forma para evitar colocar dichas condiciones o validaciones y evitar usar ese buildWhen, y el
+          //      cual es usando un paquete llamado Equatable, y este resuelve un problema que es bien común cuando tenemos objetos, ya que por ejemplo si creamos
+          //      la instancia de una clase y luego creamos otra instancia de la misma clase esta segunda instancia regresa falso porque cuando creamos la primera
+          //      instancia esta se asigna en un espacio diferente al de la segunda aunque hagan referencia al mismo objeto incluso si su información es idéntica
+          //      y este es el problema que se trata de solucionar cuando usamos el buildWhen para que cuando los estados sean iguales no se creen nuevas instancias
+          //      y solo se cree cuando se emite un nuevo estado.
+          //      Y es ahí donde aparece Equatable el cual soluciona ese problema, y para ello Equatable lo que hace es que nosotros extendemos la clase de Equatable
+          //      (en este caso nuestro CounterState) y tenemos que implementar una lista de propiedades que son usadas para compararlo, es decir, por ejemplo si
+          //      tenemos una clase persona con la propiedad nombre si el nombre de esa persona es igual al nombre de una segunda persona, entonces esos objetos son
+          //      iguales.
+          //      Adicionalmente el problema que mencinamos cuando teníamos el counterState con el watch() que tratamos de solucionar antes con el buildwhen y que dijimos
+          //      que de todas formas se estaba creando la instacia nuevamente y por lo tanto no estabamos solucionando nada y mostranba de todas formas el print, entonces
+          //      con Equatable esto también se va a solucionar y esto es super super genial.
+          //      La documentación la podemos encontrar en: https://pub.dev/packages/equatable
           builder: (context, state) {
             print('Counter cambió');
             return Text('Counter value: ${state.counter}');
