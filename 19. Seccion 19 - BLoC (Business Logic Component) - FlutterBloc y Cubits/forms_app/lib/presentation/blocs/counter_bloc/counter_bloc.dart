@@ -13,15 +13,25 @@ class CounterBloc extends Bloc<CounterEvent, CounterState> {
   CounterBloc() : super(const CounterState()) {
     // NOTA: Luego lo que tenemos acá dentro es el cuerpo del constructor y dentro de este se esta definiendo un handler o manejador de un counter event, el cual se autogenera y básicamente es una guía
     //       de como tenemos que implementar, entonces lo que vamos a hacer es usar nuestro evento increased
-    on<CounterIncreased>((event, emit) {
-      // NOTA: Y cuando el counter sea incrementado, voy a hacer literalmente lo mismo que realizamos cuando implementamos Cubit
-      emit(state.copyWith(
-        // NOTA: Ahora ¿Cómo se yo cual es el valor a incrementar?
-        //       Entonces como el evento que se esta disparando es el CounterIncreased, el evento sabe que es de tipo CounterIncreased, eso significaria que el event tiene el value que se le especifico
-        //       cuando se creo el evento en nuestro archivo counter_event
-        counter: state.counter + event.value,
-        transactionCount: state.transactionCount + 1,
-      ));
-    });
+    on<CounterIncreased>(_onCounterIncreased);
+
+    // NOTA: La línea de código anterior es la misma que la siguiente, y esto es porque al tener la misma cantidad de argumentos lo podemos simplificar mandando la referencia a la función
+    //       de esa manera y obviamos mandar los argumentos.
+    /*
+      on<CounterIncreased>((event, emit) => _onCounterIncreased(event, emit));
+    */
+
+    // NOTA: Por lo tanto al tener los handler separados de esta manera podemos tener un montón de ellos para ser llamados y tener un poco de orden
+  }
+
+  void _onCounterIncreased(CounterIncreased event, Emitter<CounterState> emit) {
+    // NOTA: Y cuando el counter sea incrementado, voy a hacer literalmente lo mismo que realizamos cuando implementamos Cubit
+    emit(state.copyWith(
+      // NOTA: Ahora ¿Cómo se yo cual es el valor a incrementar?
+      //       Entonces como el evento que se esta disparando es el CounterIncreased, el evento sabe que es de tipo CounterIncreased, eso significaria que el event tiene el value que se le especifico
+      //       cuando se creo el evento en nuestro archivo counter_event
+      counter: state.counter + event.value,
+      transactionCount: state.transactionCount + 1,
+    ));
   }
 }
