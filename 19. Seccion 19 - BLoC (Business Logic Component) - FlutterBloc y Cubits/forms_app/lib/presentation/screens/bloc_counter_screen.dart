@@ -32,14 +32,21 @@ class BlocCounterView extends StatelessWidget {
     //       .add() el cual me permite disparar un evento y el cual en nuestro BLoC si tenemos un evento.
     context.read<CounterBloc>().add(CounterIncreased(value));
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('BLoC Counter'),
+        //* Tarea: Mostrar número de transacciones
+        title: context.select(
+          (CounterBloc counterBloc) =>
+              Text('BLoC Counter: ${counterBloc.state.transactionCount}'),
+        ),
         actions: [
           IconButton(
-            onPressed: () => {},
+            //* Tarea: Llamar el método para el reset
+            // NOTA: Acá podemos hacerlo directamente con el read y no tener que crear un método aparte
+            onPressed: () => context.read<CounterBloc>().add(CounterReset()),
             icon: const Icon(Icons.refresh_outlined),
           ),
         ],

@@ -18,3 +18,6 @@ class CounterIncreased extends CounterEvent {
 
   const CounterIncreased(this.value);
 }
+
+//* Tarea: Evento para el reset
+class CounterReset extends CounterEvent {}

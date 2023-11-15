@@ -15,6 +15,9 @@ class CounterBloc extends Bloc<CounterEvent, CounterState> {
     //       de como tenemos que implementar, entonces lo que vamos a hacer es usar nuestro evento increased
     on<CounterIncreased>(_onCounterIncreased);
 
+    //* Tarea: Handler del evento para el reset
+    on<CounterReset>(_onCounterReset);
+
     // NOTA: La línea de código anterior es la misma que la siguiente, y esto es porque al tener la misma cantidad de argumentos lo podemos simplificar mandando la referencia a la función
     //       de esa manera y obviamos mandar los argumentos.
     /*
@@ -32,6 +35,13 @@ class CounterBloc extends Bloc<CounterEvent, CounterState> {
       //       cuando se creo el evento en nuestro archivo counter_event
       counter: state.counter + event.value,
       transactionCount: state.transactionCount + 1,
+    ));
+  }
+
+  //* Tarea: Reset
+  void _onCounterReset(CounterReset event, Emitter<CounterState> emit) {
+    emit(state.copyWith(
+      counter: 0,
     ));
   }
 }
