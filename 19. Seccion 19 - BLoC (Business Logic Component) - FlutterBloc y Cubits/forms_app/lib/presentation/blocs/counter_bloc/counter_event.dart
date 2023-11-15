@@ -4,6 +4,13 @@
 //       modificaciones se hacen basado en eventos, es decir, llamamos un evento por ejemplo llamado incrementar, el cual al llamar ese evento incrementar lo recibe el Bloc y el Bloc sabe que hacer
 //       cuando recibe un evento de ese tipo, entonces es como más controlado.
 // NOTA: El counter event es muy útil porque nos permite a nosotros poder decir que tipos de eventos mi Bloc va a recbir
+
+// NOTA: Otra cosa es que ¿Cómo hacemos para saber cuando usar Cubit y cuando BLoC? Bueno esto esta a discreción nuestra ya que podemos crear una aplicación entera usando Cubit, pero usuarlmente usariamos
+//       BLoC cuando queramos manejar algo más robusto, más estructurado, más fácil de probar también o también estados mayores con BLoC, y con Cubits podriamos manejar pequeños estados.
+//       Por ejemplo un formulario lo podemos manejar con Cubit pero el estado global como por ejemplo la autenticación de un usuario la podemos manejar con BLoC, o bien podemos manejar también el estado del
+//       formulario con BLoC totalmente sin usar Cubit, y a la larga nosotros somos libres de decidir que sale más fácil, y elegir el gestor de estado que queramos como Provider, Riverpod, Cubit o BLoC, etc.
+//       Y como tal no hay un mejor gestor de estado ya que básicamente el mejor gestor de estado en pocas palabra es el que nosotros mejor dominemos y resuelva la necesidad de forma efectiva
+
 part of 'counter_bloc.dart';
 
 abstract class CounterEvent {
