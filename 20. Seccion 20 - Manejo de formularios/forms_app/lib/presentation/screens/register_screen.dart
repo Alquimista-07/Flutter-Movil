@@ -60,11 +60,22 @@ class _RegisterForm extends StatelessWidget {
         child: Column(
       children: [
         // NOTA: Acá vamos a usar nuestro widget personalizado
-        CustomTextFormField(),
+        CustomTextFormField(
+          label: 'Nombre De Usuario',
+        ),
 
         const SizedBox(height: 10),
 
-        CustomTextFormField(),
+        CustomTextFormField(
+          label: 'Correo Electrónico',
+        ),
+
+        const SizedBox(height: 10),
+
+        CustomTextFormField(
+          label: 'Contraseña',
+          obscureText: true,
+        ),
 
         const SizedBox(height: 20),
         FilledButton.tonalIcon(
