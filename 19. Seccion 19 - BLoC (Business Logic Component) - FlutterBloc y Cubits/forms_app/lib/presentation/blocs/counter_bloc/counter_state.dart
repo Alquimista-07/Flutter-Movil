@@ -11,6 +11,8 @@
 
 part of 'counter_bloc.dart';
 
+// NOTA: Otra cosa es que aunque el Equatable es opcional, es recomendado usarlo ya que esto nos ayuda a hacer más eficiente la aplicación ya que como sabemos con el Equatable comparamos los objetos, y cuando
+//       iguales evitamos ejecutar el llamado a eventos o acciones de forma innecesaria.
 class CounterState extends Equatable {
   final int counter;
   final int transactionCount;

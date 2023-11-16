@@ -30,7 +30,12 @@ class BlocCounterView extends StatelessWidget {
   void increasedCounterBy(BuildContext context, [int value = 1]) {
     // NOTA: Como no creamos un método increasedBy del lado del Bloc como teniamos con el Cubit acá vamos es a usar el método
     //       .add() el cual me permite disparar un evento y el cual en nuestro BLoC si tenemos un evento.
-    context.read<CounterBloc>().add(CounterIncreased(value));
+
+    //context.read<CounterBloc>().add(CounterIncreased(value));
+
+    // NOTA: Entonces como creamos los métodos en el counter_bloc para centralizar simplemente comentamos lo anterior y acá usamos
+    //       esos métodos.
+    context.read<CounterBloc>().increaseBy(value);
   }
 
   @override
@@ -46,7 +51,11 @@ class BlocCounterView extends StatelessWidget {
           IconButton(
             //* Tarea: Llamar el método para el reset
             // NOTA: Acá podemos hacerlo directamente con el read y no tener que crear un método aparte
-            onPressed: () => context.read<CounterBloc>().add(CounterReset()),
+            // onPressed: () => context.read<CounterBloc>().add(CounterReset()),
+
+            // NOTA: Entonces como creamos los métodos en el counter_bloc para centralizar simplemente comentamos lo anterior y acá usamos
+            //       esos métodos.
+            onPressed: () => context.read<CounterBloc>().resetCounter(),
             icon: const Icon(Icons.refresh_outlined),
           ),
         ],

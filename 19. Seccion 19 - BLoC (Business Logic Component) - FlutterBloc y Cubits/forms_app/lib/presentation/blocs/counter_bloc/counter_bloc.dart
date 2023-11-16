@@ -50,4 +50,15 @@ class CounterBloc extends Bloc<CounterEvent, CounterState> {
       counter: 0,
     ));
   }
+
+  // NOTA: Hay persona que hacen esto para que en lugar de que el widget se encargue de llamar el evento lo que se hace es
+  //       centralizar la forma como voy a incrementar el counter bloc
+  void increaseBy([int value = 1]) {
+    add(CounterIncreased(value));
+  }
+
+  // NOTA: Y se hace lo mismo con el reset
+  void resetCounter() {
+    add(CounterReset());
+  }
 }
