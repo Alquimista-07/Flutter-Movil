@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:forms_app/presentation/widgets/widgets.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -24,33 +25,54 @@ class _RegisterView extends StatelessWidget {
     //       soluciona todo, por lo tanto tenemos que tener mucho cuidado ya que puede llegar a darse overflow y causar
     //       problemas al visualizar los widgets, y por lo tanto se recomienda envolver en algún widget que permita hacer
     //       scroll como un listview, un singlechildscrollview, etc.
-    return SafeArea(
+    return const SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        padding: EdgeInsets.symmetric(horizontal: 10),
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const FlutterLogo(size: 100),
+              FlutterLogo(size: 100),
+
               // NOTA: Este widget nos permite colocar los campos de texto, que luego se le agregara sus validaciones y demás
               //       cosas que tiene que tener un formulario.
-              TextFormField(),
-              TextFormField(),
-              TextFormField(),
-              TextFormField(),
+              // NOTA: Ahora en este caso ese sería un input básico pero nosotros queremos personalizarlo y darle algunos estilos
+              //       por lo tanto no lo vamos a usar y vamos a crear nuestro propio widget y usarlo en nuestro form personalizado
+              //TextFormField(),
 
-              const SizedBox(height: 20),
+              // NOTA: Widget en el cual vamos a trabajar nuestro formulario personalizado
+              _RegisterForm(),
 
-              FilledButton.tonalIcon(
-                onPressed: () {},
-                icon: const Icon(Icons.save),
-                label: const Text('Crear Usuario'),
-              ),
-
-              const SizedBox(height: 20)
+              SizedBox(height: 20)
             ],
           ),
         ),
       ),
     );
+  }
+}
+
+class _RegisterForm extends StatelessWidget {
+  const _RegisterForm();
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+        child: Column(
+      children: [
+        // NOTA: Acá vamos a usar nuestro widget personalizado
+        CustomTextFormField(),
+
+        const SizedBox(height: 10),
+
+        CustomTextFormField(),
+
+        const SizedBox(height: 20),
+        FilledButton.tonalIcon(
+          onPressed: () {},
+          icon: const Icon(Icons.save),
+          label: const Text('Crear Usuario'),
+        ),
+      ],
+    ));
   }
 }
