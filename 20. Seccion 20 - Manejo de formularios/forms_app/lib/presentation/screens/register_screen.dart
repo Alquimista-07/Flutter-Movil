@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:forms_app/presentation/blocs/register/register_cubit.dart';
 import 'package:forms_app/presentation/widgets/widgets.dart';
 
 class RegisterScreen extends StatelessWidget {
@@ -10,7 +12,13 @@ class RegisterScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Nuevo Usuario'),
       ),
-      body: const _RegisterView(),
+
+      // NOTA: Envolvemos el widget en nuestro Cubit para que todos los widget ramificados a partir de este, en este caso nuestro view, tengan acceso
+      //       al state del Cubit
+      body: BlocProvider(
+        create: (context) => RegisterCubit(),
+        child: const _RegisterView(),
+      ),
     );
   }
 }
@@ -63,12 +71,17 @@ class _RegisterFormState extends State<_RegisterForm> {
   //       y que me va a permitir tener el control del formulario basado en ese key
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  String username = '';
-  String email = '';
-  String password = '';
+  // NOTA: Comentamos estas variables ya que ahora manejamos un gestor de estado externo que es Cubit, adicionalmente acá ya no es necesario
+  //       manejarlo con un statefulwidget pero lo vamos a dejar así a pesar de que usemos ahora Cubit
+  // String username = '';
+  // String email = '';
+  // String password = '';
 
   @override
   Widget build(BuildContext context) {
+    // NOTA: Referencia al Cubit
+    final registerCubit = context.watch<RegisterCubit>();
+
     return Form(
         key: _formKey,
         child: Column(
@@ -77,7 +90,14 @@ class _RegisterFormState extends State<_RegisterForm> {
             CustomTextFormField(
               label: 'Nombre De Usuario',
               // NOTA: Recordemos que cada uno de nuestro CustomTextFormField tiene el onChange que nos pemite captuar el valor de ese input
-              onChanged: (value) => username = value,
+              //onChanged: (value) => username = value,
+              // NOTA: Cambiamos el onChanged para manejarlo ahora con Cubit
+              onChanged: (value) {
+                registerCubit.usernameChanged(value);
+                // NOTA: Mandamos a vaidar inmediatamente cuando cambio a diferencia de como teniamos anteriomente que se validaba cuando se hacia el
+                //       envío del formulario a través del botón Crear usuario.
+                _formKey.currentState?.validate();
+              },
               // NOTA: Recordemnos que ocupamos hacer las validaciones
               validator: (value) {
                 if (value == null || value.isEmpty) return 'Campo requerido';
@@ -93,7 +113,14 @@ class _RegisterFormState extends State<_RegisterForm> {
             CustomTextFormField(
               label: 'Correo Electrónico',
               // NOTA: Recordemos que cada uno de nuestro CustomTextFormField tiene el onChange que nos pemite captuar el valor de ese input
-              onChanged: (value) => email = value,
+              // onChanged: (value) => email = value,
+              // NOTA: Cambiamos el onChanged para manejarlo ahora con Cubit
+              onChanged: (value) {
+                registerCubit.emailChanged(value);
+                // NOTA: Mandamos a vaidar inmediatamente cuando cambio a diferencia de como teniamos anteriomente que se validaba cuando se hacia el
+                //       envío del formulario a través del botón Crear usuario.
+                _formKey.currentState?.validate();
+              },
               // NOTA: Recordemnos que ocupamos hacer las validaciones
               validator: (value) {
                 if (value == null || value.isEmpty) return 'Campo requerido';
@@ -118,7 +145,14 @@ class _RegisterFormState extends State<_RegisterForm> {
               label: 'Contraseña',
               obscureText: true,
               // NOTA: Recordemos que cada uno de nuestro CustomTextFormField tiene el onChange que nos pemite captuar el valor de ese input
-              onChanged: (value) => password = value,
+              // onChanged: (value) => password = value,
+              // NOTA: Cambiamos el onChanged para manejarlo ahora con Cubit
+              onChanged: (value) {
+                registerCubit.passwordChanged(value);
+                // NOTA: Mandamos a vaidar inmediatamente cuando cambio a diferencia de como teniamos anteriomente que se validaba cuando se hacia el
+                //       envío del formulario a través del botón Crear usuario.
+                _formKey.currentState?.validate();
+              },
               // NOTA: Recordemnos que ocupamos hacer las validaciones
               validator: (value) {
                 if (value == null || value.isEmpty) return 'Campo requerido';
@@ -138,7 +172,10 @@ class _RegisterFormState extends State<_RegisterForm> {
                 if (!isValid) return;
 
                 // NOTA: Cuando haga click en el botón imprimo los valores de los campos
-                print('{$username, $email, $password}');
+                // print('{$username, $email, $password}');
+
+                // NOTA: Llamamos el método de subit que creamos en el Cubit
+                registerCubit.onSubmit();
               },
               icon: const Icon(Icons.save),
               label: const Text('Crear Usuario'),
