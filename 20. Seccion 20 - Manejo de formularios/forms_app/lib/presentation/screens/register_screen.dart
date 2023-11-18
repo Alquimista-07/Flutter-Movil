@@ -168,8 +168,9 @@ class _RegisterFormState extends State<_RegisterForm> {
               onPressed: () {
                 // NOTA: Ahora para que se apliquen las validaciones a nuestros campos podríamos tomar la referencia a cada campo y hacer la referencia al validator,
                 //       pero sale más fácil hacer referencia directamnete al formulario usando el formKey
-                final isValid = _formKey.currentState!.validate();
-                if (!isValid) return;
+                //* Comentamos esto ya que como estamos usando el gestor de estado esto ya no lo vamos a usar.
+                // final isValid = _formKey.currentState!.validate();
+                // if (!isValid) return;
 
                 // NOTA: Cuando haga click en el botón imprimo los valores de los campos
                 // print('{$username, $email, $password}');
