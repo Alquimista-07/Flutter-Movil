@@ -19,7 +19,10 @@ class RegisterCubit extends Cubit<RegisterFormState> {
 
     emit(state.copyWith(
       username: username,
-      isValid: Formz.validate([username]),
+      // NOTA: Es importante mandar las instancias de los demás inputs que se estan validando al método validate
+      //       ya que esta función de validación necesita verificar cada uno de los campos para saber si es válido
+      //       o no el formulario.
+      isValid: Formz.validate([username, state.password]),
     ));
   }
 
@@ -30,8 +33,14 @@ class RegisterCubit extends Cubit<RegisterFormState> {
   }
 
   void passwordChanged(String value) {
+    final password = Password.dirty(value);
+
     emit(state.copyWith(
-      password: value,
+      password: password,
+      // NOTA: Es importante mandar las instancias de los demás inputs que se estan validando al método validate
+      //       ya que esta función de validación necesita verificar cada uno de los campos para saber si es válido
+      //       o no el formulario.
+      isValid: Formz.validate([password, state.username]),
     ));
   }
 }
