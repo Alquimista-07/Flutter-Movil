@@ -10,6 +10,20 @@ class RegisterCubit extends Cubit<RegisterFormState> {
   RegisterCubit() : super(const RegisterFormState());
 
   void onSubmit() {
+    // NOTA: Acá quiero poner al formulario en un estado nuevo cuando se postea el cual va a indicar que ya no esta en estado puro (pure)
+    //       y por lo tanto se deben realizar las validaciones
+    emit(state.copyWith(
+        formStatus: FormStatus.validating,
+        // NOTA: Hacemos que el dirty ahora tenga el valor actual que tenga el estado para que en caso de que este vacío y en estado pure y se haga un posteo esto va a hacer que lo ensucie
+        //       y por lo tanto ya no va a estar pure y va a chocar contra la validación.
+        username: Username.dirty(state.username.value),
+        password: Password.dirty(state.password.value),
+        isValid: Formz.validate([
+          state.username,
+          //TODO: state.email,
+          state.password,
+        ])));
+
     print('Submit: ${state}');
   }
 

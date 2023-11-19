@@ -59,129 +59,84 @@ class _RegisterView extends StatelessWidget {
   }
 }
 
-class _RegisterForm extends StatefulWidget {
+class _RegisterForm extends StatelessWidget {
   const _RegisterForm();
-
-  @override
-  State<_RegisterForm> createState() => _RegisterFormState();
-}
-
-class _RegisterFormState extends State<_RegisterForm> {
-  // NOTA: Vamos a crear el globalkey que me permite enlazar el key con el formkey
-  //       y que me va a permitir tener el control del formulario basado en ese key
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  // NOTA: Comentamos estas variables ya que ahora manejamos un gestor de estado externo que es Cubit, adicionalmente acá ya no es necesario
-  //       manejarlo con un statefulwidget pero lo vamos a dejar así a pesar de que usemos ahora Cubit
-  // String username = '';
-  // String email = '';
-  // String password = '';
 
   @override
   Widget build(BuildContext context) {
     // NOTA: Referencia al Cubit
     final registerCubit = context.watch<RegisterCubit>();
 
+    final username = registerCubit.state.username;
+    final password = registerCubit.state.password;
+
     return Form(
-        key: _formKey,
         child: Column(
-          children: [
-            // NOTA: Acá vamos a usar nuestro widget personalizado
-            CustomTextFormField(
-              label: 'Nombre De Usuario',
-              // NOTA: Recordemos que cada uno de nuestro CustomTextFormField tiene el onChange que nos pemite captuar el valor de ese input
-              //onChanged: (value) => username = value,
-              // NOTA: Cambiamos el onChanged para manejarlo ahora con Cubit
-              onChanged: (value) {
-                registerCubit.usernameChanged(value);
-                // NOTA: Mandamos a vaidar inmediatamente cuando cambio a diferencia de como teniamos anteriomente que se validaba cuando se hacia el
-                //       envío del formulario a través del botón Crear usuario.
-                _formKey.currentState?.validate();
-              },
-              // NOTA: Recordemnos que ocupamos hacer las validaciones
-              validator: (value) {
-                if (value == null || value.isEmpty) return 'Campo requerido';
-                // Recordemos que el trim quita espacios adelante y atrás
-                if (value.trim().isEmpty) return 'Campo requerido';
-                if (value.length < 6) return 'Más de 6 letras';
-                return null;
-              },
-            ),
+      children: [
+        // NOTA: Acá vamos a usar nuestro widget personalizado
+        CustomTextFormField(
+          label: 'Nombre De Usuario',
+          // NOTA: Cambiamos el onChanged para manejarlo ahora con Cubit
+          onChanged: registerCubit.usernameChanged,
+          errorMessage:
+              username.isPure || username.isValid ? null : 'Usuario no válido',
+        ),
 
-            const SizedBox(height: 10),
+        const SizedBox(height: 10),
 
-            CustomTextFormField(
-              label: 'Correo Electrónico',
-              // NOTA: Recordemos que cada uno de nuestro CustomTextFormField tiene el onChange que nos pemite captuar el valor de ese input
-              // onChanged: (value) => email = value,
-              // NOTA: Cambiamos el onChanged para manejarlo ahora con Cubit
-              onChanged: (value) {
-                registerCubit.emailChanged(value);
-                // NOTA: Mandamos a vaidar inmediatamente cuando cambio a diferencia de como teniamos anteriomente que se validaba cuando se hacia el
-                //       envío del formulario a través del botón Crear usuario.
-                _formKey.currentState?.validate();
-              },
-              // NOTA: Recordemnos que ocupamos hacer las validaciones
-              validator: (value) {
-                if (value == null || value.isEmpty) return 'Campo requerido';
-                // Recordemos que el trim quita espacios adelante y atrás
-                if (value.trim().isEmpty) return 'Campo requerido';
+        CustomTextFormField(
+          label: 'Correo Electrónico',
+          // NOTA: Cambiamos el onChanged para manejarlo ahora con Cubit
+          onChanged: (value) {
+            registerCubit.emailChanged(value);
+          },
+          // NOTA: Recordemnos que ocupamos hacer las validaciones
+          validator: (value) {
+            if (value == null || value.isEmpty) return 'Campo requerido';
+            // Recordemos que el trim quita espacios adelante y atrás
+            if (value.trim().isEmpty) return 'Campo requerido';
 
-                // NOTA: Validamos con una expresión regular para verificar si tiene formato de correo
-                final emailRegExp = RegExp(
-                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                );
-                if (!emailRegExp.hasMatch(value)) {
-                  return 'No tiene formato de correo';
-                }
+            // NOTA: Validamos con una expresión regular para verificar si tiene formato de correo
+            final emailRegExp = RegExp(
+              r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+            );
+            if (!emailRegExp.hasMatch(value)) {
+              return 'No tiene formato de correo';
+            }
 
-                return null;
-              },
-            ),
+            return null;
+          },
+        ),
 
-            const SizedBox(height: 10),
+        const SizedBox(height: 10),
 
-            CustomTextFormField(
-              label: 'Contraseña',
-              obscureText: true,
-              // NOTA: Recordemos que cada uno de nuestro CustomTextFormField tiene el onChange que nos pemite captuar el valor de ese input
-              // onChanged: (value) => password = value,
-              // NOTA: Cambiamos el onChanged para manejarlo ahora con Cubit
-              onChanged: (value) {
-                registerCubit.passwordChanged(value);
-                // NOTA: Mandamos a vaidar inmediatamente cuando cambio a diferencia de como teniamos anteriomente que se validaba cuando se hacia el
-                //       envío del formulario a través del botón Crear usuario.
-                _formKey.currentState?.validate();
-              },
-              // NOTA: Recordemnos que ocupamos hacer las validaciones
-              validator: (value) {
-                if (value == null || value.isEmpty) return 'Campo requerido';
-                // Recordemos que el trim quita espacios adelante y atrás
-                if (value.trim().isEmpty) return 'Campo requerido';
-                if (value.length < 6) return 'Más de 6 letras';
-                return null;
-              },
-            ),
+        CustomTextFormField(
+          label: 'Contraseña',
+          obscureText: true,
+          // NOTA: Cambiamos el onChanged para manejarlo ahora con Cubit
+          onChanged: (value) {
+            registerCubit.passwordChanged(value);
+          },
+          // NOTA: Recordemnos que ocupamos hacer las validaciones
+          validator: (value) {
+            if (value == null || value.isEmpty) return 'Campo requerido';
+            // Recordemos que el trim quita espacios adelante y atrás
+            if (value.trim().isEmpty) return 'Campo requerido';
+            if (value.length < 6) return 'Más de 6 letras';
+            return null;
+          },
+        ),
 
-            const SizedBox(height: 20),
-            FilledButton.tonalIcon(
-              onPressed: () {
-                // NOTA: Ahora para que se apliquen las validaciones a nuestros campos podríamos tomar la referencia a cada campo y hacer la referencia al validator,
-                //       pero sale más fácil hacer referencia directamnete al formulario usando el formKey
-                //* Comentamos esto ya que como estamos usando el gestor de estado esto ya no lo vamos a usar.
-                // final isValid = _formKey.currentState!.validate();
-                // if (!isValid) return;
-
-                // NOTA: Cuando haga click en el botón imprimo los valores de los campos
-                // print('{$username, $email, $password}');
-
-                // NOTA: Llamamos el método de subit que creamos en el Cubit
-                registerCubit.onSubmit();
-              },
-              icon: const Icon(Icons.save),
-              label: const Text('Crear Usuario'),
-            ),
-          ],
-        ));
+        const SizedBox(height: 20),
+        FilledButton.tonalIcon(
+          onPressed: () {
+            // NOTA: Llamamos el método de subit que creamos en el Cubit
+            registerCubit.onSubmit();
+          },
+          icon: const Icon(Icons.save),
+          label: const Text('Crear Usuario'),
+        ),
+      ],
+    ));
   }
 }
