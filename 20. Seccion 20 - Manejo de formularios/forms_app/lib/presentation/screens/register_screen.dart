@@ -75,11 +75,12 @@ class _RegisterForm extends StatelessWidget {
       children: [
         // NOTA: Acá vamos a usar nuestro widget personalizado
         CustomTextFormField(
+          // NOTA: En caso de que llegaramos a necesitar el valor que tiene el input podemos hacer el username.value
           label: 'Nombre De Usuario',
           // NOTA: Cambiamos el onChanged para manejarlo ahora con Cubit
           onChanged: registerCubit.usernameChanged,
-          errorMessage:
-              username.isPure || username.isValid ? null : 'Usuario no válido',
+          // NOTA: Recordemnos que ocupamos hacer las validaciones
+          errorMessage: username.errorMessage,
         ),
 
         const SizedBox(height: 10),
@@ -111,20 +112,13 @@ class _RegisterForm extends StatelessWidget {
         const SizedBox(height: 10),
 
         CustomTextFormField(
-          label: 'Contraseña',
+          // NOTA: En caso de que llegaramos a necesitar el valor que tiene el input podemos hacer el password.value
+          label: 'Contraseña:',
           obscureText: true,
           // NOTA: Cambiamos el onChanged para manejarlo ahora con Cubit
-          onChanged: (value) {
-            registerCubit.passwordChanged(value);
-          },
+          onChanged: registerCubit.passwordChanged,
           // NOTA: Recordemnos que ocupamos hacer las validaciones
-          validator: (value) {
-            if (value == null || value.isEmpty) return 'Campo requerido';
-            // Recordemos que el trim quita espacios adelante y atrás
-            if (value.trim().isEmpty) return 'Campo requerido';
-            if (value.length < 6) return 'Más de 6 letras';
-            return null;
-          },
+          errorMessage: password.errorMessage,
         ),
 
         const SizedBox(height: 20),

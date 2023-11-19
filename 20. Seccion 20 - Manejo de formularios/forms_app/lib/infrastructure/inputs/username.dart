@@ -23,6 +23,17 @@ class Username extends FormzInput<String, UsernameError> {
   //       Adicionalmente la forma de llamar el disty es básicamente decirl Hey! el campo esta cambió y ya fue manipulado por el usuario.
   const Username.dirty(String value) : super.dirty(value);
 
+  // NOTA: Para el manejo de los mensajes de error vamos a crear un getter
+  String? get errorMessage {
+    if (isValid || isPure) return null;
+
+    // El displayError es una propiedad propia del paquete Formz que sirve para mostrar el error
+    if (displayError == UsernameError.empty) return 'El campo es requerido';
+    if (displayError == UsernameError.length) return 'Mínimo 6 caracteres';
+
+    return null;
+  }
+
   // Override validator to handle validating a given input value.
   // NOTA: Regresa un opcional ya que puede ser que no tenga errores
   @override
