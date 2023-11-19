@@ -9,7 +9,7 @@ import 'package:formz/formz.dart';
 
 // Define input validation errors.
 // NOTA: OJO yo mismo defino esta enumeración.
-enum UsernameError { empty, lenght }
+enum UsernameError { empty, length }
 
 // Extend FormzInput and provide the input type and error type.
 class Username extends FormzInput<String, UsernameError> {
@@ -30,7 +30,7 @@ class Username extends FormzInput<String, UsernameError> {
     // NOTA: Establecemos la forma como van a ser nuestras validaciones
     //       OJO. Recordemos que el trim es para quitar los espacios al inicio y fin de la cadena de texto.
     if (value.isEmpty || value.trim().isEmpty) return UsernameError.empty;
-    if (value.length < 6) return UsernameError.lenght;
+    if (value.length < 6) return UsernameError.length;
 
     return null;
   }
