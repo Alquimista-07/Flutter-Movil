@@ -69,6 +69,7 @@ class _RegisterForm extends StatelessWidget {
 
     final username = registerCubit.state.username;
     final password = registerCubit.state.password;
+    final email = registerCubit.state.email;
 
     return Form(
         child: Column(
@@ -88,25 +89,8 @@ class _RegisterForm extends StatelessWidget {
         CustomTextFormField(
           label: 'Correo Electrónico',
           // NOTA: Cambiamos el onChanged para manejarlo ahora con Cubit
-          onChanged: (value) {
-            registerCubit.emailChanged(value);
-          },
-          // NOTA: Recordemnos que ocupamos hacer las validaciones
-          validator: (value) {
-            if (value == null || value.isEmpty) return 'Campo requerido';
-            // Recordemos que el trim quita espacios adelante y atrás
-            if (value.trim().isEmpty) return 'Campo requerido';
-
-            // NOTA: Validamos con una expresión regular para verificar si tiene formato de correo
-            final emailRegExp = RegExp(
-              r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-            );
-            if (!emailRegExp.hasMatch(value)) {
-              return 'No tiene formato de correo';
-            }
-
-            return null;
-          },
+          onChanged: registerCubit.emailChanged,
+          errorMessage: email.errorMessage,
         ),
 
         const SizedBox(height: 10),
