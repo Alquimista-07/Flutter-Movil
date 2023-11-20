@@ -14,7 +14,26 @@ part 'notifications_event.dart';
 part 'notifications_state.dart';
 
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
+  // NOTA: Esta es el objeto que va a permitir escuchar y emitir mensajería a través de él y el token correspondinte
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+
   NotificationsBloc() : super(const NotificationsState()) {
     // on<NotificationsEvent>((event, emit) {});
+  }
+
+  // NOTA: Este es el método para manejar el estado de los permisos
+  void requestPermission() async {
+    // Configuraciones
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: true,
+      provisional: false,
+      sound: true,
+    );
+
+    settings.authorizationStatus;
   }
 }
