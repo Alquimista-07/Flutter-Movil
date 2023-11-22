@@ -7,6 +7,8 @@
 //       Adicionalmente la documentación la encontramos en: https://firebase.flutter.dev/docs/messaging/notifications/
 //
 import 'package:equatable/equatable.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:push_app/firebase_options.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -19,6 +21,13 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
   NotificationsBloc() : super(const NotificationsState()) {
     // on<NotificationsEvent>((event, emit) {});
+  }
+
+  // Inicialización Firebase
+  static Future<void> initializeFirebaseCloudMessagingNotifications() async {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   }
 
   // NOTA: Este es el método para manejar el estado de los permisos
