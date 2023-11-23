@@ -25,7 +25,7 @@ class NotificationsState extends Equatable {
   });
 
   NotificationsState copyWith({
-    AuthorizationStatus? staus,
+    AuthorizationStatus? status,
     List<dynamic>? notifications,
   }) =>
       NotificationsState(
