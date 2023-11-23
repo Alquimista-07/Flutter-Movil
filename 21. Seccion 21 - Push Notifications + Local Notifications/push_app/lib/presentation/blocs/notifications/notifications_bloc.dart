@@ -22,6 +22,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   NotificationsBloc() : super(const NotificationsState()) {
     // Registro del manejador del evento
     on<NotificationStatusChanged>(_notificationStatusChanged);
+
+    _initialStatusCheck();
   }
 
   // NOTA: Por lo tanto como tenemos un evento para actualziar el estado acorde a los permisos, entonces necesitamos
@@ -33,6 +35,9 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
         status: event.status,
       ),
     );
+
+    // Cuando el estado de la notificación cambia mandamos llamar el método que obtiene el token
+    _getFirebaseCloudMessagingToken();
   }
 
   // Inicialización Firebase
@@ -40,6 +45,29 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+  }
+
+  // Método para determinar el premiso actual de las notificaciones
+  void _initialStatusCheck() async {
+    final settings = await messaging.getNotificationSettings();
+    add(NotificationStatusChanged(settings.authorizationStatus));
+  }
+
+  // Obtener el token del dispositivo
+  /*
+      test@test.com: [
+        token1
+        token2
+        token3
+      ]
+    */
+  void _getFirebaseCloudMessagingToken() async {
+    if (state.status != AuthorizationStatus.authorized) return;
+
+    final token = await messaging.getToken();
+
+    // NOTA: NOTA: Lo imprimimos por consola pero bien lo podríamos almacenar en el estado o en base de datos del lado del backend
+    print(token);
   }
 
   // NOTA: Este es el método para manejar el estado de los permisos
