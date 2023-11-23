@@ -23,7 +23,11 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     // Registro del manejador del evento
     on<NotificationStatusChanged>(_notificationStatusChanged);
 
+    // Verificar estado de las notificaciones
     _initialStatusCheck();
+
+    // Listener para notificaciones en foreground
+    _onForegroundMessage();
   }
 
   // NOTA: Por lo tanto como tenemos un evento para actualziar el estado acorde a los permisos, entonces necesitamos
@@ -66,8 +70,26 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
     final token = await messaging.getToken();
 
-    // NOTA: NOTA: Lo imprimimos por consola pero bien lo podríamos almacenar en el estado o en base de datos del lado del backend
+    // NOTA: Lo imprimimos por consola pero bien lo podríamos almacenar en el estado o en base de datos del lado del backend
+    //       Y mandar notificaciones específicamente al dispositivo con ese token.
     print(token);
+  }
+
+  // Escuchar mensajes Push
+  // NOTA: Este método es un listener y tenemos que ponerlo para estar escuchando cuando el evento sucede
+  void _handleRemoteMessage(RemoteMessage message) {
+    print('Got a message whilst in the foreground!');
+    print('Messag3e data ${message.data}');
+
+    if (message.notification == null) return;
+
+    print('Message also contained a notification: ${message.notification}');
+  }
+
+  void _onForegroundMessage() {
+    //NOTA: El método FirebaseMessaging es un Stream y como necesito estar pendiente de él no lo voy a limpiar con el cancel,
+    //      pero si necesitaramos hacerlo como se mencionó usariamos el método cancel()
+    FirebaseMessaging.onMessage.listen(_handleRemoteMessage);
   }
 
   // NOTA: Este es el método para manejar el estado de los permisos
