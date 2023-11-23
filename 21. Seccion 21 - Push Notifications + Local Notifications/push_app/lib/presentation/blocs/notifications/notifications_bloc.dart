@@ -20,7 +20,19 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   NotificationsBloc() : super(const NotificationsState()) {
-    // on<NotificationsEvent>((event, emit) {});
+    // Registro del manejador del evento
+    on<NotificationStatusChanged>(_notificationStatusChanged);
+  }
+
+  // NOTA: Por lo tanto como tenemos un evento para actualziar el estado acorde a los permisos, entonces necesitamos
+  //       crear el manejdador de ese evento.
+  void _notificationStatusChanged(
+      NotificationStatusChanged event, Emitter<NotificationsState> emit) {
+    emit(
+      state.copyWith(
+        status: event.status,
+      ),
+    );
   }
 
   // Inicialización Firebase
@@ -43,6 +55,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       sound: true,
     );
 
-    settings.authorizationStatus;
+    // Llamado del manejador del evento para que se ejecute
+    add(NotificationStatusChanged(settings.authorizationStatus));
   }
 }
