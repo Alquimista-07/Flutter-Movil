@@ -15,6 +15,18 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 part 'notifications_event.dart';
 part 'notifications_state.dart';
 
+// NOTA: Función para recibir notificaciones cuando la aplicación este terminada, es decir, cerrada completamente.
+// OJO: Una cosa super importante es que esta función tiene que ser una top level function, es decir, tiene que estar en una jerarquía muy alta en la aplicación.
+//      ya que esta requiere ser ejecutada super rápido y como máximo tardar 30 segundos en ser llamada para evitar que sea matado el proceso por el administrador
+//      Por lo tanto bien podríamos colocar el método en el main, pero en este caso la vamos a poner acá y hacer el registro del manejador en el main.
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call 'initializeApp' before using other Firebase services.
+  await Firebase.initializeApp();
+
+  print('Handling a background message: ${message.messageId}');
+}
+
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   // NOTA: Esta es el objeto que va a permitir escuchar y emitir mensajería a través de él y el token correspondinte
   FirebaseMessaging messaging = FirebaseMessaging.instance;
