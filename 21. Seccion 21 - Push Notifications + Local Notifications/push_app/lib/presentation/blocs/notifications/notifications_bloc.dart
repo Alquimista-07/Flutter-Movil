@@ -39,7 +39,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     // Registro del manejador del evento
     on<NotificationStatusChanged>(_notificationStatusChanged);
 
-    // TODO 3: Crear el listener $ _onPushMessageReceived
+    on<NotificationReceived>(_onPushMessageReceived);
 
     // Verificar estado de las notificaciones
     _initialStatusCheck();
@@ -118,7 +118,14 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
     print(notification);
 
-    // TODO 1: Add de un nuevo evento
+    add(NotificationReceived(notification));
+  }
+
+  void _onPushMessageReceived(
+      NotificationReceived event, Emitter<NotificationsState> emit) {
+    emit(state.copyWith(
+      notifications: [event.pushMessage, ...state.notifications],
+    ));
   }
 
   void _onForegroundMessage() {

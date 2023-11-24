@@ -39,12 +39,13 @@ class _HomeView extends StatelessWidget {
       itemCount: notifications.length,
       itemBuilder: (context, index) {
         final notification = notifications[index];
-        return const ListTile(
-            // TODO 4: Completar esta implementación
-            // title: ,
-            // subtitle: ,
-            // leading: image si es que viene,
-            );
+        return ListTile(
+          title: Text(notification.title),
+          subtitle: Text(notification.body),
+          leading: notification.imageUrl != null
+              ? Image.network(notification.imageUrl!)
+              : null,
+        );
       },
     );
   }
