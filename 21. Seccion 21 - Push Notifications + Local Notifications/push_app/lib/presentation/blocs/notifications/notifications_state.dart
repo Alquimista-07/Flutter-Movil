@@ -12,9 +12,8 @@ class NotificationsState extends Equatable {
   // NOTA:
   final AuthorizationStatus status;
 
-  //TODO: Crear mi modelo de notificaciones
   // NOTA: Este listado es solo para porque queremos mantener las notificaciones, pero realmente no hace falta mantenerlas.
-  final List<dynamic> notifications;
+  final List<PushMessage> notifications;
 
   const NotificationsState({
     // NOTA: Puede ser que la aplicación cuando arranque ya tenga los permisos, pero por defecto vamos a manejarlo como no determinado
@@ -26,7 +25,7 @@ class NotificationsState extends Equatable {
 
   NotificationsState copyWith({
     AuthorizationStatus? status,
-    List<dynamic>? notifications,
+    List<PushMessage>? notifications,
   }) =>
       NotificationsState(
         status: status ?? this.status,

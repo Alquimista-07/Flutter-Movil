@@ -6,11 +6,15 @@
 //
 //       Adicionalmente la documentación la encontramos en: https://firebase.flutter.dev/docs/messaging/notifications/
 //
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:push_app/firebase_options.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+
+import 'package:push_app/domain/entities/push_message.dart';
 
 part 'notifications_event.dart';
 part 'notifications_state.dart';
@@ -96,6 +100,21 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     if (message.notification == null) return;
 
     print('Message also contained a notification: ${message.notification}');
+
+    final notification = PushMessage(
+        //NOTA: Recordemos que el messageId viene algo sucio por lo tanto lo tenemos que ajustar para quitar esos caracteres para evitar romper mi sistema de goRouter
+        messageId:
+            message.messageId?.replaceAll(':', '').replaceAll('%', '') ?? '',
+        title: message.notification!.title ?? '',
+        body: message.notification!.body ?? '',
+        sentDate: message.sentTime ?? DateTime.now(),
+        data: message.data,
+        // NOTA: Para la imageUrl esta viene por plataforma, es decir, para iOS, Androi o web es diferente por lo tanto determinamos la plataforma
+        imageUrl: Platform.isAndroid
+            ? message.notification!.android?.imageUrl
+            : message.notification!.apple?.imageUrl);
+
+    print(notification);
   }
 
   void _onForegroundMessage() {
