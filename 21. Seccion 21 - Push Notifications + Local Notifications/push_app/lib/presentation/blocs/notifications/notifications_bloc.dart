@@ -39,6 +39,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     // Registro del manejador del evento
     on<NotificationStatusChanged>(_notificationStatusChanged);
 
+    // TODO 3: Crear el listener $ _onPushMessageReceived
+
     // Verificar estado de las notificaciones
     _initialStatusCheck();
 
@@ -115,6 +117,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
             : message.notification!.apple?.imageUrl);
 
     print(notification);
+
+    // TODO 1: Add de un nuevo evento
   }
 
   void _onForegroundMessage() {

@@ -32,10 +32,19 @@ class _HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final notifications =
+        context.watch<NotificationsBloc>().state.notifications;
+
     return ListView.builder(
-      itemCount: 0,
+      itemCount: notifications.length,
       itemBuilder: (context, index) {
-        return const ListTile();
+        final notification = notifications[index];
+        return const ListTile(
+            // TODO 4: Completar esta implementación
+            // title: ,
+            // subtitle: ,
+            // leading: image si es que viene,
+            );
       },
     );
   }

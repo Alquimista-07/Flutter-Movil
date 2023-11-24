@@ -10,3 +10,5 @@ class NotificationStatusChanged extends NotificationsEvent {
 
   NotificationStatusChanged(this.status);
 }
+
+// TODO 2: NotificationReceived #PushMessage
