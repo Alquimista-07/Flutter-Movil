@@ -150,4 +150,15 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     // Llamado del manejador del evento para que se ejecute
     add(NotificationStatusChanged(settings.authorizationStatus));
   }
+
+  // Método para obtener una notificación push si existe o no
+  PushMessage? getMessageById(String pushMessageId) {
+    final exist = state.notifications
+        .any((element) => element.messageId == pushMessageId);
+
+    if (!exist) return null;
+
+    return state.notifications
+        .firstWhere((element) => element.messageId == pushMessageId);
+  }
 }
