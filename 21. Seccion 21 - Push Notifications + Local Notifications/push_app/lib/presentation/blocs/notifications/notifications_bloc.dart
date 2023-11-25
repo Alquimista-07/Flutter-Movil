@@ -95,7 +95,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
   // Escuchar mensajes Push
   // NOTA: Este método es un listener y tenemos que ponerlo para estar escuchando cuando el evento sucede
-  void _handleRemoteMessage(RemoteMessage message) {
+  void handleRemoteMessage(RemoteMessage message) {
     print('Got a message whilst in the foreground!');
     print('Messag3e data ${message.data}');
 
@@ -131,7 +131,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   void _onForegroundMessage() {
     //NOTA: El método FirebaseMessaging es un Stream y como necesito estar pendiente de él no lo voy a limpiar con el cancel,
     //      pero si necesitaramos hacerlo como se mencionó usariamos el método cancel()
-    FirebaseMessaging.onMessage.listen(_handleRemoteMessage);
+    FirebaseMessaging.onMessage.listen(handleRemoteMessage);
   }
 
   // NOTA: Este es el método para manejar el estado de los permisos
