@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "445939786421",
+    "project_id": "flutter-projects-3ed09",
+    "storage_bucket": "flutter-projects-3ed09.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:445939786421:android:6390c37be1b1bbec8e14fc",
+        "android_client_info": {
+          "package_name": "com.the_alchemist.push_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_WKUftsVGYTTMpNAZ1UsD2s6sBtG2sII"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
