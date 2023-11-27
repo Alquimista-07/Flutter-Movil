@@ -38,7 +38,22 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
   int pushNumber = 0;
 
-  NotificationsBloc() : super(const NotificationsState()) {
+  // NOTA: Para resolver las dependencias ocultas y evitar perder el principio de arquitectura limpia creamos la función sin argumentos llamada requestLocalNotificationsPermissions
+  //       que va a ser opcional en caso de que no necesitemos implementar las local notifications
+  final Future<void> Function()? requestLocalNotificationsPermissions;
+
+  // NOTA: Adicionalmente para la siguiente dependencia oculta vamos a crear otra función con argumentos. Pero fácilmente esto lo podemos solucionar como un typedef
+  //       para que no se vea como abultado esta parte del código
+  final void Function({
+    required int id,
+    String? title,
+    String? body,
+    String? data,
+  })? showLocalNotification;
+
+  NotificationsBloc(
+      {this.requestLocalNotificationsPermissions, this.showLocalNotification})
+      : super(const NotificationsState()) {
     // Registro del manejador del evento
     on<NotificationStatusChanged>(_notificationStatusChanged);
 
@@ -122,12 +137,16 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     print(notification);
 
     // NOTA: Acá ya tengo toda la información que necesito para mandar a llamar la local notification
-    LocalNotifications.showLocalNotification(
-      id: ++pushNumber,
-      body: notification.body,
-      data: notification.data.toString(),
-      title: notification.title,
-    );
+    if (showLocalNotification != null) {
+      // Comentamos esto y cambiamos por la definición de la función que creamos para evitar la dependencia oculta
+      // LocalNotifications.showLocalNotification(
+      showLocalNotification!(
+        id: ++pushNumber,
+        body: notification.body,
+        data: notification.data.toString(),
+        title: notification.title,
+      );
+    }
 
     // Push notification
     add(NotificationReceived(notification));
@@ -160,7 +179,12 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     );
 
     // Solicitar permisos a las local notifications
-    await LocalNotifications.requestPremissionLocalNotifications();
+    if (requestLocalNotificationsPermissions != null) {
+      await requestLocalNotificationsPermissions!();
+
+      // NOTA: Comentamos este línea de código para manejar la dependencia oculta que teniamos
+      // await LocalNotifications.requestPremissionLocalNotifications();
+    }
 
     // Llamado del manejador del evento para que se ejecute
     add(NotificationStatusChanged(settings.authorizationStatus));

@@ -27,7 +27,13 @@ void main() async {
       MultiBlocProvider(
     providers: [
       BlocProvider(
-        create: (_) => NotificationsBloc(),
+        create: (_) => NotificationsBloc(
+          // Mandamos solo la referencia a la función para obtener permisos y que creamos para quitar la dependencia oculta
+          requestLocalNotificationsPermissions:
+              LocalNotifications.requestPremissionLocalNotifications,
+          // Mandamos solo la referencia a la función para obtener mostrar la local notification y que creamos para quitar la dependencia oculta
+          showLocalNotification: LocalNotifications.showLocalNotification,
+        ),
       )
     ],
     child: const MainApp(),
