@@ -41,4 +41,38 @@ class LocalNotifications {
       // onDidReceiveBackgroundNotificationResponse: onDidReceiveBackgroundNotificationResponse
     );
   }
+
+  static void showLocalNotification({
+    required int id,
+    String? title,
+    String? body,
+    String? data,
+  }) {
+    // Configuraciones android
+    const androidDetails = AndroidNotificationDetails(
+      'channelId', 'channelName',
+      playSound: true,
+      // NOTA: Sonido personalizado, el cual se agrega en el directorio android/app/src/main/res/raw
+      sound: RawResourceAndroidNotificationSound('android_notification'),
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    // Configuraciones android
+    const notificationDetails = NotificationDetails(
+      android: androidDetails,
+      // TODO: iOS
+    );
+
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    // Mostrar local notification
+    flutterLocalNotificationsPlugin.show(
+      id,
+      title,
+      body,
+      notificationDetails,
+      payload: data,
+    );
+  }
 }

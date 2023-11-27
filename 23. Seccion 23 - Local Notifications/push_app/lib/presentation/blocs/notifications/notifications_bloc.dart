@@ -36,6 +36,8 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   // NOTA: Esta es el objeto que va a permitir escuchar y emitir mensajería a través de él y el token correspondinte
   FirebaseMessaging messaging = FirebaseMessaging.instance;
 
+  int pushNumber = 0;
+
   NotificationsBloc() : super(const NotificationsState()) {
     // Registro del manejador del evento
     on<NotificationStatusChanged>(_notificationStatusChanged);
@@ -119,6 +121,15 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
 
     print(notification);
 
+    // NOTA: Acá ya tengo toda la información que necesito para mandar a llamar la local notification
+    LocalNotifications.showLocalNotification(
+      id: ++pushNumber,
+      body: notification.body,
+      data: notification.data.toString(),
+      title: notification.title,
+    );
+
+    // Push notification
     add(NotificationReceived(notification));
   }
 
