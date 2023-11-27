@@ -3,7 +3,11 @@
         android:label="push_app"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!--Para saber el porque se agregaron las lineas showWhenLocked y turnScreenOn revisar el video número 343. LocalNotifications - Android del curso -->
+        <!--Enlace documentación local notifications: https://pub.dev/packages/flutter_local_notifications-->
         <activity
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"

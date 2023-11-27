@@ -26,7 +26,7 @@ android {
     //* NOTA: Para el cambio del paquete seguimos el tutorial en el cual instalamos un paquete de Flutter que nos permite hacer el cambio 
     //*       de una forma fácil y rápida. El enlace es https://pub.dev/packages/change_app_package_name
     namespace "com.the_alchemist.push_app"
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkVersion 33
     ndkVersion flutter.ndkVersion
 
     compileOptions {
