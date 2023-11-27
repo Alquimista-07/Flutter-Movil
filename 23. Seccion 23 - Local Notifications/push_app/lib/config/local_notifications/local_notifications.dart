@@ -6,13 +6,39 @@
 //      hacer, y lo que tenemos que seguir de dicha documentación para seguirla ya que en el curso este tipo de schedule notifications no se
 //      explican y por lo tanto hay que segur los tutoriales de la documentación oficial del paquete de Flutter.
 
-// Solicitud permisos local notifications
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-Future<void> requestPremissionLocalNotifications() async {
-  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  await flutterLocalNotificationsPlugin
-      .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
-      ?.requestNotificationsPermission();
+class LocalNotifications {
+  // Solicitud permisos local notifications
+  static Future<void> requestPremissionLocalNotifications() async {
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+  }
+
+  static Future<void> initializeLocalNotifications() async {
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    // Inicialización para android
+    // NOTA: El defaultIcon es bien bonito porque nosotros lo podemos cambiar basado en el icono de nuestra aplicación.
+    //       Y el cual va a ser tomado de la ruta android/app/src/main/res/drawable y adicionalmente solo lo tendríamos
+    //       allá y no sería necesario definirlo en los assets del pubspec ya que ese icono hace parte de la app de android
+    const initalizationSettingsAndroid =
+        AndroidInitializationSettings('app_icon');
+
+    // TODO: iOS Configuration
+
+    const initializationSettings = InitializationSettings(
+      android: initalizationSettingsAndroid,
+      // TODO: iOS configuration settings
+    );
+
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      // TODO
+      // onDidReceiveBackgroundNotificationResponse: onDidReceiveBackgroundNotificationResponse
+    );
+  }
 }

@@ -3,6 +3,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:push_app/config/local_notifications/local_notifications.dart';
 import 'package:push_app/config/router/app_router.dart';
 
 import 'package:push_app/config/theme/app_theme.dart';
@@ -15,6 +16,9 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
   await NotificationsBloc.initializeFirebaseCloudMessagingNotifications();
+
+  // Llamado inicialización local notifications
+  await LocalNotifications.initializeLocalNotifications();
 
   runApp(
       // NOTA: Como queremos que nuestro bloc sea accesible para toda la aplicación, es decir, para todos los widgets entonces lo vamos a colocar
