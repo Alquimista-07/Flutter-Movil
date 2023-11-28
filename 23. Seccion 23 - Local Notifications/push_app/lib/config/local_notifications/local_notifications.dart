@@ -7,6 +7,7 @@
 //      explican y por lo tanto hay que segur los tutoriales de la documentación oficial del paquete de Flutter.
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:push_app/config/router/app_router.dart';
 
 class LocalNotifications {
   // Solicitud permisos local notifications
@@ -37,8 +38,8 @@ class LocalNotifications {
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      // TODO
-      // onDidReceiveBackgroundNotificationResponse: onDidReceiveBackgroundNotificationResponse
+      // Configuración acción cuando tocamos la local notification
+      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
     );
   }
 
@@ -74,5 +75,11 @@ class LocalNotifications {
       notificationDetails,
       payload: data,
     );
+  }
+
+  // Método para las acciones cuando toquemos la local notification
+  static void onDidReceiveNotificationResponse(NotificationResponse response) {
+    // Navegamos a la pantalla
+    appRouter.push('/push-datails/${response.payload}');
   }
 }

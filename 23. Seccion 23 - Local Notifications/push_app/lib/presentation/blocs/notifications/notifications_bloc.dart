@@ -10,7 +10,6 @@ import 'dart:io';
 
 import 'package:equatable/equatable.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:push_app/config/local_notifications/local_notifications.dart';
 import 'package:push_app/firebase_options.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -143,7 +142,7 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       showLocalNotification!(
         id: ++pushNumber,
         body: notification.body,
-        data: notification.data.toString(),
+        data: notification.messageId,
         title: notification.title,
       );
     }
