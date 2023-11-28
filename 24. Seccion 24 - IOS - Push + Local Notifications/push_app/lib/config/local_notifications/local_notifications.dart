@@ -29,18 +29,27 @@ class LocalNotifications {
     const initalizationSettingsAndroid =
         AndroidInitializationSettings('app_icon');
 
-    // TODO: iOS Configuration
+    // iOS Configuration
+    const initializationSettingsDarwin = DarwinInitializationSettings(
+      onDidReceiveLocalNotification: iosShowNotification,
+    );
 
     const initializationSettings = InitializationSettings(
-      android: initalizationSettingsAndroid,
-      // TODO: iOS configuration settings
-    );
+        android: initalizationSettingsAndroid,
+        // iOS configuration settings
+        iOS: initializationSettingsDarwin);
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
       // Configuración acción cuando tocamos la local notification
       onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
     );
+  }
+
+  // IOS
+  static void iosShowNotification(
+      int id, String? title, String? body, String? data) {
+    showLocalNotification(id: id, title: title, body: body, data: data);
   }
 
   static void showLocalNotification({
@@ -61,9 +70,11 @@ class LocalNotifications {
 
     // Configuraciones android
     const notificationDetails = NotificationDetails(
-      android: androidDetails,
-      // TODO: iOS
-    );
+        android: androidDetails,
+        // iOS
+        iOS: DarwinNotificationDetails(
+          presentSound: true,
+        ));
 
     final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
