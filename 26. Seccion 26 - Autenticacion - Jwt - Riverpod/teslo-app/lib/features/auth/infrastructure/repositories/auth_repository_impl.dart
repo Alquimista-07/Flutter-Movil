@@ -10,9 +10,9 @@ class AuthRepositoryImpl extends AuthRepository {
   //       pero puede ser que en un futuro si. Por lo tanto yo no quiero forzar a estar creando la implementación del datasource si ya
   //       se cual se va a estar usando por defecto, por lo tanto lo mandamos opcional y le decimos que si lo tiene uselo y si no que cree
   //       la instancia del AuthDatsourceImpl
-  AuthRepositoryImpl(
+  AuthRepositoryImpl({
     AuthDatasource? datasource,
-  ) : datasource = datasource ?? AuthDatasourcesImpl();
+  }) : datasource = datasource ?? AuthDatasourcesImpl();
 
   @override
   Future<User> checkAuthStatus(String token) {
