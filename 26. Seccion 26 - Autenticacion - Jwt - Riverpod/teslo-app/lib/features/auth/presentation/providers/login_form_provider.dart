@@ -1,19 +1,29 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
+import 'package:teslo_shop/features/auth/presentation/providers/auth_provider.dart';
 import 'package:teslo_shop/features/shared/shared.dart';
 
 //! 3 - StateNotifierProvider - Consume afuera
 final loginFormProvider =
 // NOTA: Recordemos que el autoDispose destruye y reinicia la información diligenciada en los campos del formulario.
     StateNotifierProvider.autoDispose<LoginFormNotifier, LoginFormState>((ref) {
-  return LoginFormNotifier();
+  // NOTA: Para evitar una dependencia oculta mandamos acá la referencia al provider
+  final loginUserCallback = ref.watch(authProvider.notifier).loginUser;
+
+  return LoginFormNotifier(
+    loginUserCallback: loginUserCallback,
+  );
 });
 
 //! 2 - Como impementamos un notifier
 // NOTA: Estado para manejdar los campos del login
 class LoginFormNotifier extends StateNotifier<LoginFormState> {
+  // Recibimos la función
+  final Function(String, String) loginUserCallback;
+
   // NOTA: En el super mandamos la creación del estado inicial
-  LoginFormNotifier() : super(LoginFormState());
+  LoginFormNotifier({required this.loginUserCallback})
+      : super(LoginFormState());
 
   onEmailChanged(String value) {
     final newEmail = Email.dirty(value);
@@ -33,12 +43,13 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
     );
   }
 
-  onFormSubmit() {
+  onFormSubmit() async {
     _touchEveryField();
 
     if (!state.isValid) return;
 
-    print(state);
+    // print(state);
+    await loginUserCallback(state.email.value, state.password.value);
   }
 
   // NOTA: Ocupamos este método para que cuando el campo toquemos el botón de ingresar todos los campos queden tocados o sucios,
