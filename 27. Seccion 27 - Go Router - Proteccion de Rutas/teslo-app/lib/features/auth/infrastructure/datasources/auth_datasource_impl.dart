@@ -5,6 +5,12 @@ import 'package:teslo_shop/features/auth/domain/domain.dart';
 import 'package:teslo_shop/features/auth/infrastructure/infrastructure.dart';
 
 class AuthDatasourcesImpl extends AuthDatasource {
+  // NOTA: OJO en este caso para dio no implementamos el patron adaptador a diferencia de como realizamos con los environment
+  //       cuando creamos el archivo environment dentro del directorio constants. La ventaja de usar ese patrón adaptador es que
+  //       de esa forma creamos un wraper o envoltura al rededor del dotenv y allá solo tenemos la referencia al paquete dotenv
+  //       y en el caso de que luego quiera cambiar la forma de leer las variables de entorno entonces solo tengo un archivo que
+  //       modificar. Por lo tanto con dio podríamos hacer algo muy similar y envolver el BaseOptions en una sola clase y evitar
+  //       tener dependencias en varios lugares y si el dia de mañana cambia algo la aplicación no se va a ver afectada.
   final dio = Dio(BaseOptions(
     baseUrl: Environment.apiUrl,
   ));
