@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:teslo_shop/features/auth/presentation/providers/auth_provider.dart';
 import 'package:teslo_shop/features/auth/presentation/providers/register_form_provider.dart';
 import 'package:teslo_shop/features/shared/shared.dart';
 
@@ -64,10 +65,24 @@ class RegisterScreen extends StatelessWidget {
 class _RegisterForm extends ConsumerWidget {
   const _RegisterForm();
 
+  void showSnackbar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Referencia al provider de riverpod
     final registerForm = ref.watch(registerFormProvider);
+
+    // NOTA: Acá es donde tenemos lo necesario para mostrar los mensajes de error de forma condicional.
+    //       Entonces escuchamos el provider con el método listen
+    ref.listen(authProvider, (previous, next) {
+      if (next.errorMessage.isEmpty) return;
+      showSnackbar(context, next.errorMessage);
+    });
 
     final textStyles = Theme.of(context).textTheme;
 
@@ -124,6 +139,11 @@ class _RegisterForm extends ConsumerWidget {
                 text: 'Crear',
                 buttonColor: Colors.black,
                 onPressed: () {
+                  if (registerForm.password != registerForm.repitePassword) {
+                    return showSnackbar(
+                        context, 'Las contraseñas no son iguales');
+                  }
+
                   ref.read(registerFormProvider.notifier).onFormSubmit();
                 },
               )),

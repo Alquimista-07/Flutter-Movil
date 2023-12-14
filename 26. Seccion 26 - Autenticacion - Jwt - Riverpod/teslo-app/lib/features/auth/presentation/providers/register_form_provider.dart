@@ -1,18 +1,27 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
+import 'package:teslo_shop/features/auth/presentation/providers/auth_provider.dart';
 import 'package:teslo_shop/features/shared/infrastucture/inputs/inputs.dart';
 
 //! 3 - StateNotifierProvider - Consume afuera
 final registerFormProvider =
     StateNotifierProvider.autoDispose<RegisterFormNotifier, RegisterFormState>(
         (ref) {
-  return RegisterFormNotifier();
+  // NOTA: Para evitar una dependencia oculta mandamos acá la referencia al provider
+  final registerUserCallback = ref.watch(authProvider.notifier).registerUser;
+
+  return RegisterFormNotifier(
+    registerUserCallback: registerUserCallback,
+  );
 });
 
 //! 2 - Como impementamos un notifier
 class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
-  RegisterFormNotifier() : super(RegisterFormState());
+  // NOTA: Recibimos la función
+  final Function(String, String, String) registerUserCallback;
+
+  RegisterFormNotifier({required this.registerUserCallback})
+      : super(RegisterFormState());
 
   onFullNameChanged(String value) {
     final newNombre = Nombre.dirty(value);
@@ -54,12 +63,14 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     );
   }
 
-  onFormSubmit() {
+  onFormSubmit() async {
     _touchEveryField();
 
     if (!state.isValid) return;
 
-    print(state);
+    // print(state);
+    await registerUserCallback(
+        state.email.value, state.password.value, state.fullName.value);
   }
 
   _touchEveryField() {

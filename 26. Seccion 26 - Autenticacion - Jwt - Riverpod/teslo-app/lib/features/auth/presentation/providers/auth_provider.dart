@@ -41,7 +41,19 @@ class AuthNotifier extends StateNotifier<AuthState> {
         errorMessage: errorMessage);
   }
 
-  void registerUser(String email, String password, String fullName) async {}
+  void registerUser(String email, String password, String fullName) async {
+    // NOTA: Simulamos un retardo para poder apreciar bien el proceso, pero esto no es necesario colocarlo en la vida real
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    try {
+      final user = await authRepository.register(email, password, fullName);
+      _setRegisterUser(user);
+    } on CustomError catch (e) {
+      logout(e.message);
+    } catch (e) {
+      logout('Error no controlado');
+    }
+  }
 
   void checkAuthStatus() async {}
 
@@ -51,7 +63,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = state.copyWith(
       user: user,
       authStatus: AuthStatus.authenticated,
+      errorMessage: '',
     );
+  }
+
+  void _setRegisterUser(User user) {
+    state = state.copyWith(
+        user: user, authStatus: AuthStatus.notAuthenticated, errorMessage: '');
   }
 }
 
