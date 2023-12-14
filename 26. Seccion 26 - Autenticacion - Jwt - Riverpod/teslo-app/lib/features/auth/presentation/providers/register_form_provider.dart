@@ -14,11 +14,11 @@ final registerFormProvider =
 class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
   RegisterFormNotifier() : super(RegisterFormState());
 
-  onNombreCompletoChanged(String value) {
+  onFullNameChanged(String value) {
     final newNombre = Nombre.dirty(value);
 
     state = state.copyWith(
-      nombreCompleto: newNombre,
+      fullName: newNombre,
       isValid: Formz.validate(
           [newNombre, state.password, state.email, state.repitePassword]),
     );
@@ -29,12 +29,8 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
 
     state = state.copyWith(
       email: newEmail,
-      isValid: Formz.validate([
-        newEmail,
-        state.nombreCompleto,
-        state.password,
-        state.repitePassword
-      ]),
+      isValid: Formz.validate(
+          [newEmail, state.fullName, state.password, state.repitePassword]),
     );
   }
 
@@ -43,12 +39,8 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
 
     state = state.copyWith(
       password: newPassword,
-      isValid: Formz.validate([
-        newPassword,
-        state.nombreCompleto,
-        state.email,
-        state.repitePassword
-      ]),
+      isValid: Formz.validate(
+          [newPassword, state.fullName, state.email, state.repitePassword]),
     );
   }
 
@@ -57,12 +49,8 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
 
     state = state.copyWith(
       repitePassword: newRepitePassword,
-      isValid: Formz.validate([
-        newRepitePassword,
-        state.nombreCompleto,
-        state.email,
-        state.password
-      ]),
+      isValid: Formz.validate(
+          [newRepitePassword, state.fullName, state.email, state.password]),
     );
   }
 
@@ -87,19 +75,18 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
   }
 
   _touchEveryField() {
-    final nombreCompleto = Nombre.dirty(state.nombreCompleto.value);
+    final fullName = Nombre.dirty(state.fullName.value);
     final email = Email.dirty(state.email.value);
     final password = Password.dirty(state.password.value);
     final repitePassword = Password.dirty(state.repitePassword.value);
 
     state = state.copyWith(
       isFormPosted: true,
-      nombreCompleto: nombreCompleto,
+      fullName: fullName,
       email: email,
       password: password,
       repitePassword: repitePassword,
-      isValid:
-          Formz.validate([nombreCompleto, email, password, repitePassword]),
+      isValid: Formz.validate([fullName, email, password, repitePassword]),
     );
   }
 }
@@ -109,7 +96,7 @@ class RegisterFormState {
   final bool isPosting;
   final bool isFormPosted;
   final bool isValid;
-  final Nombre nombreCompleto;
+  final Nombre fullName;
   final Email email;
   final Password password;
   final Password repitePassword;
@@ -118,7 +105,7 @@ class RegisterFormState {
     this.isPosting = false,
     this.isFormPosted = false,
     this.isValid = false,
-    this.nombreCompleto = const Nombre.pure(),
+    this.fullName = const Nombre.pure(),
     this.email = const Email.pure(),
     this.password = const Password.pure(),
     this.repitePassword = const Password.pure(),
@@ -128,7 +115,7 @@ class RegisterFormState {
     bool? isPosting,
     bool? isFormPosted,
     bool? isValid,
-    Nombre? nombreCompleto,
+    Nombre? fullName,
     Email? email,
     Password? password,
     Password? repitePassword,
@@ -137,7 +124,7 @@ class RegisterFormState {
         isPosting: isPosting ?? this.isPosting,
         isFormPosted: isFormPosted ?? this.isFormPosted,
         isValid: isValid ?? this.isValid,
-        nombreCompleto: nombreCompleto ?? this.nombreCompleto,
+        fullName: fullName ?? this.fullName,
         email: email ?? this.email,
         password: password ?? this.password,
         repitePassword: repitePassword ?? this.repitePassword,
@@ -150,7 +137,7 @@ class RegisterFormState {
       isPosting: $isPosting
       isFormPosted: $isFormPosted
       isValid: $isValid
-      nombreCompleto: $nombreCompleto
+      fullName: $fullName
       email: $email
       password: $password
       repitePassword: $repitePassword

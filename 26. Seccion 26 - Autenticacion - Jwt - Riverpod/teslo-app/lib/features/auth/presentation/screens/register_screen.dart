@@ -82,9 +82,9 @@ class _RegisterForm extends ConsumerWidget {
             label: 'Nombre completo',
             keyboardType: TextInputType.emailAddress,
             onChanged:
-                ref.read(registerFormProvider.notifier).onNombreCompletoChanged,
+                ref.read(registerFormProvider.notifier).onFullNameChanged,
             errorMessage: registerForm.isFormPosted
-                ? registerForm.nombreCompleto.errorMessage
+                ? registerForm.fullName.errorMessage
                 : null,
           ),
           const SizedBox(height: 30),
