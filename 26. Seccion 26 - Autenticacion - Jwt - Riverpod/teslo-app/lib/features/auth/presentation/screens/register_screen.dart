@@ -124,13 +124,7 @@ class _RegisterForm extends ConsumerWidget {
                 text: 'Crear',
                 buttonColor: Colors.black,
                 onPressed: () {
-                  if (registerForm.password == registerForm.repitePassword) {
-                    ref.read(registerFormProvider.notifier).onFormSubmit();
-                  } else {
-                    ref
-                        .read(registerFormProvider.notifier)
-                        .showCustomSnackbar(context);
-                  }
+                  ref.read(registerFormProvider.notifier).onFormSubmit();
                 },
               )),
           const Spacer(flex: 2),

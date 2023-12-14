@@ -62,18 +62,6 @@ class RegisterFormNotifier extends StateNotifier<RegisterFormState> {
     print(state);
   }
 
-  void showCustomSnackbar(BuildContext context) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-
-    final snackbar = SnackBar(
-      content: const Text('Las contraseñas no son iguales'),
-      action: SnackBarAction(label: 'OK', onPressed: () {}),
-      duration: const Duration(seconds: 2),
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(snackbar);
-  }
-
   _touchEveryField() {
     final fullName = Nombre.dirty(state.fullName.value);
     final email = Email.dirty(state.email.value);
