@@ -58,6 +58,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
   void checkAuthStatus() async {}
 
   void _setLoggedUser(User user) {
+    // NOTA: Para grabar el token vamos a usar un paquete llamado shared_prefetences, que es uno de los más usados
+    //       y es Flutter Favorite. Pero hay que tener en cuenta que este no es el único para este fin, ya que
+    //       incluso podríamos usar Isar para esta tarea de almacenar de forma local el JWT del usuario.
+    //       El enalce a la documentación de shared_preferences es el siguiente:
+    //       https://pub.dev/packages/shared_preferences
     // TODO: Necesito guardar el token fisicamente
 
     state = state.copyWith(
