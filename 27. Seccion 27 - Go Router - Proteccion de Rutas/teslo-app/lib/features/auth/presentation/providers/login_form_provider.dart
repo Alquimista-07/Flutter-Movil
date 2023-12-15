@@ -48,8 +48,14 @@ class LoginFormNotifier extends StateNotifier<LoginFormState> {
 
     if (!state.isValid) return;
 
+    // NOTA: Cambiamos el estado de la propiedad isPoasting para sabe si ya se le dio click al botón y de esta forma bloquearlo y evitar dobles posteos
+    state = state.copyWith(isPosting: true);
+
     // print(state);
     await loginUserCallback(state.email.value, state.password.value);
+
+    // NOTA: Volvemos a cambiar el estado de la propiedad isPosting a false sin importar si fue exitoso o no el logueo
+    state = state.copyWith(isPosting: false);
   }
 
   // NOTA: Ocupamos este método para que cuando el campo toquemos el botón de ingresar todos los campos queden tocados o sucios,
