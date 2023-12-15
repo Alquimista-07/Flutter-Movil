@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:teslo_shop/config/router/app_router_notifier.dart';
 import 'package:teslo_shop/features/auth/auth.dart';
 import 'package:teslo_shop/features/products/products.dart';
 
@@ -11,8 +12,18 @@ import 'package:teslo_shop/features/products/products.dart';
 //       super importante implementarlo, pero en móvil no esta de más agregarlo.
 //       Adicionalmente esta forma de proteger rutas nos sirve tanto para web, móvil, escritorio, etc.
 final goRouterProvider = Provider((ref) {
+  // NOTA: Referencia al notifier provider
+  final goRouterNotifier = ref.read(goRouterNotifierProvider);
+
   return GoRouter(
     initialLocation: '/splash',
+    // NOTA: Como ocupamos saber cuando el estado de no autenticado cambie a autenticado ahí es un paso donde el redirect no va a suceder a menos de que forzadamente mandaramos
+    //       a llamar un context.go() pero no lo vamos a hacer de esa forma. Entonces cuando pasemos de ese estado no autenticado a autenticado tenemos que hacer que el go_router
+    //       de alguna manera se de cuenta de ese cambio, entonces para esto existe una propiedad llamada refreshListenable el cual cuando cambie va a volver a evaluar el redirect
+    //       por lo tanto en el refreshListenable tenemos que conectar algo que este pendiente del estado de la autenticación para que cuando esta cambie se de cuenta y evalue ese
+    //       redirect. Entonces para lograr hacer el refreshListenable el cual espera algo de tipo ChangeNotifier entonces para esto vamos a necesitar implementar un ChangeNotifier
+    //       que fue el primer gestor de estado que vimos con Provider al inicio del curos y el cual no es más que una clase que ya trae Flutter y no es necesario instalar nada
+    refreshListenable: goRouterNotifier,
     routes: [
       //* Primera pantalla
       GoRoute(
