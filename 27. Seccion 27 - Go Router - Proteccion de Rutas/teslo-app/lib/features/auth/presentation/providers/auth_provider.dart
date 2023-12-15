@@ -29,7 +29,10 @@ class AuthNotifier extends StateNotifier<AuthState> {
   AuthNotifier({
     required this.authRepository,
     required this.keyValueStorageService,
-  }) : super(AuthState());
+  }) : super(AuthState()) {
+    // NOTA: Realizamos la validación de la autenticación en base al token cuando el notifier se crea.
+    checkAuthStatus();
+  }
 
   Future<void> loginUser(String email, String password) async {
     // NOTA: Simulamos un retardo para poder apreciar bien el proceso, pero esto no es necesario colocarlo en la vida real
@@ -69,7 +72,23 @@ class AuthNotifier extends StateNotifier<AuthState> {
     }
   }
 
-  void checkAuthStatus() async {}
+  void checkAuthStatus() async {
+    // NOTA: Vamos a verificar si tenemos el token
+    final token = await keyValueStorageService.getValue<String>('token');
+
+    // NOTA: La razón por la que se manda a llamar el logout es que cuando se abre la aplicación por primera vez se establece el estado (AuthState)
+    //       como checking, por lo tanto al ser checking nosotros tenemos que cambiar el estado a un notAuthenticated y por eso se llama el logout
+    //       ya que al llamarlo establecemos ese estado de notAuthenticated.
+    if (token == null) return logout();
+
+    // NOTA: Pero si tenemos un token entonces procedemos a validarlo contra el backend y hacer todo lo demás
+    try {
+      final user = await authRepository.checkAuthStatus(token);
+      _setLoggedUser(user);
+    } catch (e) {
+      logout();
+    }
+  }
 
   void _setLoggedUser(User user) async {
     // NOTA: Para grabar el token vamos a usar un paquete llamado shared_prefetences, que es uno de los más usados
