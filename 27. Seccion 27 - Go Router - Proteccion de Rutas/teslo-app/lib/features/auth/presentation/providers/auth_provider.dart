@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:teslo_shop/features/auth/domain/domain.dart';
 import 'package:teslo_shop/features/auth/infrastructure/infrastructure.dart';
+import 'package:teslo_shop/features/shared/infrastucture/services/key_value_storage_service.dart';
+import 'package:teslo_shop/features/shared/infrastucture/services/key_value_storage_service_impl.dart';
 
 final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
 // NOTA: Como el loginUser, registerUser y checkAuthStatus a la final terminan delegando el llamado al repositorio,
@@ -8,15 +10,26 @@ final authProvider = StateNotifierProvider<AuthNotifier, AuthState>((ref) {
 //       uno por defecto
   final authRepository = AuthRepositoryImpl();
 
+  // NOTA: Inyectamos el servicio que creamos de shared_preferences y que nos va a ayudar con el manejo del token
+  //       referente a las operaciones de guardar, leer y eliminar dicho token.
+  //       El enalce a la documentación de shared_preferences es el siguiente:
+  //       https://pub.dev/packages/shared_preferences
+  final keyValueStorageService = KeyValueStorageServiceImpl();
+
   return AuthNotifier(
     authRepository: authRepository,
+    keyValueStorageService: keyValueStorageService,
   );
 });
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthRepository authRepository;
+  final KeyValueStorageService keyValueStorageService;
 
-  AuthNotifier({required this.authRepository}) : super(AuthState());
+  AuthNotifier({
+    required this.authRepository,
+    required this.keyValueStorageService,
+  }) : super(AuthState());
 
   Future<void> loginUser(String email, String password) async {
     // NOTA: Simulamos un retardo para poder apreciar bien el proceso, pero esto no es necesario colocarlo en la vida real
@@ -33,7 +46,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }
 
   Future<void> logout([String? errorMessage]) async {
-    // TODO: Limpiar token
+    // NOTA: Limpiar token
+    await keyValueStorageService.removeKey('token');
 
     state = state.copyWith(
         authStatus: AuthStatus.notAuthenticated,
@@ -57,13 +71,14 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
   void checkAuthStatus() async {}
 
-  void _setLoggedUser(User user) {
+  void _setLoggedUser(User user) async {
     // NOTA: Para grabar el token vamos a usar un paquete llamado shared_prefetences, que es uno de los más usados
     //       y es Flutter Favorite. Pero hay que tener en cuenta que este no es el único para este fin, ya que
     //       incluso podríamos usar Isar para esta tarea de almacenar de forma local el JWT del usuario.
     //       El enalce a la documentación de shared_preferences es el siguiente:
     //       https://pub.dev/packages/shared_preferences
-    // TODO: Necesito guardar el token fisicamente
+    // NOTA: Guardar el token fisicamente
+    await keyValueStorageService.setKeyValue('token', user.token);
 
     state = state.copyWith(
       user: user,
