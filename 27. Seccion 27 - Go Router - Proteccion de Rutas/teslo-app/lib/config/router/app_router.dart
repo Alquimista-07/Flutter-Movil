@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:teslo_shop/config/router/app_router_notifier.dart';
 import 'package:teslo_shop/features/auth/auth.dart';
+import 'package:teslo_shop/features/auth/presentation/providers/auth_provider.dart';
 import 'package:teslo_shop/features/products/products.dart';
 
 // NOTA: Con la ayuda de reverpod vamos a crear un provider para envolver las rutas y de esta forma ayudarnos con la protección de las rutas dependiendo si estoy
@@ -53,6 +54,39 @@ final goRouterProvider = Provider((ref) {
     //       y donde vamos a tener que jugar con una propiedad llamada redirect para navegar entre pantallas dependiendo a dicha
     //       autenticación
     redirect: (context, state) {
+      // NOTA: Recordemos que al imprimir el state dentro de dicho objeto tenemos una propiedad subloc que contiene la ruta
+      final isGoingTo = state.subloc;
+      // NOTA: Obtenemos si esta autenticado o no
+      final authStatus = goRouterNotifier.authStatus;
+
+      // print('GoRouter authStatus: $authStatus, isGoingTo: $isGoingTo');
+
+      // NOTA: Si va al splash y el estado es checking lo dejamos pasar
+      if (isGoingTo == '/splash' && authStatus == AuthStatus.checking) {
+        return null;
+      }
+
+      // NOTA: Si no esta autenticado y quiere ir al login o el registro entonces lo dejamos pasar
+      if (authStatus == AuthStatus.notAuthenticated) {
+        if (isGoingTo == '/login' || isGoingTo == '/register') return null;
+
+        // NOTA: Si no esta autenticado y quiere ir a otra pantalla que no es pública no lo dejamos pasar
+        //       ya que las únicas rutas públicas son register o login, entonces en esta caso lo sacamos
+        //       al login
+        return '/login';
+      }
+
+      // NOTA: Si ya esta autenticado y por alguna razón va a navegar al login o al register entonces no lo dejamos
+      //       ir a esas rutas y lo mandamos a la url / de la aplicación que es el de productos. Y esto lo hacemos
+      //       para que el usuario no tenga una falsa impresión de que no esta autenticado.
+      if (authStatus == AuthStatus.authenticated) {
+        if (isGoingTo == '/login' ||
+            isGoingTo == '/register' ||
+            isGoingTo == '/splash') {
+          return '/';
+        }
+      }
+
       return null;
     },
   );
