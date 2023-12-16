@@ -90,6 +90,9 @@ class _LoginForm extends ConsumerWidget {
           CustomTextFormField(
             label: 'Contraseña',
             obscureText: true,
+            // NOTA: Usamos la propiedad onFieldSubmitted para que cuando demos enter o done automáticamente dispere el método del login y no tener que presionar el botón de ingresar
+            onFieldSubmitted: (_) =>
+                ref.read(loginFormProvider.notifier).onFormSubmit(),
             // NOTA: Recordemos que no es buena práctica poner el watch dentro de eventos y métodos entonces usamos el read
             onChanged: ref.read(loginFormProvider.notifier).onPasswordChanged,
             errorMessage:
