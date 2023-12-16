@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:teslo_shop/config/config.dart';
 import 'package:teslo_shop/features/products/domain/domain.dart';
+import '../mappers/product_mapper.dart';
 
 class ProductsDatasourceImpl extends ProductsDatasource {
   // NOTA: Acá vamos a hacer una implementación de Dio un poco diferente a las usadas veces anteriores como por ejemplo el auth de esta misma aplicación
@@ -51,7 +52,7 @@ class ProductsDatasourceImpl extends ProductsDatasource {
     // NOTA: La response puede que venga vacía entonces si viene vacía mandamos un listado vacío
     for (final product in response.data ?? []) {
       // Agregamos los resultados al listado
-      // products.add(); // crear mapper
+      products.add(ProductMapper.jsonToEntity(product));
     }
 
     return products;
