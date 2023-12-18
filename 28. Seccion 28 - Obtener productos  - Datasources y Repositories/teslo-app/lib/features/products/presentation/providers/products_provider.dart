@@ -50,7 +50,7 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
         isLoading: false,
         offset: state.offset + 10,
         // NOTA: Con los productos hacemos un spread de los productos que tenía anteriormente en el estado y el spred de los nuevos productos
-        products: [...state.products, ...state.products]);
+        products: [...state.products, ...products]);
   }
 }
 
