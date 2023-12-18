@@ -17,7 +17,7 @@ class ProductMapper {
         //       y esto depende de como este el backend ya que en este caso el backend trabaja de esa manera.
         images: List<String>.from(
           json['images'].map(
-            (String image) => image.startsWith('http')
+            (image) => image.startsWith('http')
                 ? image
                 : '${Environment.apiUrl}/files/product/$image',
           ),
