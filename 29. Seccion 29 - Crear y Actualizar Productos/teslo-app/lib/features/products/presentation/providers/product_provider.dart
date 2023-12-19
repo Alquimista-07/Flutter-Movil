@@ -24,12 +24,29 @@ final productProvider = StateNotifierProvider.autoDispose
 class ProductNotifier extends StateNotifier<ProductState> {
   final ProductsRepository productsRepository;
 
+  // NOTA: El super se ejecuta antes de que llegemos a llamar el constructor
+  //       por lo tanto ya tenemos el id en el state y lo podemos usar para
+  //       llamar el método que nos permite obtener el producto por id
   ProductNotifier({
     required this.productsRepository,
     required String productId,
-  }) : super(ProductState(id: productId));
+  }) : super(ProductState(id: productId)) {
+    loadProduct();
+  }
 
-  Future<void> loadProduct() async {}
+  Future<void> loadProduct() async {
+    try {
+      final product = await productsRepository.getProductById(state.id);
+
+      state = state.copyWith(
+        isLoading: false,
+        product: product,
+      );
+    } catch (e) {
+      // 404 product nof found
+      print(e);
+    }
+  }
 }
 
 // STATE
