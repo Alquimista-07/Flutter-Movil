@@ -49,8 +49,14 @@ class _ProductsViewState extends ConsumerState<_ProductsView> {
   @override
   void initState() {
     super.initState();
-    // TODO: Infinite Scroll pending
-    ref.read(productsProvider.notifier).loadNextPage();
+    // TAREA: Infinite Scroll
+    scrollController.addListener(() {
+      // NOTA: Recordemos que el 400 es el margen de gracia que queremos dar
+      if ((scrollController.position.pixels + 400) >=
+          scrollController.position.maxScrollExtent) {
+        ref.read(productsProvider.notifier).loadNextPage();
+      }
+    });
   }
 
   @override
@@ -66,6 +72,7 @@ class _ProductsViewState extends ConsumerState<_ProductsView> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: MasonryGridView.count(
+        controller: scrollController,
         physics: const BouncingScrollPhysics(),
         crossAxisCount: 2,
         mainAxisSpacing: 20,
