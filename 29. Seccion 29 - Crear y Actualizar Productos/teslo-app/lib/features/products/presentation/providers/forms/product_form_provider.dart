@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
+import 'package:teslo_shop/config/config.dart';
 import 'package:teslo_shop/features/products/domain/domain.dart';
 import 'package:teslo_shop/features/shared/infrastucture/inputs/inputs.dart';
 
@@ -79,6 +80,81 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
           Price.dirty(state.price.value),
           Stock.dirty(value),
         ]));
+  }
+
+  // Métodos para modificar los valores del formulario que no usan Formz
+  void onSizeChanged(List<String> sizes) {
+    state = state.copyWith(
+      sizes: sizes,
+    );
+  }
+
+  void onGenderChanged(String gender) {
+    state = state.copyWith(
+      gender: gender,
+    );
+  }
+
+  void onDescriptionChanged(String description) {
+    state = state.copyWith(
+      description: description,
+    );
+  }
+
+  // NOTA: Recordemos que los tagslos recibimos como un string pero eventualmente vamos a tener que reconstruirlo papar transformalo
+  //       en una lista de string ya que eso es lo que recibe el backend
+  void ontagsChanged(String tags) {
+    state = state.copyWith(
+      tags: tags,
+    );
+  }
+
+  // NOTA: Método que nos sirve para que cuando posteemos el formulario se dispare la validación de Formz y asegurarnos de que todos los campos
+  //       han sido tocados, han sido manipulados y saber que toda la data esta correcta.
+  void _touchedEverything() {
+    state = state.copyWith(
+      isFormValid: Formz.validate([
+        Title.dirty(state.title.value),
+        Slug.dirty(state.slug.value),
+        Price.dirty(state.price.value),
+        Stock.dirty(state.inStock.value),
+      ]),
+    );
+  }
+
+  Future<bool> onFormSubmit() async {
+    _touchedEverything();
+
+    // NOTA: Si el formulario no es válido, no voy a hacer nada, no voy a ejecutar nada
+    if (!state.isFormValid) return false;
+
+    // NOTA: Si no se tiene la función que se quiere ejecutar para propagarla a quien sea que este escuchando los valores del formulario
+    //       entonces no voy a hacer nada
+    if (onSubmitCallback == null) return false;
+
+    // NOTA: Pero si tenemos un callback creamos el productLike que es el objeto que esta esperando el backend
+    // NOTA: OJO mandamos el .value de algunas propiedades ya que son objetos
+    final productLike = {
+      'id': state.id,
+      'Title': state.title.value,
+      'price': state.price.value,
+      'description': state.description,
+      'slug': state.slug.value,
+      'stock': state.inStock.value,
+      'sizes': state.sizes,
+      'gender': state.gender,
+      // NOTA: Recordemos que las imágenes las almacenamos como un string con comas y el backend espera una lista de strings
+      //       por lo tanto acá tratamos la data para separar esas comas y dejarlo como un listado.
+      'tags': state.tags.split(','),
+      'images': state.images.map((image) =>
+          // NOTA: Hacemos un replace para que las imágenes que están almacenadas en el backend no queden almacenadas con la ip o url cuando se actualice la data
+          //       y por tanto dejen de funcionar ya que estas imágenes queremos que queden conservadas de esa forma.
+          // NOTA: La explicación de esto está en la clase 422. Product Form Provider - Notifier Parte 2
+          image.replaceAll('${Environment.apiUrl}/files/product/', '')).toList(),
+    };
+
+    return true;
+    // TODO: Llamar on submit callback
   }
 }
 
