@@ -4,6 +4,21 @@ import 'package:teslo_shop/config/config.dart';
 import 'package:teslo_shop/features/products/domain/domain.dart';
 import 'package:teslo_shop/features/shared/infrastucture/inputs/inputs.dart';
 
+// PROVIDER
+// NOTA: Por lo tanto este provider va a ser autodispose ya que necesito que cuando cambiemos de pantalla se autodestruya y vuelva a su estado original
+//       y adicionalmente usar el family ya que necesito recibir el nuevo producto para crearlo.
+final productFormProvider = StateNotifierProvider.autoDispose
+    .family<ProductFormNotifier, ProductFormState, Product>((ref, product) {
+  // NOTA: Ocupamos el callback que nos va a servir para grabar la data, pero de alguna forma vamos a tener que configurarlo, por lo tanto tendría mucho sentido
+  //       que tengamos esa función updateCallBack en el ProductsProvider y podriamos usar su ProductsNotifier para centralizar las interacciones con los productos.
+  // TODO: Create updateCallBack
+
+  return ProductFormNotifier(
+    product: product,
+    // TODO: onSubmitCallback
+  );
+});
+
 // NOTIFIER
 // NOTA: El notifier va a cumplir la manera de mantener el estado y sus cambios, pero adicionalmente va a ser el responsable de emitir la data
 //       que tiene que ser procesada por otro ente
