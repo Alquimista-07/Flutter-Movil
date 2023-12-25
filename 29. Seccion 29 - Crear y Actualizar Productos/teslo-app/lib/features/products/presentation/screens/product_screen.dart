@@ -132,11 +132,11 @@ class _ProductInformation extends ConsumerWidget {
             onChanged:
                 // NOTA: Acá como la función onPriceChanged espera un double y el onChanged recibe un String es necesario parsear a double.
                 //       Pero en lugar de usar el método parse convencional vamos a usar el tryParse para que intente hacer el parseo y si
-                //       no lo logra lo que vamos a hacer es mandarle un cero por defecto y esto lo hacemos es para evitar posibles errores
-                //       en caso de que no logre parsear por algún motivo.
+                //       no lo logra lo que vamos a hacer es mandarle un menos uno por defecto y esto lo hacemos es para que se disparen
+                //       de forma correcta las validaciones.
                 (value) => ref
                     .read(productFormProvider(product).notifier)
-                    .onPriceChanged(double.tryParse(value) ?? 0),
+                    .onPriceChanged(double.tryParse(value) ?? -1),
             errorMessage: productForm.price.errorMessage,
           ),
           const SizedBox(height: 15),
@@ -152,11 +152,11 @@ class _ProductInformation extends ConsumerWidget {
             initialValue: productForm.inStock.value.toString(),
             // NOTA: Acá como la función onStockChanged espera un int y el onChanged recibe un String es necesario parsear a int.
             //       Pero en lugar de usar el método parse convencional vamos a usar el tryParse para que intente hacer el parseo y si
-            //       no lo logra lo que vamos a hacer es mandarle un cero por defecto y esto lo hacemos es para evitar posibles errores
-            //       en caso de que no logre parsear por algún motivo.
+            //       no lo logra lo que vamos a hacer es mandarle un menos uno por defecto y esto lo hacemos es para que se disparen
+            //       de forma correcta las validaciones.
             onChanged: (value) => ref
                 .read(productFormProvider(product).notifier)
-                .onStockChanged(int.tryParse(value) ?? 0),
+                .onStockChanged(int.tryParse(value) ?? -1),
             errorMessage: productForm.inStock.errorMessage,
           ),
           CustomProductField(
