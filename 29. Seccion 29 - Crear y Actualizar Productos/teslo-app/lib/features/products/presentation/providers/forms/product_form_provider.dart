@@ -118,7 +118,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
   // NOTA: Recordemos que los tagslos recibimos como un string pero eventualmente vamos a tener que reconstruirlo papar transformalo
   //       en una lista de string ya que eso es lo que recibe el backend
-  void ontagsChanged(String tags) {
+  void onTagsChanged(String tags) {
     state = state.copyWith(
       tags: tags,
     );
