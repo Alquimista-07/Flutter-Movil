@@ -56,13 +56,19 @@ class ProductScreen extends ConsumerWidget {
 //----------------------------
 // Vista Productos
 //----------------------------
-class _ProductView extends StatelessWidget {
+class _ProductView extends ConsumerWidget {
   final Product product;
 
   const _ProductView({required this.product});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    // NOTA: Para conectar el formulario con el provider es necesario mandarle el producto, y lo genial de Riverpod es que va a establecer el producto
+    //       gracias a que va a crear la instancia del provider en el providerScope y no importan cuentas referencias tengamos del mismo siempre van a
+    //       tener el mismo valor.
+    //       Adicinalmente ya nuestro productForm ya tiene toda la data necesaria por lo tanto podriamos tomar los valores desde ahí y no desde el producto
+    final productForm = ref.watch(productFormProvider(product));
+
     final textStyles = Theme.of(context).textTheme;
 
     return ListView(
@@ -70,10 +76,11 @@ class _ProductView extends StatelessWidget {
         SizedBox(
           height: 250,
           width: 600,
-          child: _ImageGallery(images: product.images),
+          child: _ImageGallery(images: productForm.images),
         ),
         const SizedBox(height: 10),
-        Center(child: Text(product.title, style: textStyles.titleSmall)),
+        Center(
+            child: Text(productForm.title.value, style: textStyles.titleSmall)),
         const SizedBox(height: 10),
         _ProductInformation(product: product),
       ],
@@ -87,6 +94,12 @@ class _ProductInformation extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // NOTA: Para conectar el formulario con el provider es necesario mandarle el producto, y lo genial de Riverpod es que va a establecer el producto
+    //       gracias a que va a crear la instancia del provider en el providerScope y no importan cuentas referencias tengamos del mismo siempre van a
+    //       tener el mismo valor.
+    //       Adicinalmente ya nuestro productForm ya tiene toda la data necesaria por lo tanto podriamos tomar los valores desde ahí y no desde el producto
+    final productForm = ref.watch(productFormProvider(product));
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -97,17 +110,34 @@ class _ProductInformation extends ConsumerWidget {
           CustomProductField(
             isTopField: true,
             label: 'Nombre',
-            initialValue: product.title,
+            initialValue: productForm.title.value,
+            onChanged:
+                // NOTA: Recordemos que cuando tenemos una función cuyos argumentos son los mismos argumentos que vamos a mandar unicamente
+                //       como referencia a la otra función, entonces simplemente podemos mandar como referencia la función.
+                ref.read(productFormProvider(product).notifier).onTitleChanged,
+            errorMessage: productForm.title.errorMessage,
           ),
           CustomProductField(
             label: 'Slug',
-            initialValue: product.slug,
+            initialValue: productForm.slug.value,
+            onChanged:
+                ref.read(productFormProvider(product).notifier).onSlugChanged,
+            errorMessage: productForm.slug.errorMessage,
           ),
           CustomProductField(
             isBottomField: true,
             label: 'Precio',
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            initialValue: product.price.toString(),
+            initialValue: productForm.price.value.toString(),
+            onChanged:
+                // NOTA: Acá como la función onPriceChanged espera un double y el onChanged recibe un String es necesario parsear a double.
+                //       Pero en lugar de usar el método parse convencional vamos a usar el tryParse para que intente hacer el parseo y si
+                //       no lo logra lo que vamos a hacer es mandarle un cero por defecto y esto lo hacemos es para evitar posibles errores
+                //       en caso de que no logre parsear por algún motivo.
+                (value) => ref
+                    .read(productFormProvider(product).notifier)
+                    .onPriceChanged(double.tryParse(value) ?? 0),
+            errorMessage: productForm.price.errorMessage,
           ),
           const SizedBox(height: 15),
           const Text('Extras'),
@@ -119,7 +149,15 @@ class _ProductInformation extends ConsumerWidget {
             isTopField: true,
             label: 'Existencias',
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            initialValue: product.stock.toString(),
+            initialValue: productForm.inStock.value.toString(),
+            // NOTA: Acá como la función onStockChanged espera un int y el onChanged recibe un String es necesario parsear a int.
+            //       Pero en lugar de usar el método parse convencional vamos a usar el tryParse para que intente hacer el parseo y si
+            //       no lo logra lo que vamos a hacer es mandarle un cero por defecto y esto lo hacemos es para evitar posibles errores
+            //       en caso de que no logre parsear por algún motivo.
+            onChanged: (value) => ref
+                .read(productFormProvider(product).notifier)
+                .onStockChanged(int.tryParse(value) ?? 0),
+            errorMessage: productForm.inStock.errorMessage,
           ),
           CustomProductField(
             maxLines: 6,
