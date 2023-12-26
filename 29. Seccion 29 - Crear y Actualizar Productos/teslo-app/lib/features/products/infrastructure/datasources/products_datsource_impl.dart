@@ -26,9 +26,40 @@ class ProductsDatasourceImpl extends ProductsDatasource {
         );
 
   @override
-  Future<Product> createUpdateProduct(Map<String, dynamic> productLike) {
-    // TODO: implement createUpdateProduct
-    throw UnimplementedError();
+  Future<Product> createUpdateProduct(Map<String, dynamic> productLike) async {
+    try {
+      // NOTA: Para determinar si vamos a crear o actualizar un producto primero tenemos que determinar si tenemos un id, por lo tanto lo vamos a leer
+      //       de la propiedad algo que luce como un producto (productLike)
+      final String? productId = productLike['id'];
+
+      // NOTA: Ahora como vamos a usar el mismo método para crear o actualizar vamos a determinar el método HTTP a usar.
+      final String method = (productId == null) ? 'POST' : 'PATCH';
+
+      // NOTA: De la misma forma que con el método determinamos la url
+      final String url = (productId == null) ? '/post' : '/products/$productId';
+
+      // OJO. El backend no nedesita propiamente que mandemos el id en el body cuando vamos a actualizar un producto ya que dicho id va en
+      //      el url de la petición, por lo tanto ese es el que se usa para consultar y actualizar, por lo tanto el id que vaya en el body
+      //      es necesario removerlo.
+      productLike.remove('id');
+
+      // NOTA: Ahora si usaramos este método para una sola tarea como un post o un patch usaríamos el método .post() o .patch() respectivamente
+      //       pero como este método lo queremos para que haga las dos cosas dependiendo de si viene el id o no entonces vamos a usar es el método
+      //       request() para crear la petición por así decirlo de forma manual.
+      final response = await dio.request(
+        url,
+        data: productLike,
+        options: Options(
+          method: method,
+        ),
+      );
+
+      final product = ProductMapper.jsonToEntity(response.data);
+
+      return product;
+    } catch (e) {
+      throw Exception();
+    }
   }
 
   @override
