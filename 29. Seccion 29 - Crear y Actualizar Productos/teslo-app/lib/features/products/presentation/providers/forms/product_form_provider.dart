@@ -145,7 +145,8 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
     // NOTA: Si no se tiene la función que se quiere ejecutar para propagarla a quien sea que este escuchando los valores del formulario
     //       entonces no voy a hacer nada
-    if (onSubmitCallback == null) return false;
+    // TODO: Regresar y quitar el comentario.
+    // if (onSubmitCallback == null) return false;
 
     // NOTA: Pero si tenemos un callback creamos el productLike que es el objeto que esta esperando el backend
     // NOTA: OJO mandamos el .value de algunas propiedades ya que son objetos

@@ -46,7 +46,15 @@ class ProductScreen extends ConsumerWidget {
       //       Adicionalmente si queremos conocer más sobre este Hero Animation podemor ver video de Fernando que se encuentra en el siguiente enlace:
       //       https://www.youtube.com/watch?v=8IO6eqcTjNc&ab_channel=FernandoHerrera
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          // NOTA: Para mandar el producto lo tenemos en el productState pero dicho producto puede ser opcional por lo tanto podemos hacer
+          //       una validacion para asegurarnos que tenemos un producto y luego usamos el signo ! para que no marque el error ya que en ese
+          //       punto yo ya se que lo he validado y tengo un producto
+          if (productState.product == null) return;
+          ref
+              .read(productFormProvider(productState.product!).notifier)
+              .onFormSubmit();
+        },
         child: const Icon(Icons.save_as_outlined),
       ),
     );
