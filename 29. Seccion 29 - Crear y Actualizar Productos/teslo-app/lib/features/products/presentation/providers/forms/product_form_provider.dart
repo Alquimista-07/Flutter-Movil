@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:teslo_shop/config/config.dart';
 import 'package:teslo_shop/features/products/domain/domain.dart';
+import 'package:teslo_shop/features/products/presentation/providers/products_repository_provider.dart';
 import 'package:teslo_shop/features/shared/infrastucture/inputs/inputs.dart';
 
 // PROVIDER
@@ -11,11 +12,12 @@ final productFormProvider = StateNotifierProvider.autoDispose
     .family<ProductFormNotifier, ProductFormState, Product>((ref, product) {
   // NOTA: Ocupamos el callback que nos va a servir para grabar la data, pero de alguna forma vamos a tener que configurarlo, por lo tanto tendría mucho sentido
   //       que tengamos esa función updateCallBack en el ProductsProvider y podriamos usar su ProductsNotifier para centralizar las interacciones con los productos.
-  // TODO: Create updateCallBack
+  final createupdateCallback =
+      ref.watch(productsRepositoryProvider).createUpdateProduct;
 
   return ProductFormNotifier(
     product: product,
-    // TODO: onSubmitCallback
+    onSubmitCallback: createupdateCallback,
   );
 });
 
@@ -26,7 +28,8 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
   // NOTA: La idea de este Function es que eventualmente cuando se mande llamar el submit del formulario se va a llamar esta función onSubmitCallback
   //       es decir, vamos a intentar mandar la información y ahí vamos a validar el formaulario también, que todos los campos estén llenos, hacer todo
   //       el procedimiento para verificar antes de llegar al backend que el formulario cumpla las reglas de validación.
-  final void Function(Map<String, dynamic> productLike)? onSubmitCallback;
+  final Future<Product> Function(Map<String, dynamic> productLike)?
+      onSubmitCallback;
 
   ProductFormNotifier({
     this.onSubmitCallback,
@@ -145,14 +148,13 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
     // NOTA: Si no se tiene la función que se quiere ejecutar para propagarla a quien sea que este escuchando los valores del formulario
     //       entonces no voy a hacer nada
-    // TODO: Regresar y quitar el comentario.
-    // if (onSubmitCallback == null) return false;
+    if (onSubmitCallback == null) return false;
 
     // NOTA: Pero si tenemos un callback creamos el productLike que es el objeto que esta esperando el backend
     // NOTA: OJO mandamos el .value de algunas propiedades ya que son objetos
     final productLike = {
       'id': state.id,
-      'Title': state.title.value,
+      'title': state.title.value,
       'price': state.price.value,
       'description': state.description,
       'slug': state.slug.value,
@@ -169,8 +171,14 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
           image.replaceAll('${Environment.apiUrl}/files/product/', '')).toList(),
     };
 
-    return true;
-    // TODO: Llamar on submit callback
+    try {
+      // NOTA: Como yo se que el onSubmitCallback en este punto ya lo voy a tener y siempre lo voy a tener entonces usamos el ! para que no marque error.
+      await onSubmitCallback!(productLike);
+
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }
 
