@@ -37,42 +37,46 @@ class ProductScreen extends ConsumerWidget {
     //
     final productState = ref.watch(productProvider(productId));
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Editar Producto'),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.camera_alt_outlined),
-          )
-        ],
-      ),
-      // NOTA: Concición para mostrar la vista o el loader
-      body: productState.isLoading
-          ? const FullScreenLoader()
-          : _ProductView(product: productState.product!),
-      // NOTA: Algo que es chévere es que como tenemos un floatinActionButton en la pantalla de productos y acá agregamos otro, al cambiar entre pantallas
-      //       este va a hacer una transición con una animación por defecto de forma automática y a esto se le conoce como un Hero animation en Flutter.
-      //       Adicionalmente si queremos conocer más sobre este Hero Animation podemor ver video de Fernando que se encuentra en el siguiente enlace:
-      //       https://www.youtube.com/watch?v=8IO6eqcTjNc&ab_channel=FernandoHerrera
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // NOTA: Para mandar el producto lo tenemos en el productState pero dicho producto puede ser opcional por lo tanto podemos hacer
-          //       una validacion para asegurarnos que tenemos un producto y luego usamos el signo ! para que no marque el error ya que en ese
-          //       punto yo ya se que lo he validado y tengo un producto
-          if (productState.product == null) return;
-          // NOTA: Ahora para mandar a llamar el Future y llamar la fucnión que muestra el snackbar vamos a llamar el Future de forma tracicional con el
-          //       .then(). Y esto lo hacemos de esta manera ya que no es permitido mandar a llamar la función para mostrar el snackbar con un async y
-          //       await debido a que este recibe el context el cual puede cambiar en algún momento y puede dar fallos.
-          ref
-              .read(productFormProvider(productState.product!).notifier)
-              .onFormSubmit()
-              .then((value) {
-            if (!value) return;
-            showSnackbar(context);
-          });
-        },
-        child: const Icon(Icons.save_as_outlined),
+    return GestureDetector(
+      // NOTA: Quitamos el foco para ocultar el teclado.
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Editar Producto'),
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.camera_alt_outlined),
+            )
+          ],
+        ),
+        // NOTA: Concición para mostrar la vista o el loader
+        body: productState.isLoading
+            ? const FullScreenLoader()
+            : _ProductView(product: productState.product!),
+        // NOTA: Algo que es chévere es que como tenemos un floatinActionButton en la pantalla de productos y acá agregamos otro, al cambiar entre pantallas
+        //       este va a hacer una transición con una animación por defecto de forma automática y a esto se le conoce como un Hero animation en Flutter.
+        //       Adicionalmente si queremos conocer más sobre este Hero Animation podemor ver video de Fernando que se encuentra en el siguiente enlace:
+        //       https://www.youtube.com/watch?v=8IO6eqcTjNc&ab_channel=FernandoHerrera
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // NOTA: Para mandar el producto lo tenemos en el productState pero dicho producto puede ser opcional por lo tanto podemos hacer
+            //       una validacion para asegurarnos que tenemos un producto y luego usamos el signo ! para que no marque el error ya que en ese
+            //       punto yo ya se que lo he validado y tengo un producto
+            if (productState.product == null) return;
+            // NOTA: Ahora para mandar a llamar el Future y llamar la fucnión que muestra el snackbar vamos a llamar el Future de forma tracicional con el
+            //       .then(). Y esto lo hacemos de esta manera ya que no es permitido mandar a llamar la función para mostrar el snackbar con un async y
+            //       await debido a que este recibe el context el cual puede cambiar en algún momento y puede dar fallos.
+            ref
+                .read(productFormProvider(productState.product!).notifier)
+                .onFormSubmit()
+                .then((value) {
+              if (!value) return;
+              showSnackbar(context);
+            });
+          },
+          child: const Icon(Icons.save_as_outlined),
+        ),
       ),
     );
   }
@@ -244,6 +248,8 @@ class _SizeSelector extends StatelessWidget {
       }).toList(),
       selected: Set.from(selectedSizes),
       onSelectionChanged: (newSelection) {
+        // NOTA: Quitamos el foco para ocultar el teclado.
+        FocusScope.of(context).unfocus();
         // NOTA: Como el newSelection es un set de datos y no un listado de String por lo tanto cuando lo mande a llamar
         //       tengo que tomarlo y convertirlo en un listado de String con el método List.from()
         onSizesChanged(List.from(newSelection));
@@ -285,6 +291,8 @@ class _GenderSelector extends StatelessWidget {
         }).toList(),
         selected: {selectedGender},
         onSelectionChanged: (newSelection) {
+          // NOTA: Quitamos el foco para ocultar el teclado.
+          FocusScope.of(context).unfocus();
           // NOTA: Como el newSelection es un set de datos y no un String por lo tanto cuando lo mande a llamar
           //       vamos a tomar el primer valor del set
           onGenderChanged(newSelection.first);
