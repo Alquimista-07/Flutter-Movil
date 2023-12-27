@@ -13,6 +13,16 @@ class ProductScreen extends ConsumerWidget {
     required this.productId,
   });
 
+  // Método para mostrar el snackbar con la retroalimentación de los mensajes en pantalla
+  void showSnackbar(BuildContext context) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Producto Actualizado!'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // NOTA: Como el productProvider es un provider que tiene el modificador family() lo tenemos que llamar colocando los () y pasarle el argumento que este reciba que en este caso es el id del producto.
@@ -51,9 +61,16 @@ class ProductScreen extends ConsumerWidget {
           //       una validacion para asegurarnos que tenemos un producto y luego usamos el signo ! para que no marque el error ya que en ese
           //       punto yo ya se que lo he validado y tengo un producto
           if (productState.product == null) return;
+          // NOTA: Ahora para mandar a llamar el Future y llamar la fucnión que muestra el snackbar vamos a llamar el Future de forma tracicional con el
+          //       .then(). Y esto lo hacemos de esta manera ya que no es permitido mandar a llamar la función para mostrar el snackbar con un async y
+          //       await debido a que este recibe el context el cual puede cambiar en algún momento y puede dar fallos.
           ref
               .read(productFormProvider(productState.product!).notifier)
-              .onFormSubmit();
+              .onFormSubmit()
+              .then((value) {
+            if (!value) return;
+            showSnackbar(context);
+          });
         },
         child: const Icon(Icons.save_as_outlined),
       ),
