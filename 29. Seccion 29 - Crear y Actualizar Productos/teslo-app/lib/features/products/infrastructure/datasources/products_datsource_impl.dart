@@ -36,7 +36,8 @@ class ProductsDatasourceImpl extends ProductsDatasource {
       final String method = (productId == null) ? 'POST' : 'PATCH';
 
       // NOTA: De la misma forma que con el método determinamos la url
-      final String url = (productId == null) ? '/post' : '/products/$productId';
+      final String url =
+          (productId == null) ? '/products' : '/products/$productId';
 
       // OJO. El backend no nedesita propiamente que mandemos el id en el body cuando vamos a actualizar un producto ya que dicho id va en
       //      el url de la petición, por lo tanto ese es el que se usa para consultar y actualizar, por lo tanto el id que vaya en el body

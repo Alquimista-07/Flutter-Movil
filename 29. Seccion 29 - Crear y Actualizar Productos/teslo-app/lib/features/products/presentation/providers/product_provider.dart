@@ -34,8 +34,36 @@ class ProductNotifier extends StateNotifier<ProductState> {
     loadProduct();
   }
 
+  // NOTA: Este producto vacío lo vamos a usar para cuando vayamos a crear un producto,
+  //       Por lo tanto va a tener unos valores por defecto que van a ser reemplazados
+  //       cuando demos click en el botón guardar.
+  Product _newEmptyProduct() {
+    return Product(
+      id: 'new',
+      title: '',
+      price: 0,
+      description: '',
+      slug: '',
+      stock: 0,
+      sizes: [],
+      gender: '',
+      tags: [],
+      images: [],
+    );
+  }
+
   Future<void> loadProduct() async {
     try {
+      // NOTA: Como vamos a reutilizar el formulario de editar producto necesitamos determinar o validar de alguna forma un id
+      //       ficticio como por ejemplo /new que venga y el cual nos va a servir para determinar si vamos a crear un producto.
+      if (state.id == 'new') {
+        state = state.copyWith(
+          isLoading: false,
+          product: _newEmptyProduct(),
+        );
+        return;
+      }
+
       final product = await productsRepository.getProductById(state.id);
 
       state = state.copyWith(

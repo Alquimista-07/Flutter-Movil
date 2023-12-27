@@ -159,7 +159,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
     // NOTA: Pero si tenemos un callback creamos el productLike que es el objeto que esta esperando el backend
     // NOTA: OJO mandamos el .value de algunas propiedades ya que son objetos
     final productLike = {
-      'id': state.id,
+      'id': (state.id == 'new') ? null : state.id,
       'title': state.title.value,
       'price': state.price.value,
       'description': state.description,
