@@ -22,6 +22,37 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
     loadNextPage();
   }
 
+  // NOTA: Ahora vamos a crear el método para que actualice la pantalla y el cual va a mostrar los cambios cuando actualicemos o creemos
+  //       un producto y el cual se crea o actualiza con la ayuda del product_provider.
+  Future<bool> createOrUpdateProduct(Map<String, dynamic> productLike) async {
+    try {
+      final product = await productsRepository.createUpdateProduct(productLike);
+
+      // Verificamos si el producto ya existe en el estado
+      final isProductInList =
+          state.products.any((element) => element.id == product.id);
+
+      // Si no existe
+      if (!isProductInList) {
+        state = state.copyWith(
+          // Lo agregamos al final de la lista
+          products: [...state.products, product],
+        );
+        return true;
+      }
+
+      // Si el producto existe lo voy a actualizar
+      state = state.copyWith(
+          // Barremos o recorremos con el map, ojo recordemos colocar el .toList ya que si no eso nos regresa un iterable
+          products: state.products
+              .map((element) => (element.id == product.id) ? product : element)
+              .toList());
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future loadNextPage() async {
     // NOTA: Para evitar el bomabardeo de peticiones al backend hacemos validaciones ya que esto sucede mucho cuando tenemos un inifinite scroll
     if (state.isLoading || state.isLastPage) return;

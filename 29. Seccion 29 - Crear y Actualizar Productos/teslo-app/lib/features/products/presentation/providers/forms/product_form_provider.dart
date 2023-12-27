@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:formz/formz.dart';
 import 'package:teslo_shop/config/config.dart';
 import 'package:teslo_shop/features/products/domain/domain.dart';
-import 'package:teslo_shop/features/products/presentation/providers/products_repository_provider.dart';
+import 'package:teslo_shop/features/products/presentation/providers/products_provider.dart';
 import 'package:teslo_shop/features/shared/infrastucture/inputs/inputs.dart';
 
 // PROVIDER
@@ -12,12 +12,18 @@ final productFormProvider = StateNotifierProvider.autoDispose
     .family<ProductFormNotifier, ProductFormState, Product>((ref, product) {
   // NOTA: Ocupamos el callback que nos va a servir para grabar la data, pero de alguna forma vamos a tener que configurarlo, por lo tanto tendría mucho sentido
   //       que tengamos esa función updateCallBack en el ProductsProvider y podriamos usar su ProductsNotifier para centralizar las interacciones con los productos.
-  final createupdateCallback =
-      ref.watch(productsRepositoryProvider).createUpdateProduct;
+  // final createUpdateCallback =
+  //     ref.watch(productsRepositoryProvider).createUpdateProduct;
+
+  // NOTA: Ya no ocupamos mandar allamar el create updateCallback como lo teníamos ya que ahora tenemos un nuevo método
+  //       que va a validar y actualizar el estado para que los cambios se vena reflejados directamente en el listado de
+  //       productos cuando creemos o actualicemos un producto a través del product_provider
+  final createUpdateCallback =
+      ref.watch(productsProvider.notifier).createOrUpdateProduct;
 
   return ProductFormNotifier(
     product: product,
-    onSubmitCallback: createupdateCallback,
+    onSubmitCallback: createUpdateCallback,
   );
 });
 
@@ -28,7 +34,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
   // NOTA: La idea de este Function es que eventualmente cuando se mande llamar el submit del formulario se va a llamar esta función onSubmitCallback
   //       es decir, vamos a intentar mandar la información y ahí vamos a validar el formaulario también, que todos los campos estén llenos, hacer todo
   //       el procedimiento para verificar antes de llegar al backend que el formulario cumpla las reglas de validación.
-  final Future<Product> Function(Map<String, dynamic> productLike)?
+  final Future<bool> Function(Map<String, dynamic> productLike)?
       onSubmitCallback;
 
   ProductFormNotifier({
@@ -173,9 +179,7 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
 
     try {
       // NOTA: Como yo se que el onSubmitCallback en este punto ya lo voy a tener y siempre lo voy a tener entonces usamos el ! para que no marque error.
-      await onSubmitCallback!(productLike);
-
-      return true;
+      return await onSubmitCallback!(productLike);
     } catch (e) {
       return false;
     }
