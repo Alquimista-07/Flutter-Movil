@@ -2,6 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+
+	<!-- Inicio configuración Cámara y Galería IOS -->
+	<!--NOTA: El enlace a la documentación del paquete image_picker y el cual usamos para la gestion de cámara y galería lo encontramos en el
+	          siguiente enlace: https://pub.dev/packages/image_picker-->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Necesitamos acceso a la galería para seleccionar las fotos de los productos</string>
+
+	<key>NSCameraUsageDescription</key>
+	<string>Necesitamos poder tomar fotos de los productos con la cámara</string>
+
+	<key>NSMicrophoneUsageDescription</key>
+	<string>En caso de subir videos, necesitamos acceso al micrófono</string>
+	<!-- Fin configuraciónCámara y Galería IOS -->
+
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
