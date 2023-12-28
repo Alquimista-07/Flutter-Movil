@@ -184,6 +184,17 @@ class ProductFormNotifier extends StateNotifier<ProductFormState> {
       return false;
     }
   }
+
+  // Método para añadir las imagenes desde el cache al listado para mostrarlas inmediatamente en el ListView antes
+  // de grabarlas
+  void updateProductImage(String path) {
+    state = state.copyWith(
+        // Agregamos la imágen al final
+        images: [...state.images, path]
+        // O si queremos agregarla al inicio podríamos hacer
+        //images: [path, ...state.images]
+        );
+  }
 }
 
 // STATE
