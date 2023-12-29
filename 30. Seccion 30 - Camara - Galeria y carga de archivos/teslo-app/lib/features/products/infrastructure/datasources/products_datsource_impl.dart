@@ -25,6 +25,40 @@ class ProductsDatasourceImpl extends ProductsDatasource {
           ),
         );
 
+  // NOTA: Aplicando nuevamente el principio de responsabilidad única vamos a crear un método que se va a encargar de subir una única imágen,
+  //       pero este método los vamos a combinar con el método para que sea llamado de alguna forma multiples veces por el método uploadPhotos
+  //       y así cargar todos los archivos al backend de manera simultane.
+  Future<String> _uploadFile(String path) async {
+    try {
+      // NOTA: Ocupamos el nombre del archivo y el cual a la final el backend renombra como un uid con la extensión de la imágen.
+      //       Por lo tanto como sabemos que la imágen en cache va a quedar en una ruta lo que vamos a hacer es cortar por el /
+      //       para separar en un arreglo de string y vamos a tomar la última posición correspondiente al nombre de la imágen
+      //       con su extensión.
+      final fileName = path.split('/').last;
+
+      // NOTA: Esta data es la que va a contener la imágen, por lo tanto acá vamos a pasarle la llave que tiene el backend, que en este caso
+      //       es file, y es super importante pasarle el mismo nombre de la llave y que esta definida en el backend, es decir, propia de la
+      //       forma como esta desarrolado el backend.
+      final FormData data = FormData.fromMap(
+        {
+          'file': MultipartFile.fromFileSync(
+            path,
+            filename: fileName,
+          ),
+        },
+      );
+
+      // Posto al endpoint del backend
+      final response = await dio.post('/files/product', data: data);
+
+      // NOTA: Ojo acá retornamos el response.data con la llave que viene en la respuesta del backend,
+      //       que en este caso es image
+      return response.data['image'];
+    } catch (e) {
+      throw Exception();
+    }
+  }
+
   // NOTA: Implementación del método para subir una imágen de forma correcta al backend.
   //       Este método en si se va a encargar de hacer la carga de múltiples imágenes y para así aplicar el principio de responsabilidad única.
   //       Por lo tanto lo que quiero hacer es un procedimiento con cada una de las fotografías que tengamos en el listado (photosToUpload) y
@@ -42,8 +76,12 @@ class ProductsDatasourceImpl extends ProductsDatasource {
     final photosToIgnore =
         photos.where((element) => !element.contains('/')).toList();
 
-    // TODO: Crear una serie de Futures de carga de imágenes
-    final List<Future<String>> uploadJob = [];
+    // NOTA: Crear una serie de Futures de carga de imágenes
+    //       OJO Recordemos que cuando tenemos un callback donde los argumentos que tiene el callback son los mismos que va
+    //       a usar la función(_uploadFile) entonces simplemente podemos mandar como referencia la función sin argumentos.
+    //       Es decir, pasamos de .map((e) => _uploadFile(e)) a tener simplemente .map(uploadFile))
+    final List<Future<String>> uploadJob =
+        photosToUpload.map(_uploadFile).toList();
     final newImages = await Future.wait(uploadJob);
 
     // Regresamos las fotos iniciales, y le agregamos las nuevas imágenes.
