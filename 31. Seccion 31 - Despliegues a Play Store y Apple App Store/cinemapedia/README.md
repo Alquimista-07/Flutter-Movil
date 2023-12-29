@@ -26,3 +26,8 @@ Documentación del paquete: [change_app_package_name](https://pub.dev/packages/c
 ```
 flutter pub run change_app_package_name:main com.thealchemist.cinemapedia
 ```
+
+Para cambiar el ícono de la aplicación
+```
+flutter pub run flutter_launcher_icons
+```
