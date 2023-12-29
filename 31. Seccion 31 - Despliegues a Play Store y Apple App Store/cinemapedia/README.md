@@ -18,3 +18,11 @@ La documentación de TheMovieDB la encontramos en:
 [TheMovieDB-Developers](https://developer.themoviedb.org/docs/getting-started)
 La documentación de Isar Database la encontramos en: [Isar](https://isar.dev/es/tutorials/quickstart.html)
 
+
+# Producción
+
+Para cambiar el nombre de la aplicación:
+Documentación del paquete: [change_app_package_name](https://pub.dev/packages/change_app_package_name/install)
+```
+flutter pub run change_app_package_name:main com.thealchemist.cinemapedia
+```
