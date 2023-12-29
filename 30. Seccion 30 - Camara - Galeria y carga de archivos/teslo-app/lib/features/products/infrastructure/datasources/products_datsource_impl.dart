@@ -25,6 +25,34 @@ class ProductsDatasourceImpl extends ProductsDatasource {
           ),
         );
 
+  // NOTA: Implementación del método para subir una imágen de forma correcta al backend.
+  //       Este método en si se va a encargar de hacer la carga de múltiples imágenes y para así aplicar el principio de responsabilidad única.
+  //       Por lo tanto lo que quiero hacer es un procedimiento con cada una de las fotografías que tengamos en el listado (photosToUpload) y
+  //       quiero disparar unos procedimientos de forma simultanea, a pesar de que podríamos usar un await por cada uno de los elementos quiero
+  //       hacerlo de forma simultanea.
+  Future<List<String>> _uploadPhotos(List<String> photos) async {
+    // NOTA: Tomamos todas las imágenes que tengan un /, es decir las que tengan el path local y que son las fotos que tenemso en el cache o filesystem del dispositivo
+    //       antes de enviarlas al backend y lo transformamos en una lista.
+    // OJO: Hay que tener en consideración si tuvieramos imágenes que tengan https:// y luego el url, entonces deberíamos ajutar o aplicar alguna lógica para recibir esos url,
+    //      pero en este caso no es necesario ya que no vamos a tener fotos de ese tipo.
+    final photosToUpload =
+        photos.where((element) => element.contains('/')).toList();
+
+    // NOTA: Ahora necesitamos obtener las fotos que vamos a ignorar y que serían las que ya tenemos almacenadas en el backend
+    final photosToIgnore =
+        photos.where((element) => !element.contains('/')).toList();
+
+    // TODO: Crear una serie de Futures de carga de imágenes
+    final List<Future<String>> uploadJob = [];
+    final newImages = await Future.wait(uploadJob);
+
+    // Regresamos las fotos iniciales, y le agregamos las nuevas imágenes.
+    return [
+      ...photosToIgnore,
+      ...newImages,
+    ];
+  }
+
   @override
   Future<Product> createUpdateProduct(Map<String, dynamic> productLike) async {
     try {
@@ -43,6 +71,9 @@ class ProductsDatasourceImpl extends ProductsDatasource {
       //      el url de la petición, por lo tanto ese es el que se usa para consultar y actualizar, por lo tanto el id que vaya en el body
       //      es necesario removerlo.
       productLike.remove('id');
+
+      // NOTA: Mandamos todas las imágenes desde y hacia la lista, esto incluye las imágenes antiguas como las nuevas
+      productLike['images'] = await _uploadPhotos(productLike['images']);
 
       // NOTA: Ahora si usaramos este método para una sola tarea como un post o un patch usaríamos el método .post() o .patch() respectivamente
       //       pero como este método lo queremos para que haga las dos cosas dependiendo de si viene el id o no entonces vamos a usar es el método
