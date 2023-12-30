@@ -8,8 +8,20 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+
 // NOTA: A continuación para usar dotenv debemos convertir el manin en un Future que no retorna nada
 Future<void> main() async {
+  // NOTA: La siguiente línea de código sirve para la configuración del Splash Screen.
+  //       Una cosa que hay que tener en cuenta es que esta línea va a continuar mostrando el splash screen hasta que le indiquemos
+  //       que lo remueva con el FlutterNativeSplash.remove(), pero esta instrucción la llamamos cuando nosotros queramos, que sería
+  //       cuando la app este lista, por lo tanto podríamos esperar por ejemplo hasta que el HomeView() termine
+  //       Adicionalmente para esta configuración podríamos implementar el patron adaptador con un servicio donde centralicemos esto
+  //       así como tenemos para el almacenamiento del token en el dispositivo, o el manejo de la cámara y galería en la aplicación
+  //       teslo_app de la sección anterior.
+  FlutterNativeSplash.preserve(
+      widgetsBinding: WidgetsFlutterBinding.ensureInitialized());
+
   // NOTA: A continuación con el uso del await inicializamos el paquete y le indicamos el archivo que contiene las variables de entorno..
   //       Y luego ya para usarla es sencillo ya que donde necesitemos usarla solo agregamos dotenv.env['VAR_NAME'];
   await dotenv.load(fileName: '.env');

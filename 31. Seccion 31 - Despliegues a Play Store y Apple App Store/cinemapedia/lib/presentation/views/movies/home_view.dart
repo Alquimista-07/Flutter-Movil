@@ -9,6 +9,7 @@
 //       de la primera página, es decir, usar el initistate
 import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:cinemapedia/presentation/providers/providers.dart';
@@ -55,6 +56,9 @@ class HomeViewState extends ConsumerState<HomeView>
     //       indique cuando esta listo el provider o providers y cuando no.
     final initialLoading = ref.watch(initialLoadingProvider);
     if (initialLoading) return const FullScreenLoader();
+
+    // NOTA: Cuando ya cargue todo podemos remover el Splash Screen
+    FlutterNativeSplash.remove();
 
     // NOTA: Ya como en el modo debugging cuando colocamos el break point el moviedb_datasource
     //       en el return movie del método getNowPlaying nos dimos cuenta de que la data ya se
