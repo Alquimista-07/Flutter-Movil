@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="https://flutter.dev/" target="blank"><img src="https://storage.googleapis.com/cms-storage-bucket/6a07d8a62f4308d2b854.svg" width="330" alt="Flutter Logo" /></a>
+</p>
+
 # Flutter-Movil
 Flutter - Móvil: De cero a experto - Edición 2023
 
@@ -89,11 +93,6 @@ No importa si ya sabes Flutter o no, este curso te ayudará a catapultar tus hab
 * Si no se sabe el requisito anterior, es recomendado mi curso de programación para principiantes antes
 * Puedes seguir el curso en Windows, Mac o Linux (Instalaciones y configuraciones en Mac y Windows incluídas)
 * Revisar los requisitos mínimos de Flutter dependiendo de tu sistema operativo en Flutter-dev
-
-
-<p align="center">
-  <a href="https://flutter.dev/" target="blank"><img src="https://storage.googleapis.com/cms-storage-bucket/6a07d8a62f4308d2b854.svg" width="330" alt="Flutter Logo" /></a>
-</p>
 
 # Flutter Móvil - Instalaciones recomendadas
 
