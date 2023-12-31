@@ -92,7 +92,7 @@ No importa si ya sabes Flutter o no, este curso te ayudará a catapultar tus hab
 
 
 <p align="center">
-  <a href="https://docs.docker.com/" target="blank"><img src="https://storage.googleapis.com/cms-storage-bucket/6a07d8a62f4308d2b854.svg" width="330" alt="Flutter Logo" /></a>
+  <a href="https://flutter.dev/" target="blank"><img src="https://storage.googleapis.com/cms-storage-bucket/6a07d8a62f4308d2b854.svg" width="330" alt="Flutter Logo" /></a>
 </p>
 
 # Flutter Móvil - Instalaciones recomendadas
